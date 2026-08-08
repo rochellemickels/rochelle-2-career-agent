@@ -42,12 +42,12 @@ def run_scan(
     # Keep roles with title-lane evidence and enough overall signal to merit review.
     scored = [
         job for job in all_scored
-        if job.breakdown.role_fit >= 11
-        and job.score >= 40
+        if job.breakdown.role_fit >= 15
+        and job.score >= 45
         and is_us_eligible_location(job, profile)
     ]
     scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
-    scored = scored[:300]
+    scored = scored[:200]
 
     scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
     now = datetime.now(timezone.utc).isoformat()
@@ -61,7 +61,7 @@ def run_scan(
             "total_jobs": len(scored),
             "sources_ok": source_ok,
             "sources_error": source_errors,
-            "matching_method": "transparent-rules-v1",
+            "matching_method": "transparent-rules-v2",
             "cost_mode": "free",
         },
         "jobs": [

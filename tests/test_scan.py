@@ -77,7 +77,7 @@ class ScanTests(unittest.TestCase):
                 )
 
         self.assertEqual([job["id"] for job in result["jobs"]], ["relevant"])
-        self.assertEqual(result["metadata"]["matching_method"], "transparent-rules-v1")
+        self.assertEqual(result["metadata"]["matching_method"], "transparent-rules-v2")
         self.assertEqual(result["metadata"]["cost_mode"], "free")
 
 

@@ -5,63 +5,46 @@ An automated career-discovery and job-matching portal built for Rochelle Mickels
 ## What it does
 
 - Refreshes configured Greenhouse, Lever, and Ashby public job feeds three times per week.
-- Prioritizes strategic partnerships, business development, revenue/growth strategy, customer-success leadership, go-to-market, and AI-transformation roles.
+- Prioritizes manager and senior-manager bridge roles in partnerships, strategic relationships, implementation, programs, complex solutions, transformation, and growth.
+- Keeps Director roles in consideration and raises them when the responsibilities strongly match Rochelle's proven team leadership, executive relationships, market expansion, revenue growth, and consultative solution experience.
 - Applies a transparent 100-point Rochelle Match Score.
 - Uses deterministic evidence-based rules, with no paid API or model calls.
-- Publishes a responsive GitHub Pages dashboard with search, filters, and score explanations.
+- Publishes a responsive GitHub Pages dashboard with search, career-lane, salary, location, and application filters.
 - Saves favorites, application stages, and private notes only in the current browser.
-- Reports broken company feeds without allowing one failure to stop the full refresh.
 
 ## Rochelle Match Score
 
 | Category | Points | High-score evidence |
 |---|---:|---|
-| Role and experience fit | 25 | Partnerships, business development, revenue/growth, executive relationships |
-| Compensation | 20 | Published base range reaches or exceeds $150,000 |
+| Role and experience fit | 25 | Preferred manager-level bridge role, or a Director role with strong transferable-leadership evidence |
+| Compensation | 20 | $110K–$135K ideal base overlap; above-target pay remains strong; disclosed bonus can add a point |
 | Remote and location | 15 | U.S. remote first; DFW hybrid second |
 | Core values and mission | 15 | Ethical, inclusive, mission-driven customer or community impact |
-| Leadership and influence | 10 | Strategic ownership, cross-functional leadership, executive visibility |
-| AI and future-facing work | 10 | AI strategy, transformation, automation, or digital innovation |
+| Leadership and influence | 10 | Team leadership, strategic ownership, stakeholder alignment, and cross-functional influence |
+| AI and future-facing work | 10 | AI strategy, adoption, transformation, automation, or digital innovation |
 | Stability and posting quality | 5 | Clear, credible, detailed employer posting |
 
-The matching engine never invents salary, remote status, values, responsibilities, or requirements. Missing details remain visible as gaps.
+### Compensation priorities
 
-## One-time launch steps
+1. **Strong target:** $110,000–$135,000 base.
+2. **Still attractive:** Above $135,000 when role fit and expectations are appropriate.
+3. **Preferred floor:** $100,000–$109,000, especially with bonus or an unusually strong growth path.
+4. **Bridge range:** $85,000–$99,000; retained for exceptional fit, advancement, or bonus potential.
+5. **Below $85,000:** Low compensation priority.
 
-1. Merge the implementation pull request into `main`.
-2. Open **Settings → Pages** in this repository.
-3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-4. Open **Actions → Refresh career opportunities → Run workflow**.
-5. Select **Run workflow**.
-6. When both workflows finish, open:
-   `https://rochellemickels.github.io/rochelle-2-career-agent/`
+Commission-only and heavily individual-quota-driven roles are penalized. Salary not disclosed remains visible as an information gap rather than being invented.
+
+## Role-level philosophy
+
+The preferred on-ramp is an entry-manager, manager, or mid-manager role that uses Rochelle's commercial leadership and relationship skills while allowing time to learn a technology or AI company's operations. Director is not excluded: the scoring engine can award full role-fit points when a Director posting clearly matches her proven strengths. Senior Director, VP, Head, and Chief roles remain visible as higher-expectation stretch opportunities.
 
 ## Change the career criteria
 
-Edit [`config/profile.json`](config/profile.json) to change:
-
-- target and adjacent titles;
-- salary threshold;
-- score keywords and weights;
-- DFW and U.S. eligibility terms.
-
-Weights must continue to total 100 points and match the allowed category maximums in `ScoreBreakdown`.
+Edit [`config/profile.json`](config/profile.json) to change target titles, salary bands, score keywords, and location terms. Weights must continue to total 100 points and match the allowed category maximums in `ScoreBreakdown`.
 
 ## Add or remove target companies
 
-Edit [`config/sources.json`](config/sources.json). Each company needs a public ATS type and its board slug:
-
-```json
-{
-  "company": "Example",
-  "type": "greenhouse",
-  "slug": "example",
-  "careers_url": "https://example.com/careers",
-  "priority": 1
-}
-```
-
-Supported public feed types are `greenhouse`, `lever`, and `ashby`. A company's own careers URL does not always equal its ATS slug; source health makes incorrect or changed slugs visible.
+Edit [`config/sources.json`](config/sources.json). Supported public feed types are `greenhouse`, `lever`, and `ashby`. Source health makes incorrect or changed slugs visible.
 
 ## Run locally
 
@@ -78,16 +61,10 @@ python -m http.server 8000 --directory docs
 
 Open `http://localhost:8000`.
 
-## Automation
+## Automation and privacy
 
-- `Refresh career opportunities` runs Monday, Wednesday, and Friday at 12:30 UTC and can be started manually.
+- `Refresh career opportunities` runs Monday, Wednesday, and Friday and can be started manually.
 - No OpenAI, Anthropic, or other paid model API is called by the workflow.
-- Every role is scored from the posting's title, salary, location, responsibilities, mission language, leadership scope, and AI relevance.
-- The public portal is capped at the 300 strongest relevant roles instead of mirroring thousands of unrelated company openings.
-- `Deploy career portal` publishes after code changes and successful database refreshes.
-
-## Privacy and limitations
-
-This V1 repository is public to support free GitHub Pages hosting. The committed dataset contains public job postings and generic career-fit criteria only. Favorites, notes, and application stages remain in browser `localStorage`; clearing browser data removes them.
-
-The portal is decision support—not a promise that a job remains open or that compensation, eligibility, or employer fit has been verified beyond the cited posting. Applications are always opened on the employer's authorized page and are never submitted automatically.
+- The public portal is capped at the 200 strongest relevant roles.
+- Favorites, notes, and application stages remain in browser `localStorage`.
+- The portal is decision support. Confirm compensation, bonus, location, requirements, and current availability with the employer before applying.

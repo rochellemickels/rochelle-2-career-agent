@@ -81,10 +81,11 @@ function matchesCareerLane(job, lane) {
   if (lane === "all") return true;
   const title = job.title.toLowerCase();
   const terms = {
-    partnerships: ["partnership", "business development", "channel", "ecosystem"],
-    revenue: ["revenue", "growth", "go-to-market", "go to market", "enablement", "market development"],
-    customer: ["customer success", "customer experience"],
-    accounts: ["strategic account", "account director", "enterprise account"],
+    relationships: ["partnership", "business development", "relationship", "alliances", "partner success", "partner enablement", "channel", "ecosystem"],
+    implementation: ["implementation", "adoption", "onboarding", "transformation", "change management"],
+    programs: ["program manager", "project manager", "strategy and operations", "strategy & operations", "business operations"],
+    solutions: ["solutions", "customer success", "client success", "customer experience"],
+    growth: ["growth", "go-to-market", "go to market", "market development", "enablement"],
     ai: ["ai ", "artificial intelligence", "transformation", "automation"],
   };
   return (terms[lane] || []).some(term => title.includes(term));
@@ -100,10 +101,19 @@ function matchesLocation(job, locationFilter) {
   return !isRemote && !isDfw;
 }
 
+function overlapsIdealSalary(job) {
+  if (!job.salary_max) return false;
+  const lower = job.salary_min || 0;
+  return job.salary_max >= 110000 && lower <= 135000;
+}
+
 function matchesSalary(job, salaryFilter) {
   if (salaryFilter === "all") return true;
-  if (salaryFilter === "target") return (job.salary_max || 0) >= 150000;
-  if (salaryFilter === "below") return Boolean(job.salary_max) && job.salary_max < 150000;
+  if (salaryFilter === "ideal") return overlapsIdealSalary(job);
+  if (salaryFilter === "above") return Boolean(job.salary_min) && job.salary_min > 135000;
+  if (salaryFilter === "preferred") return (job.salary_max || 0) >= 100000 && (job.salary_max || 0) < 110000;
+  if (salaryFilter === "bridge") return (job.salary_max || 0) >= 85000 && (job.salary_max || 0) < 100000;
+  if (salaryFilter === "below") return Boolean(job.salary_max) && job.salary_max < 85000;
   return !job.salary_max;
 }
 
@@ -202,7 +212,7 @@ function renderMetrics() {
   document.querySelector("#metricTotal").textContent = state.jobs.length;
   document.querySelector("#metricTop").textContent = state.jobs.filter(job => job.score >= 80).length;
   document.querySelector("#metricRemote").textContent = state.jobs.filter(job => `${job.workplace_type} ${job.location}`.toLowerCase().includes("remote")).length;
-  document.querySelector("#metricSalary").textContent = state.jobs.filter(job => (job.salary_max || 0) >= 150000).length;
+  document.querySelector("#metricSalary").textContent = state.jobs.filter(overlapsIdealSalary).length;
   document.querySelector("#metricSaved").textContent = Object.values(state.tracking).filter(item => item.favorite).length;
 }
 
@@ -213,7 +223,10 @@ function renderFilterChips() {
   if (state.filters.lane !== "all") labels.push(state.filters.lane);
   if (state.filters.work !== "all") labels.push(state.filters.work);
   if (state.filters.location !== "all") labels.push(state.filters.location);
-  if (state.filters.salary !== "all") labels.push(state.filters.salary === "target" ? "$150K+" : state.filters.salary);
+  if (state.filters.salary !== "all") {
+    const salaryLabels = { ideal: "$110K–$135K ideal", above: "Above $135K", preferred: "$100K–$109K", bridge: "$85K–$99K", below: "Below $85K", unlisted: "Salary unlisted" };
+    labels.push(salaryLabels[state.filters.salary] || state.filters.salary);
+  }
   if (state.filters.company !== "all") labels.push(state.filters.company);
   if (state.filters.stage !== "all") labels.push(state.filters.stage);
   els.activeFilterRow.innerHTML = labels.map(label => `<span class="filter-chip">${escapeHtml(label)}</span>`).join("");
