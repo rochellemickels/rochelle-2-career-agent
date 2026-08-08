@@ -44,10 +44,10 @@ class ScanTests(unittest.TestCase):
             source_type="greenhouse",
             source_slug="example",
             company="Example",
-            title="Director, Corporate Accounting",
+            title="Senior Director of Product, Ads Platform",
             location="Remote - United States",
             workplace_type="Remote",
-            description="Lead financial reporting and accounting operations.",
+            description="Lead the product roadmap and product management organization.",
             apply_url="https://example.com/unrelated",
         ).ensure_fingerprint()
 
@@ -71,4 +71,3 @@ class ScanTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

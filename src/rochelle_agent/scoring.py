@@ -44,10 +44,27 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
     else:
         partnership_hits = _contains(
             title,
-            ["partnership", "business development", "growth", "go to market", "go-to-market", "customer success", "strategic account", "revenue"],
+            [
+                "partnership",
+                "business development",
+                "go to market",
+                "go-to-market",
+                "customer success",
+                "strategic account",
+                "market development",
+                "market expansion",
+                "revenue growth",
+                "revenue strategy",
+                "revenue enablement",
+                "sales enablement",
+                "channel",
+                "ecosystem",
+            ],
         )
-        senior_hits = _contains(title, ["vice president", "vp", "head", "senior director", "director", "principal"])
-        role_fit = min(18, 5 + len(partnership_hits) * 6 + len(senior_hits) * 5)
+        senior_title = bool(
+            _contains(title, ["vice president", "vp", "head", "senior director", "director", "principal"])
+        )
+        role_fit = min(18, 5 + len(partnership_hits) * 6 + (5 if senior_title else 0))
         if partnership_hits:
             strengths.append("Responsibilities are within Rochelle's partnerships and growth lane")
         else:
@@ -190,4 +207,3 @@ def deduplicate(jobs: list[Job]) -> list[Job]:
         if current is None or len(job.description) > len(current.description):
             selected[key] = job
     return list(selected.values())
-
