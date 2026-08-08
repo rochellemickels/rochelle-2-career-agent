@@ -1,6 +1,12 @@
 name: Refresh career opportunities
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "src/**"
+      - ".github/workflows/update-jobs.yml"
   schedule:
     - cron: "30 12 * * *"
   workflow_dispatch:
@@ -60,4 +66,3 @@ jobs:
             git commit -m "Refresh career opportunities"
             git push
           fi
-
