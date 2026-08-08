@@ -50,6 +50,17 @@ class ScanTests(unittest.TestCase):
             description="Lead the product roadmap and product management organization.",
             apply_url="https://example.com/unrelated",
         ).ensure_fingerprint()
+        foreign_only = Job(
+            id="foreign",
+            source_type="greenhouse",
+            source_slug="example",
+            company="Example",
+            title="Director, Strategic Partnerships",
+            location="Remote - United Kingdom",
+            workplace_type="Remote",
+            description="Lead strategic partnerships and executive relationships.",
+            apply_url="https://example.com/foreign",
+        ).ensure_fingerprint()
 
         with tempfile.TemporaryDirectory() as folder:
             temp = Path(folder)
@@ -57,7 +68,7 @@ class ScanTests(unittest.TestCase):
             output = temp / "jobs.json"
             status = temp / "status.json"
             sources.write_text(json.dumps({"sources": [{"company": "Example", "type": "greenhouse", "slug": "example"}]}))
-            with patch("rochelle_agent.scan.build_source", return_value=FakeSource([relevant, unrelated])):
+            with patch("rochelle_agent.scan.build_source", return_value=FakeSource([relevant, unrelated, foreign_only])):
                 result = run_scan(
                     ROOT / "config/profile.json",
                     sources,
