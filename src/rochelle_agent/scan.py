@@ -9,7 +9,7 @@ from typing import Any
 
 from .agent import evaluate_batch
 from .models import ScoredJob
-from .scoring import apply_agent_assessment, deduplicate, score_job
+from .scoring import apply_agent_assessment, deduplicate, is_us_eligible_location, score_job
 from .sources import build_source
 
 
@@ -58,7 +58,9 @@ def run_scan(
     # Keep roles with title-lane evidence and enough overall signal to merit review.
     scored = [
         job for job in all_scored
-        if job.breakdown.role_fit >= 11 and job.score >= 40
+        if job.breakdown.role_fit >= 11
+        and job.score >= 40
+        and is_us_eligible_location(job, profile)
     ]
     scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
     scored = scored[:300]
