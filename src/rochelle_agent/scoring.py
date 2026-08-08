@@ -57,8 +57,8 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
                 "revenue strategy",
                 "revenue enablement",
                 "sales enablement",
-                "channel",
-                "ecosystem",
+                "channel partnerships",
+                "ecosystem partnerships",
             ],
         )
         senior_title = bool(
