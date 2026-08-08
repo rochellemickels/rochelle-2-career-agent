@@ -1,0 +1,120 @@
+{
+  "profile_version": 1,
+  "name": "Rochelle Mickels",
+  "location": "Grapevine, Texas",
+  "minimum_preferred_base_salary": 150000,
+  "work_preferences": [
+    "US remote",
+    "Dallas-Fort Worth hybrid"
+  ],
+  "weights": {
+    "role_fit": 25,
+    "compensation": 20,
+    "work_style": 15,
+    "values": 15,
+    "leadership": 10,
+    "ai_relevance": 10,
+    "quality": 5
+  },
+  "target_titles": [
+    "vp business development",
+    "vice president business development",
+    "head of business development",
+    "vp strategic partnerships",
+    "vice president strategic partnerships",
+    "head of strategic partnerships",
+    "senior director strategic partnerships",
+    "director strategic partnerships",
+    "senior director business development",
+    "director business development",
+    "director channel partnerships",
+    "director ecosystem partnerships",
+    "director enterprise partnerships",
+    "director revenue growth",
+    "director growth strategy",
+    "director go to market",
+    "director go-to-market",
+    "director customer success",
+    "director strategic accounts",
+    "director sales enablement",
+    "director revenue enablement",
+    "ai strategy",
+    "ai transformation",
+    "ai partnerships"
+  ],
+  "adjacent_titles": [
+    "senior manager strategic partnerships",
+    "senior manager business development",
+    "principal partnerships",
+    "enterprise partnerships",
+    "strategic account director",
+    "chief of staff go to market",
+    "business strategy director",
+    "market development director"
+  ],
+  "exclude_title_keywords": [
+    "software engineer",
+    "data scientist",
+    "product designer",
+    "accountant",
+    "attorney",
+    "intern",
+    "entry level",
+    "commission only",
+    "door to door"
+  ],
+  "values_keywords": {
+    "mission_and_impact": ["mission", "impact", "community", "purpose", "social good", "public benefit"],
+    "inclusion": ["inclusive", "inclusion", "belonging", "diversity", "underrepresented", "equity"],
+    "people_and_customers": ["customer success", "customer outcomes", "small business", "women", "veteran", "healthcare", "benefits"],
+    "ethics_and_trust": ["ethical", "responsible ai", "trust", "transparency", "integrity"]
+  },
+  "leadership_keywords": [
+    "lead strategy",
+    "own strategy",
+    "executive stakeholders",
+    "cross-functional",
+    "build and lead",
+    "manage a team",
+    "people manager",
+    "board",
+    "c-suite",
+    "revenue ownership",
+    "market expansion"
+  ],
+  "ai_keywords": [
+    "artificial intelligence",
+    "generative ai",
+    "genai",
+    "machine learning",
+    "ai strategy",
+    "ai transformation",
+    "automation",
+    "digital transformation",
+    "llm"
+  ],
+  "commission_risk_keywords": [
+    "commission only",
+    "100% commission",
+    "uncapped commission",
+    "draw against commission"
+  ],
+  "dfw_keywords": [
+    "dallas",
+    "fort worth",
+    "dfw",
+    "grapevine",
+    "plano",
+    "frisco",
+    "irving",
+    "las colinas",
+    "texas"
+  ],
+  "agent": {
+    "model": "gpt-5.6-luna",
+    "max_jobs_per_refresh": 30,
+    "minimum_baseline_score": 48,
+    "batch_size": 6
+  }
+}
+

@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {"company": "OpenAI", "type": "greenhouse", "slug": "openai", "careers_url": "https://openai.com/careers/", "priority": 1},
+    {"company": "Anthropic", "type": "greenhouse", "slug": "anthropic", "careers_url": "https://www.anthropic.com/careers", "priority": 1},
+    {"company": "GitLab", "type": "greenhouse", "slug": "gitlab", "careers_url": "https://about.gitlab.com/jobs/", "priority": 1},
+    {"company": "HubSpot", "type": "greenhouse", "slug": "hubspotjobs", "careers_url": "https://www.hubspot.com/careers/jobs", "priority": 1},
+    {"company": "Webflow", "type": "greenhouse", "slug": "webflow", "careers_url": "https://webflow.com/careers", "priority": 1},
+    {"company": "Figma", "type": "greenhouse", "slug": "figma", "careers_url": "https://www.figma.com/careers/", "priority": 1},
+    {"company": "Canva", "type": "greenhouse", "slug": "canva", "careers_url": "https://www.canva.com/careers/jobs/", "priority": 1},
+    {"company": "Dropbox", "type": "greenhouse", "slug": "dropbox", "careers_url": "https://jobs.dropbox.com/", "priority": 1},
+    {"company": "Braze", "type": "greenhouse", "slug": "braze", "careers_url": "https://www.braze.com/company/careers", "priority": 2},
+    {"company": "Datadog", "type": "greenhouse", "slug": "datadog", "careers_url": "https://careers.datadoghq.com/", "priority": 2},
+    {"company": "Stripe", "type": "greenhouse", "slug": "stripe", "careers_url": "https://stripe.com/jobs", "priority": 1},
+    {"company": "Twilio", "type": "greenhouse", "slug": "twilio", "careers_url": "https://www.twilio.com/en-us/company/jobs", "priority": 2},
+    {"company": "Pinterest", "type": "greenhouse", "slug": "pinterest", "careers_url": "https://www.pinterestcareers.com/", "priority": 2},
+    {"company": "Reddit", "type": "greenhouse", "slug": "reddit", "careers_url": "https://www.redditinc.com/careers", "priority": 2},
+    {"company": "Airbnb", "type": "greenhouse", "slug": "airbnb", "careers_url": "https://careers.airbnb.com/", "priority": 2},
+    {"company": "Zapier", "type": "lever", "slug": "zapier", "careers_url": "https://zapier.com/jobs", "priority": 1},
+    {"company": "Vercel", "type": "ashby", "slug": "vercel", "careers_url": "https://vercel.com/careers", "priority": 1},
+    {"company": "Remote", "type": "ashby", "slug": "remote", "careers_url": "https://remote.com/careers", "priority": 1},
+    {"company": "Deel", "type": "ashby", "slug": "deel", "careers_url": "https://www.deel.com/careers/", "priority": 2},
+    {"company": "Notion", "type": "ashby", "slug": "notion", "careers_url": "https://www.notion.com/careers", "priority": 1}
+  ]
+}
+

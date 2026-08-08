@@ -1,0 +1,16 @@
+{
+  "generated_at": null,
+  "profile_version": 1,
+  "is_sample": false,
+  "metadata": {
+    "total_jobs": 0,
+    "sources_ok": 0,
+    "sources_error": 0,
+    "ai_status": "awaiting_first_refresh",
+    "ai_evaluated": 0,
+    "ai_reused": 0,
+    "ai_error": ""
+  },
+  "jobs": []
+}
+
