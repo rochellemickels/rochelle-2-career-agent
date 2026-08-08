@@ -53,7 +53,15 @@ def run_scan(
         statuses.append(status)
 
     unique_jobs = deduplicate(jobs)
-    scored = [score_job(job, profile) for job in unique_jobs]
+    all_scored = [score_job(job, profile) for job in unique_jobs]
+    # The portal is a focused decision tool, not a mirror of every company job.
+    # Keep roles with title-lane evidence and enough overall signal to merit review.
+    scored = [
+        job for job in all_scored
+        if job.breakdown.role_fit >= 11 and job.score >= 40
+    ]
+    scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
+    scored = scored[:300]
 
     reused = 0
     for index, job in enumerate(scored):
@@ -90,7 +98,10 @@ def run_scan(
             ai_state = "active"
         except Exception as exc:  # Keep the deterministic database available.
             ai_state = "fallback"
-            ai_error = f"{type(exc).__name__}: {str(exc)[:220]}"
+            ai_error = (
+                f"{type(exc).__name__}: OpenAI evaluation was unavailable; "
+                "transparent rule-based scores were retained."
+            )
     elif use_ai:
         ai_state = "missing_secret"
         ai_error = "OPENAI_API_KEY was not available; rule-based scores were retained."
@@ -112,7 +123,10 @@ def run_scan(
             "ai_reused": reused,
             "ai_error": ai_error,
         },
-        "jobs": [job.model_dump() for job in scored],
+        "jobs": [
+            {**job.model_dump(), "description": job.description[:3500]}
+            for job in scored
+        ],
     }
     status_payload = {
         "generated_at": now,
@@ -151,4 +165,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
