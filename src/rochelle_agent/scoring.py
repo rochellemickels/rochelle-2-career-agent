@@ -23,6 +23,13 @@ def _tier(score: int) -> str:
     return "Low Match"
 
 
+def is_us_eligible_location(job: Job, profile: dict[str, Any]) -> bool:
+    location = f"{job.location} {job.workplace_type}".lower()
+    has_non_us_constraint = bool(_contains(location, profile["non_us_only_keywords"]))
+    has_us_or_global_scope = bool(_contains(location, profile["us_eligibility_keywords"]))
+    return not has_non_us_constraint or has_us_or_global_scope
+
+
 def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
     title = re.sub(r"[^a-z0-9]+", " ", job.title.lower()).strip()
     body = f"{job.title} {job.department} {job.location} {job.description}".lower()
@@ -93,7 +100,10 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         gaps.append("Posting contains commission-heavy compensation language")
 
     location = f"{job.location} {job.workplace_type}".lower()
-    if "remote" in location and any(term in location for term in ["united states", "u.s.", "us ", "usa", "north america"]):
+    if not is_us_eligible_location(job, profile):
+        work_style = 1
+        gaps.append("Location appears restricted outside the United States")
+    elif "remote" in location and any(term in location for term in ["united states", "u.s.", "us ", "usa", "north america"]):
         work_style = 15
         strengths.append("U.S. remote work matches the preferred work style")
     elif "remote" in location:
