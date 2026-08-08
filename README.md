@@ -94,6 +94,7 @@ Open `http://localhost:8000`. To use AI locally, provide `OPENAI_API_KEY` throug
 - `Refresh career opportunities` runs daily at 12:30 UTC and can be started manually.
 - Unchanged AI assessments are reused using a content fingerprint to control cost.
 - Only promising new or changed roles are sent to the agent, capped by `max_jobs_per_refresh`.
+- The public portal is capped at the 300 strongest relevant roles instead of mirroring thousands of unrelated company openings.
 - `Deploy career portal` publishes after code changes and successful database refreshes.
 
 ## Privacy and limitations
@@ -101,4 +102,3 @@ Open `http://localhost:8000`. To use AI locally, provide `OPENAI_API_KEY` throug
 This V1 repository is public to support free GitHub Pages hosting. The committed dataset contains public job postings and generic career-fit criteria only. Favorites, notes, and application stages remain in browser `localStorage`; clearing browser data removes them.
 
 The portal is decision support—not a promise that a job remains open or that compensation, eligibility, or employer fit has been verified beyond the cited posting. Applications are always opened on the employer's authorized page and are never submitted automatically.
-

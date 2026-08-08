@@ -55,7 +55,7 @@ def evaluate_batch(jobs: list[ScoredJob], profile: dict[str, Any]) -> AgentBatch
                 "department": job.department,
                 "salary_min": job.salary_min,
                 "salary_max": job.salary_max,
-                "description": job.description[:7000],
+                "description": job.description[:4000],
                 "rule_based_breakdown": job.breakdown.model_dump(),
             }
         )
@@ -68,4 +68,3 @@ def evaluate_batch(jobs: list[ScoredJob], profile: dict[str, Any]) -> AgentBatch
     if not isinstance(output, AgentBatchAssessment):
         output = AgentBatchAssessment.model_validate(output)
     return output
-
