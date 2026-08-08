@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17233f" />
+    <meta
+      name="description"
+      content="Rochelle 2.0 AI-powered career opportunity dashboard"
+    />
+    <title>Rochelle 2.0 Career Intelligence</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#opportunities">Skip to opportunities</a>
+    <header class="hero">
+      <nav class="topbar" aria-label="Portal navigation">
+        <a class="brand" href="#top" aria-label="Rochelle 2.0 home">
+          <span class="brand-mark">R2</span>
+          <span>
+            <strong>Rochelle 2.0</strong>
+            <small>AI Career Transition</small>
+          </span>
+        </a>
+        <div class="top-actions">
+          <span class="privacy-pill">Private notes stay in this browser</span>
+          <button id="sourceHealthButton" class="button button-quiet" type="button">
+            Source health
+          </button>
+        </div>
+      </nav>
+
+      <section class="hero-copy" id="top">
+        <div>
+          <p class="eyebrow">CAREER INTELLIGENCE DASHBOARD</p>
+          <h1>Your best-fit opportunities, ranked first.</h1>
+          <p class="hero-subtitle">
+            An automated search across aligned companies, scored for leadership fit,
+            $150K+ compensation potential, remote flexibility, mission, and AI relevance.
+          </p>
+        </div>
+        <div class="refresh-card" aria-live="polite">
+          <span class="status-dot" id="statusDot"></span>
+          <div>
+            <small>DATABASE STATUS</small>
+            <strong id="refreshStatus">Loading career intelligence…</strong>
+            <span id="lastUpdated">Checking latest refresh</span>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="metrics" aria-label="Opportunity summary">
+        <article class="metric-card">
+          <span>Opportunities</span>
+          <strong id="metricTotal">—</strong>
+          <small>Current open roles</small>
+        </article>
+        <article class="metric-card accent-plum">
+          <span>Top priority</span>
+          <strong id="metricTop">—</strong>
+          <small>80+ Rochelle Match</small>
+        </article>
+        <article class="metric-card accent-teal">
+          <span>Remote</span>
+          <strong id="metricRemote">—</strong>
+          <small>Flexible work options</small>
+        </article>
+        <article class="metric-card accent-gold">
+          <span>$150K+ confirmed</span>
+          <strong id="metricSalary">—</strong>
+          <small>Published range reaches target</small>
+        </article>
+        <article class="metric-card accent-blue">
+          <span>Saved</span>
+          <strong id="metricSaved">0</strong>
+          <small>Your short list</small>
+        </article>
+      </section>
+
+      <section class="workspace" id="opportunities">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PRIORITIZED FOR YOU</p>
+            <h2>Career opportunities</h2>
+          </div>
+          <p id="resultSummary">Loading jobs…</p>
+        </div>
+
+        <form class="filters" id="filterForm" aria-label="Filter opportunities">
+          <label class="search-field">
+            <span class="sr-only">Search jobs</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
+            <input id="searchInput" type="search" placeholder="Search title, company, skills…" autocomplete="off" />
+          </label>
+          <label>
+            <span>Match</span>
+            <select id="tierFilter">
+              <option value="all">All match levels</option>
+              <option value="80">80+ Top priority</option>
+              <option value="70">70+ Good or better</option>
+              <option value="60">60+ Possible or better</option>
+            </select>
+          </label>
+          <label>
+            <span>Work style</span>
+            <select id="workFilter">
+              <option value="all">Any work style</option>
+              <option value="remote">Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="onsite">Onsite / unclear</option>
+            </select>
+          </label>
+          <label>
+            <span>Company</span>
+            <select id="companyFilter">
+              <option value="all">All companies</option>
+            </select>
+          </label>
+          <label>
+            <span>Application stage</span>
+            <select id="stageFilter">
+              <option value="all">All stages</option>
+              <option value="Not reviewed">Not reviewed</option>
+              <option value="Interested">Interested</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Passed">Passed</option>
+            </select>
+          </label>
+          <label>
+            <span>Sort</span>
+            <select id="sortFilter">
+              <option value="score">Highest match</option>
+              <option value="newest">Newest first</option>
+              <option value="salary">Highest salary</option>
+              <option value="company">Company A–Z</option>
+            </select>
+          </label>
+          <button id="clearFilters" class="button button-quiet clear-button" type="button">Clear</button>
+        </form>
+
+        <div class="active-filter-row" id="activeFilterRow" aria-live="polite"></div>
+        <div class="job-list" id="jobList" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <strong>Rochelle 2.0 Career Intelligence</strong>
+        <p>Scores are decision support—not guarantees. Confirm salary, location, and requirements with the employer.</p>
+      </div>
+      <a href="https://github.com/rochellemickels/rochelle-2-career-agent" target="_blank" rel="noreferrer">View project on GitHub</a>
+    </footer>
+
+    <dialog id="jobDialog" class="dialog">
+      <form method="dialog" class="dialog-shell">
+        <button class="dialog-close" value="close" aria-label="Close job details">×</button>
+        <div id="dialogContent"></div>
+      </form>
+    </dialog>
+
+    <dialog id="sourceDialog" class="dialog source-dialog">
+      <form method="dialog" class="dialog-shell">
+        <button class="dialog-close" value="close" aria-label="Close source health">×</button>
+        <div id="sourceDialogContent"></div>
+      </form>
+    </dialog>
+
+    <template id="emptyTemplate">
+      <section class="empty-state">
+        <div class="empty-icon">✦</div>
+        <h3>No opportunities match these filters yet.</h3>
+        <p>Clear a filter or broaden the match level to see more roles.</p>
+        <button class="button button-primary" type="button" data-clear-filters>Clear filters</button>
+      </section>
+    </template>
+
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>
