@@ -71,7 +71,24 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].id, "b")
 
+    def test_technical_ecosystem_role_is_not_a_false_positive(self):
+        job = Job(
+            id="test:technical",
+            source_type="greenhouse",
+            source_slug="test",
+            company="Example",
+            title="Machine Learning Manager, Feed Ecosystems",
+            location="Remote - United States",
+            workplace_type="Remote",
+            description="Lead machine learning engineering for recommendation systems and AI models.",
+            apply_url="https://example.com/jobs/technical",
+            salary_min=250000,
+            salary_max=350000,
+        ).ensure_fingerprint()
+        scored = score_job(job, self.profile)
+        self.assertEqual(scored.breakdown.role_fit, 1)
+        self.assertLess(scored.score, 60)
+
 
 if __name__ == "__main__":
     unittest.main()
-
