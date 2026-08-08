@@ -57,7 +57,15 @@
     "data scientist",
     "product designer",
     "accountant",
+    "accounting",
     "attorney",
+    "legal",
+    "counsel",
+    "machine learning",
+    "software",
+    "engineering",
+    "product manager",
+    "security",
     "intern",
     "entry level",
     "commission only",
@@ -117,4 +125,3 @@
     "batch_size": 6
   }
 }
-
