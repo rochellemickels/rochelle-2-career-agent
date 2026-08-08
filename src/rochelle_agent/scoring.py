@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .models import AgentJobAssessment, Job, ScoreBreakdown, ScoredJob
+from .models import Job, ScoreBreakdown, ScoredJob
 
 
 def _contains(text: str, terms: list[str]) -> list[str]:
@@ -180,27 +180,6 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         summary=summary,
         recommended_action=action,
     )
-
-
-def apply_agent_assessment(job: ScoredJob, assessment: AgentJobAssessment) -> ScoredJob:
-    updated = job.breakdown.model_copy(
-        update={
-            "role_fit": assessment.role_fit,
-            "values": assessment.values,
-            "leadership": assessment.leadership,
-            "ai_relevance": assessment.ai_relevance,
-        }
-    )
-    job.breakdown = updated
-    job.score = updated.total
-    job.tier = _tier(job.score)
-    job.strengths = assessment.strengths
-    job.gaps = assessment.gaps
-    job.summary = assessment.summary
-    job.recommended_action = assessment.recommended_action
-    job.confidence = assessment.confidence
-    job.ai_evaluated = True
-    return job
 
 
 def deduplicate(jobs: list[Job]) -> list[Job]:

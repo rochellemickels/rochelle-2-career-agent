@@ -58,25 +58,6 @@ class ScoreBreakdown(BaseModel):
         return sum(self.model_dump().values())
 
 
-class AgentJobAssessment(BaseModel):
-    job_id: str
-    role_fit: int = Field(ge=0, le=25)
-    values: int = Field(ge=0, le=15)
-    leadership: int = Field(ge=0, le=10)
-    ai_relevance: int = Field(ge=0, le=10)
-    confidence: Literal["high", "medium", "low"]
-    strengths: list[str] = Field(max_length=4)
-    gaps: list[str] = Field(max_length=4)
-    summary: str = Field(max_length=500)
-    recommended_action: Literal[
-        "Apply now", "Review closely", "Save for later", "Low priority"
-    ]
-
-
-class AgentBatchAssessment(BaseModel):
-    assessments: list[AgentJobAssessment]
-
-
 class ScoredJob(Job):
     score: int = Field(ge=0, le=100)
     tier: str
@@ -86,7 +67,6 @@ class ScoredJob(Job):
     summary: str = ""
     recommended_action: str = "Review closely"
     confidence: str = "rule-based"
-    ai_evaluated: bool = False
 
 
 class SourceStatus(BaseModel):
@@ -99,4 +79,3 @@ class SourceStatus(BaseModel):
     checked_at: str = Field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
-

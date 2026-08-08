@@ -1,15 +1,13 @@
 {
-  "generated_at": "2026-08-08T04:34:07.629652+00:00",
+  "generated_at": "2026-08-08T04:56:58.463218+00:00",
   "profile_version": 1,
   "is_sample": false,
   "metadata": {
     "total_jobs": 111,
     "sources_ok": 20,
     "sources_error": 0,
-    "ai_status": "fallback",
-    "ai_evaluated": 0,
-    "ai_reused": 0,
-    "ai_error": "RateLimitError: OpenAI evaluation was unavailable; transparent rule-based scores were retained."
+    "matching_method": "transparent-rules-v1",
+    "cost_mode": "free"
   },
   "jobs": [
     {
@@ -24,7 +22,7 @@
       "department": "Corporate Affairs",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8615811002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.146054+00:00",
+      "discovered_at": "2026-08-08T04:55:50.341568+00:00",
       "salary_min": 168000,
       "salary_max": 285600,
       "salary_currency": "USD",
@@ -51,8 +49,7 @@
       "gaps": [],
       "summary": "Rule-based screening found a 96/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Apply now",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:7957637",
@@ -66,7 +63,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/7957637",
       "posted_at": "2026-08-04T17:50:41-04:00",
-      "discovered_at": "2026-08-08T04:33:58.715068+00:00",
+      "discovered_at": "2026-08-08T04:56:41.428989+00:00",
       "salary_min": 185760,
       "salary_max": 258000,
       "salary_currency": "USD",
@@ -93,8 +90,7 @@
       "gaps": [],
       "summary": "Rule-based screening found a 88/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Apply now",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8638232002",
@@ -108,7 +104,7 @@
       "department": "Enablement",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8638232002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.126020+00:00",
+      "discovered_at": "2026-08-08T04:55:50.328559+00:00",
       "salary_min": 139200,
       "salary_max": 235200,
       "salary_currency": "USD",
@@ -137,8 +133,7 @@
       ],
       "summary": "Rule-based screening found a 87/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Apply now",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:reddit:8061819",
@@ -152,7 +147,7 @@
       "department": "Sales Strategy & Operations",
       "apply_url": "https://job-boards.greenhouse.io/reddit/jobs/8061819",
       "posted_at": "2026-08-06T21:51:22-04:00",
-      "discovered_at": "2026-08-08T04:33:59.263682+00:00",
+      "discovered_at": "2026-08-08T04:56:47.590817+00:00",
       "salary_min": 154700,
       "salary_max": 252300,
       "salary_currency": "USD",
@@ -181,8 +176,7 @@
       ],
       "summary": "Rule-based screening found a 72/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:8092234",
@@ -196,7 +190,7 @@
       "department": "Overlay/Specialist Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/8092234",
       "posted_at": "2026-08-06T10:23:43-04:00",
-      "discovered_at": "2026-08-08T04:33:58.748474+00:00",
+      "discovered_at": "2026-08-08T04:56:41.452033+00:00",
       "salary_min": 162880,
       "salary_max": 162880,
       "salary_currency": "USD",
@@ -225,8 +219,7 @@
       ],
       "summary": "Rule-based screening found a 72/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:fada5332-3ae3-46f2-afa2-10c5878bdd25",
@@ -240,7 +233,7 @@
       "department": "OpenAI for Gov",
       "apply_url": "https://jobs.ashbyhq.com/openai/fada5332-3ae3-46f2-afa2-10c5878bdd25/application",
       "posted_at": "2026-05-14T20:38:38.873+00:00",
-      "discovered_at": "2026-08-08T04:33:54.185411+00:00",
+      "discovered_at": "2026-08-08T04:55:41.814590+00:00",
       "salary_min": 178200,
       "salary_max": 301500,
       "salary_currency": "USD",
@@ -269,8 +262,7 @@
       ],
       "summary": "Rule-based screening found a 72/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:dropbox:7673202",
@@ -284,7 +276,7 @@
       "department": "Customer Intelligence, Strategy & Enablement (Sub Team)",
       "apply_url": "https://jobs.dropbox.com/listing/7673202?gh_jid=7673202",
       "posted_at": "2026-08-06T17:46:24-04:00",
-      "discovered_at": "2026-08-08T04:33:56.122986+00:00",
+      "discovered_at": "2026-08-08T04:56:07.655660+00:00",
       "salary_min": 185600,
       "salary_max": 282600,
       "salary_currency": "USD",
@@ -313,8 +305,7 @@
       ],
       "summary": "Rule-based screening found a 71/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8596778002",
@@ -328,7 +319,7 @@
       "department": "PubSec - FED",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8596778002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.183720+00:00",
+      "discovered_at": "2026-08-08T04:55:50.366669+00:00",
       "salary_min": 122000,
       "salary_max": 205200,
       "salary_currency": "USD",
@@ -358,8 +349,7 @@
       ],
       "summary": "Rule-based screening found a 71/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:b5ede8ec-8c71-4155-ace1-1a7be9b26f83",
@@ -373,7 +363,7 @@
       "department": "Scaling",
       "apply_url": "https://jobs.ashbyhq.com/openai/b5ede8ec-8c71-4155-ace1-1a7be9b26f83/application",
       "posted_at": "2026-08-06T16:09:04.402+00:00",
-      "discovered_at": "2026-08-08T04:33:54.357762+00:00",
+      "discovered_at": "2026-08-08T04:55:41.935174+00:00",
       "salary_min": 333000,
       "salary_max": 370000,
       "salary_currency": "USD",
@@ -402,8 +392,7 @@
       ],
       "summary": "Rule-based screening found a 70/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Review closely",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8649994002",
@@ -417,7 +406,7 @@
       "department": "PubSec - SLED",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8649994002",
       "posted_at": "2026-08-07T15:26:49-04:00",
-      "discovered_at": "2026-08-08T04:33:55.184447+00:00",
+      "discovered_at": "2026-08-08T04:55:50.367135+00:00",
       "salary_min": 122000,
       "salary_max": 205200,
       "salary_currency": "USD",
@@ -447,8 +436,7 @@
       ],
       "summary": "Rule-based screening found a 69/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:affirm:7691157003",
@@ -462,7 +450,7 @@
       "department": "Revenue Operations & Analytics",
       "apply_url": "https://job-boards.greenhouse.io/affirm/jobs/7691157003",
       "posted_at": "2026-07-31T15:16:30-04:00",
-      "discovered_at": "2026-08-08T04:33:56.337344+00:00",
+      "discovered_at": "2026-08-08T04:56:13.037651+00:00",
       "salary_min": 165000,
       "salary_max": 225000,
       "salary_currency": "USD",
@@ -491,8 +479,7 @@
       ],
       "summary": "Rule-based screening found a 69/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:8003867",
@@ -506,7 +493,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/8003867",
       "posted_at": "2026-08-04T17:50:42-04:00",
-      "discovered_at": "2026-08-08T04:33:58.770792+00:00",
+      "discovered_at": "2026-08-08T04:56:41.467867+00:00",
       "salary_min": 158632,
       "salary_max": 220320,
       "salary_currency": "USD",
@@ -535,8 +522,7 @@
       ],
       "summary": "Rule-based screening found a 68/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8637426002",
@@ -550,7 +536,7 @@
       "department": "Customer Success",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637426002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.139566+00:00",
+      "discovered_at": "2026-08-08T04:55:50.337513+00:00",
       "salary_min": 105600,
       "salary_max": 158400,
       "salary_currency": "USD",
@@ -580,8 +566,7 @@
       ],
       "summary": "Rule-based screening found a 68/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8604996002",
@@ -595,7 +580,7 @@
       "department": "Field Operations",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8604996002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.169385+00:00",
+      "discovered_at": "2026-08-08T04:55:50.356943+00:00",
       "salary_min": 115200,
       "salary_max": 194400,
       "salary_currency": "USD",
@@ -625,8 +610,7 @@
       ],
       "summary": "Rule-based screening found a 68/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8616005002",
@@ -640,7 +624,7 @@
       "department": "Customer Success - PubSec",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8616005002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.203983+00:00",
+      "discovered_at": "2026-08-08T04:55:50.379929+00:00",
       "salary_min": 103200,
       "salary_max": 174600,
       "salary_currency": "USD",
@@ -670,8 +654,7 @@
       ],
       "summary": "Rule-based screening found a 68/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:webflow:8096574",
@@ -685,7 +668,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/webflow/jobs/8096574",
       "posted_at": "2026-08-07T14:11:23-04:00",
-      "discovered_at": "2026-08-08T04:33:55.702672+00:00",
+      "discovered_at": "2026-08-08T04:56:01.410937+00:00",
       "salary_min": 148500,
       "salary_max": 175000,
       "salary_currency": "USD",
@@ -715,8 +698,7 @@
       ],
       "summary": "Rule-based screening found a 67/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:dropbox:8048847",
@@ -730,7 +712,7 @@
       "department": "Partnership Management (Sub Team)",
       "apply_url": "https://jobs.dropbox.com/listing/8048847?gh_jid=8048847",
       "posted_at": "2026-08-05T09:43:48-04:00",
-      "discovered_at": "2026-08-08T04:33:56.116100+00:00",
+      "discovered_at": "2026-08-08T04:56:07.651767+00:00",
       "salary_min": 144200,
       "salary_max": 219400,
       "salary_currency": "USD",
@@ -760,8 +742,7 @@
       ],
       "summary": "Rule-based screening found a 67/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:8088775",
@@ -775,7 +756,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/8088775",
       "posted_at": "2026-08-07T17:48:01-04:00",
-      "discovered_at": "2026-08-08T04:33:58.807945+00:00",
+      "discovered_at": "2026-08-08T04:56:41.493738+00:00",
       "salary_min": 132192,
       "salary_max": 174420,
       "salary_currency": "USD",
@@ -805,8 +786,7 @@
       ],
       "summary": "Rule-based screening found a 66/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5173031008",
@@ -820,7 +800,7 @@
       "department": "Applied AI",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5173031008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.809904+00:00",
+      "discovered_at": "2026-08-08T04:55:46.794089+00:00",
       "salary_min": 315000,
       "salary_max": 380000,
       "salary_currency": "USD",
@@ -849,8 +829,7 @@
       ],
       "summary": "Rule-based screening found a 66/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8604630002",
@@ -864,7 +843,7 @@
       "department": "AMER - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8604630002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.246027+00:00",
+      "discovered_at": "2026-08-08T04:55:50.407839+00:00",
       "salary_min": 124000,
       "salary_max": 186600,
       "salary_currency": "USD",
@@ -894,8 +873,7 @@
       ],
       "summary": "Rule-based screening found a 66/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8656848002",
@@ -909,7 +887,7 @@
       "department": "AMER - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8656848002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.247230+00:00",
+      "discovered_at": "2026-08-08T04:55:50.408616+00:00",
       "salary_min": 110800,
       "salary_max": 186600,
       "salary_currency": "USD",
@@ -939,8 +917,7 @@
       ],
       "summary": "Rule-based screening found a 66/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5300430008",
@@ -954,7 +931,7 @@
       "department": "Applied AI",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5300430008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.722150+00:00",
+      "discovered_at": "2026-08-08T04:55:46.735905+00:00",
       "salary_min": 275000,
       "salary_max": 380000,
       "salary_currency": "USD",
@@ -984,8 +961,7 @@
       ],
       "summary": "Rule-based screening found a 65/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:1d03b4ee-8cec-47a1-b9e2-8ce9c5650943",
@@ -999,7 +975,7 @@
       "department": "Finance",
       "apply_url": "https://jobs.ashbyhq.com/openai/1d03b4ee-8cec-47a1-b9e2-8ce9c5650943/application",
       "posted_at": "2026-08-01T15:24:54.009+00:00",
-      "discovered_at": "2026-08-08T04:33:54.268257+00:00",
+      "discovered_at": "2026-08-08T04:55:41.872709+00:00",
       "salary_min": 185000,
       "salary_max": 205000,
       "salary_currency": "USD",
@@ -1029,54 +1005,7 @@
       ],
       "summary": "Rule-based screening found a 64/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
-    },
-    {
-      "id": "greenhouse:datadog:7057036",
-      "source_type": "greenhouse",
-      "source_slug": "datadog",
-      "company": "Datadog",
-      "title": "Strategic Account Executive",
-      "location": "District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote",
-      "workplace_type": "Remote",
-      "description": "<p>Our Strategic Account Executives target and close new business with Datadog’s largest, most strategic customers and prospects. In this role you’ll be focused on uncovering the pain points organizations face as they operate in or migrate to a cloud environment at scale as well as delivering the appropriate Datadog solution.</p> <p><em>At Datadog, we place value in our office culture - the relationships and collaboration it builds and the creativity it brings to the table. We operate as a hybrid workplace to ensure our Datadogs can create a work-life harmony that best fits them.</em></p> <p><strong>What You’ll Do:</strong></p> <ul> <li>Prospect into large Fortune 1000 companies while running an efficient sales process</li> <li>Maintain, build and own specific relationship maps for your territory including existing relationships and aspirational contacts</li> <li>Develop a deep comprehension of customer's business</li> <li>Negotiate favorable pricing and business terms with large commercial enterprises by selling value and ROI</li> <li>Handle existing customer expectations while expanding reach and depth into assigned territory</li> <li>Demonstrate resourcefulness when faced with challenges that defy easy solution</li> <li>Have intuitive sense of necessary steps to close business and gain customer validation</li> <li>Identify robust set of business drivers behind all opportunities</li> <li>Ensure high forecasting accuracy and consistency</li> </ul> <p><strong>Who You Are:&nbsp;</strong></p> <ul> <li>Someone with 5+ years closing experience (mix of field selling within mid-market and enterprise)</li> <li>Driven and have met/exceeded direct sales goals of 1M+ and operated with an average deal size of $100k+</li> <li>Able to demonstrate methodology to prospect and build pipeline on your own</li> <li>Experienced in working for an innovative tech company (SaaS, IT infrastructure or similar preferred)</li> <li>Experienced in selling into large Fortune 1000 companies with the ability to win new logos</li> <li>Role requires regular travel to client sites, within your area and other regions, using various modes of transportation (car, train, air), depending on business needs</li> </ul> <p><em>Datadog values people from all walks of life. We understand not everyone will meet all the above qualifications on day one. That's okay. If you’re passionate about technology and want to grow your skills, we encourage you to apply.</em></p> <p><strong>Benefits and Growth:&nbsp;</strong></p> <ul> <li>High income earning opportunities based on self performance</li> <li>New hire stock equity (RSU) and employee stock purchase plan (ESPP)</li> <li>Continuous professional development, product training, and career pathing&nbsp;</li> <li>Sales training in MEDDIC and Command of the Message&nbsp;</li> <li>Intra-departmental mentor and buddy program for in-house networking&nbsp;</li> <li>An inclusive company culture, opportunity to join our Community Guilds</li> <li>Generous and competitive medical benefits package</li> <li>Retirement savings match</li> <li>Pet adoption and insurance program</li> </ul> <p><em>Benefits and Growth listed above may vary based on the country of your employment and the nature of your employment with Datadog.</em></p> <p style=\"color: white;\">#LI-Remote</p><div class=\"content-pay-transparency\"><div class=\"pay-input\"><div class=\"description\"><p>Datadog offers a competitive salary and equity package, and may include variable compensation. Act",
-      "department": "Enterprise Sales",
-      "apply_url": "https://careers.datadoghq.com/detail/7057036/?gh_jid=7057036",
-      "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.550258+00:00",
-      "salary_min": 100000,
-      "salary_max": 150000,
-      "salary_currency": "USD",
-      "salary_is_inferred": false,
-      "employment_type": "",
-      "content_fingerprint": "3dc879e558f02931ae75",
-      "score": 63,
-      "tier": "Possible Match",
-      "breakdown": {
-        "role_fit": 11,
-        "compensation": 16,
-        "work_style": 15,
-        "values": 15,
-        "leadership": 1,
-        "ai_relevance": 0,
-        "quality": 5
-      },
-      "strengths": [
-        "Responsibilities are within Rochelle's partnerships and growth lane",
-        "Published salary range reaches the preferred base target",
-        "U.S. remote work matches the preferred work style",
-        "Posting includes mission or values evidence"
-      ],
-      "gaps": [
-        "Lower end of the salary range is below the preferred base target",
-        "Leadership scope is not clear from the posting",
-        "AI or future-facing strategy is not a visible part of the role"
-      ],
-      "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
-      "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7131363",
@@ -1090,7 +1019,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7131363/?gh_jid=7131363",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.551983+00:00",
+      "discovered_at": "2026-08-08T04:56:38.099037+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -1121,8 +1050,52 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
+    },
+    {
+      "id": "greenhouse:datadog:7057036",
+      "source_type": "greenhouse",
+      "source_slug": "datadog",
+      "company": "Datadog",
+      "title": "Strategic Account Executive",
+      "location": "District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote",
+      "workplace_type": "Remote",
+      "description": "<p>Our Strategic Account Executives target and close new business with Datadog’s largest, most strategic customers and prospects. In this role you’ll be focused on uncovering the pain points organizations face as they operate in or migrate to a cloud environment at scale as well as delivering the appropriate Datadog solution.</p> <p><em>At Datadog, we place value in our office culture - the relationships and collaboration it builds and the creativity it brings to the table. We operate as a hybrid workplace to ensure our Datadogs can create a work-life harmony that best fits them.</em></p> <p><strong>What You’ll Do:</strong></p> <ul> <li>Prospect into large Fortune 1000 companies while running an efficient sales process</li> <li>Maintain, build and own specific relationship maps for your territory including existing relationships and aspirational contacts</li> <li>Develop a deep comprehension of customer's business</li> <li>Negotiate favorable pricing and business terms with large commercial enterprises by selling value and ROI</li> <li>Handle existing customer expectations while expanding reach and depth into assigned territory</li> <li>Demonstrate resourcefulness when faced with challenges that defy easy solution</li> <li>Have intuitive sense of necessary steps to close business and gain customer validation</li> <li>Identify robust set of business drivers behind all opportunities</li> <li>Ensure high forecasting accuracy and consistency</li> </ul> <p><strong>Who You Are:&nbsp;</strong></p> <ul> <li>Someone with 5+ years closing experience (mix of field selling within mid-market and enterprise)</li> <li>Driven and have met/exceeded direct sales goals of 1M+ and operated with an average deal size of $100k+</li> <li>Able to demonstrate methodology to prospect and build pipeline on your own</li> <li>Experienced in working for an innovative tech company (SaaS, IT infrastructure or similar preferred)</li> <li>Experienced in selling into large Fortune 1000 companies with the ability to win new logos</li> <li>Role requires regular travel to client sites, within your area and other regions, using various modes of transportation (car, train, air), depending on business needs</li> </ul> <p><em>Datadog values people from all walks of life. We understand not everyone will meet all the above qualifications on day one. That's okay. If you’re passionate about technology and want to grow your skills, we encourage you to apply.</em></p> <p><strong>Benefits and Growth:&nbsp;</strong></p> <ul> <li>High income earning opportunities based on self performance</li> <li>New hire stock equity (RSU) and employee stock purchase plan (ESPP)</li> <li>Continuous professional development, product training, and career pathing&nbsp;</li> <li>Sales training in MEDDIC and Command of the Message&nbsp;</li> <li>Intra-departmental mentor and buddy program for in-house networking&nbsp;</li> <li>An inclusive company culture, opportunity to join our Community Guilds</li> <li>Generous and competitive medical benefits package</li> <li>Retirement savings match</li> <li>Pet adoption and insurance program</li> </ul> <p><em>Benefits and Growth listed above may vary based on the country of your employment and the nature of your employment with Datadog.</em></p> <p style=\"color: white;\">#LI-Remote</p><div class=\"content-pay-transparency\"><div class=\"pay-input\"><div class=\"description\"><p>Datadog offers a competitive salary and equity package, and may include variable compensation. Act",
+      "department": "Enterprise Sales",
+      "apply_url": "https://careers.datadoghq.com/detail/7057036/?gh_jid=7057036",
+      "posted_at": "2026-07-28T05:41:06-04:00",
+      "discovered_at": "2026-08-08T04:56:38.099636+00:00",
+      "salary_min": 100000,
+      "salary_max": 150000,
+      "salary_currency": "USD",
+      "salary_is_inferred": false,
+      "employment_type": "",
+      "content_fingerprint": "3dc879e558f02931ae75",
+      "score": 63,
+      "tier": "Possible Match",
+      "breakdown": {
+        "role_fit": 11,
+        "compensation": 16,
+        "work_style": 15,
+        "values": 15,
+        "leadership": 1,
+        "ai_relevance": 0,
+        "quality": 5
+      },
+      "strengths": [
+        "Responsibilities are within Rochelle's partnerships and growth lane",
+        "Published salary range reaches the preferred base target",
+        "U.S. remote work matches the preferred work style",
+        "Posting includes mission or values evidence"
+      ],
+      "gaps": [
+        "Lower end of the salary range is below the preferred base target",
+        "Leadership scope is not clear from the posting",
+        "AI or future-facing strategy is not a visible part of the role"
+      ],
+      "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
+      "recommended_action": "Save for later",
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:6522720",
@@ -1136,7 +1109,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/6522720/?gh_jid=6522720",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.555365+00:00",
+      "discovered_at": "2026-08-08T04:56:38.100441+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -1167,8 +1140,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:6242929",
@@ -1182,7 +1154,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/6242929/?gh_jid=6242929",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.555824+00:00",
+      "discovered_at": "2026-08-08T04:56:38.100730+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -1213,8 +1185,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7453034",
@@ -1228,7 +1199,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7453034/?gh_jid=7453034",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.560876+00:00",
+      "discovered_at": "2026-08-08T04:56:38.103733+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -1259,8 +1230,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:6430945",
@@ -1274,7 +1244,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/6430945/?gh_jid=6430945",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.561380+00:00",
+      "discovered_at": "2026-08-08T04:56:38.104656+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -1305,8 +1275,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:notion:d8640b6e-37fb-426d-b35c-e249bd855b0f",
@@ -1320,7 +1289,7 @@
       "department": "Finance",
       "apply_url": "https://jobs.ashbyhq.com/notion/d8640b6e-37fb-426d-b35c-e249bd855b0f/application",
       "posted_at": "2026-07-23T23:17:27.730+00:00",
-      "discovered_at": "2026-08-08T04:33:57.732646+00:00",
+      "discovered_at": "2026-08-08T04:56:28.180283+00:00",
       "salary_min": 150000,
       "salary_max": 165000,
       "salary_currency": "USD",
@@ -1350,8 +1319,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:d7dc62fc-e7ce-4f58-a912-4b62b65c7eb6",
@@ -1365,7 +1333,7 @@
       "department": "Partnerships",
       "apply_url": "https://jobs.ashbyhq.com/openai/d7dc62fc-e7ce-4f58-a912-4b62b65c7eb6/application",
       "posted_at": "2026-07-16T00:31:00.740+00:00",
-      "discovered_at": "2026-08-08T04:33:54.322347+00:00",
+      "discovered_at": "2026-08-08T04:55:41.910628+00:00",
       "salary_min": 333000,
       "salary_max": 370000,
       "salary_currency": "USD",
@@ -1394,8 +1362,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:56e699e0-421f-40d1-aad1-20cf6609794f",
@@ -1409,7 +1376,7 @@
       "department": "Strategic Finance",
       "apply_url": "https://jobs.ashbyhq.com/openai/56e699e0-421f-40d1-aad1-20cf6609794f/application",
       "posted_at": "2026-07-10T22:20:16.202+00:00",
-      "discovered_at": "2026-08-08T04:33:54.313720+00:00",
+      "discovered_at": "2026-08-08T04:55:41.904644+00:00",
       "salary_min": 234000,
       "salary_max": 260000,
       "salary_currency": "USD",
@@ -1438,8 +1405,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:1a28b2f0-76f4-4fb3-b224-e0ab9f60cee0",
@@ -1453,7 +1419,7 @@
       "department": "Finance",
       "apply_url": "https://jobs.ashbyhq.com/openai/1a28b2f0-76f4-4fb3-b224-e0ab9f60cee0/application",
       "posted_at": "2026-05-26T23:08:14.158+00:00",
-      "discovered_at": "2026-08-08T04:33:54.259661+00:00",
+      "discovered_at": "2026-08-08T04:55:41.866698+00:00",
       "salary_min": 266000,
       "salary_max": 295000,
       "salary_currency": "USD",
@@ -1482,8 +1448,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:99f4a8ea-6bd0-49a3-b90a-5004c8923523",
@@ -1497,7 +1462,7 @@
       "department": "Go To Market",
       "apply_url": "https://jobs.ashbyhq.com/openai/99f4a8ea-6bd0-49a3-b90a-5004c8923523/application",
       "posted_at": "2026-05-11T14:17:51.272+00:00",
-      "discovered_at": "2026-08-08T04:33:54.212485+00:00",
+      "discovered_at": "2026-08-08T04:55:41.832930+00:00",
       "salary_min": 162000,
       "salary_max": 230000,
       "salary_currency": "USD",
@@ -1526,8 +1491,7 @@
       ],
       "summary": "Rule-based screening found a 63/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8533016002",
@@ -1541,7 +1505,7 @@
       "department": "Customer Success",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8533016002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.140240+00:00",
+      "discovered_at": "2026-08-08T04:55:50.337961+00:00",
       "salary_min": 85200,
       "salary_max": 144000,
       "salary_currency": "USD",
@@ -1571,8 +1535,7 @@
       ],
       "summary": "Rule-based screening found a 62/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8646022002",
@@ -1586,7 +1549,7 @@
       "department": "Customer Success - PubSec",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8646022002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.141649+00:00",
+      "discovered_at": "2026-08-08T04:55:50.338894+00:00",
       "salary_min": 85200,
       "salary_max": 144000,
       "salary_currency": "USD",
@@ -1616,8 +1579,7 @@
       ],
       "summary": "Rule-based screening found a 62/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:9ea666f7-9b16-481f-a16d-f533d45ca795",
@@ -1631,7 +1593,7 @@
       "department": "Go To Market",
       "apply_url": "https://jobs.ashbyhq.com/openai/9ea666f7-9b16-481f-a16d-f533d45ca795/application",
       "posted_at": "2026-08-07T03:34:24.320+00:00",
-      "discovered_at": "2026-08-08T04:33:54.364154+00:00",
+      "discovered_at": "2026-08-08T04:55:41.939925+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -1661,8 +1623,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:reddit:7617155",
@@ -1676,7 +1637,7 @@
       "department": "Global Ads Partnerships",
       "apply_url": "https://job-boards.greenhouse.io/reddit/jobs/7617155",
       "posted_at": "2026-08-06T21:01:23-04:00",
-      "discovered_at": "2026-08-08T04:33:59.238369+00:00",
+      "discovered_at": "2026-08-08T04:56:47.573227+00:00",
       "salary_min": 189000,
       "salary_max": 264600,
       "salary_currency": "USD",
@@ -1705,8 +1666,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5109135008",
@@ -1720,7 +1680,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5109135008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.950414+00:00",
+      "discovered_at": "2026-08-08T04:55:46.881999+00:00",
       "salary_min": 290000,
       "salary_max": 380000,
       "salary_currency": "USD",
@@ -1749,8 +1709,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:2ded7835-eadb-4b36-8500-ca91df5ddb4a",
@@ -1764,7 +1723,7 @@
       "department": "Communications",
       "apply_url": "https://jobs.ashbyhq.com/openai/2ded7835-eadb-4b36-8500-ca91df5ddb4a/application",
       "posted_at": "2026-07-24T17:53:38.281+00:00",
-      "discovered_at": "2026-08-08T04:33:54.341357+00:00",
+      "discovered_at": "2026-08-08T04:55:41.923217+00:00",
       "salary_min": 234000,
       "salary_max": 260000,
       "salary_currency": "USD",
@@ -1794,8 +1753,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:57a8965e-c5f0-4def-b4a0-541ced28a3d9",
@@ -1809,7 +1767,7 @@
       "department": "Global Affairs",
       "apply_url": "https://jobs.ashbyhq.com/openai/57a8965e-c5f0-4def-b4a0-541ced28a3d9/application",
       "posted_at": "2026-07-08T22:06:47.056+00:00",
-      "discovered_at": "2026-08-08T04:33:54.309035+00:00",
+      "discovered_at": "2026-08-08T04:55:41.901404+00:00",
       "salary_min": 171000,
       "salary_max": 190000,
       "salary_currency": "USD",
@@ -1839,8 +1797,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:18bdb038-5de1-462b-a3c8-e27099b57647",
@@ -1854,7 +1811,7 @@
       "department": "Strategic Finance",
       "apply_url": "https://jobs.ashbyhq.com/openai/18bdb038-5de1-462b-a3c8-e27099b57647/application",
       "posted_at": "2026-07-06T17:02:08.484+00:00",
-      "discovered_at": "2026-08-08T04:33:54.241672+00:00",
+      "discovered_at": "2026-08-08T04:55:41.853520+00:00",
       "salary_min": 234000,
       "salary_max": 260000,
       "salary_currency": "USD",
@@ -1884,8 +1841,7 @@
       ],
       "summary": "Rule-based screening found a 61/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5229558008",
@@ -1899,7 +1855,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5229558008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.811262+00:00",
+      "discovered_at": "2026-08-08T04:55:46.795072+00:00",
       "salary_min": 300000,
       "salary_max": 365000,
       "salary_currency": "USD",
@@ -1929,8 +1885,7 @@
       ],
       "summary": "Rule-based screening found a 60/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5368076008",
@@ -1944,7 +1899,7 @@
       "department": "Public Policy",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5368076008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.826167+00:00",
+      "discovered_at": "2026-08-08T04:55:46.804658+00:00",
       "salary_min": 295000,
       "salary_max": 345000,
       "salary_currency": "USD",
@@ -1974,8 +1929,7 @@
       ],
       "summary": "Rule-based screening found a 60/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:figma:6118332004",
@@ -1989,7 +1943,7 @@
       "department": "Business Development",
       "apply_url": "https://boards.greenhouse.io/figma/jobs/6118332004?gh_jid=6118332004",
       "posted_at": "2026-07-22T05:37:08-04:00",
-      "discovered_at": "2026-08-08T04:33:55.894472+00:00",
+      "discovered_at": "2026-08-08T04:56:03.980126+00:00",
       "salary_min": 185000,
       "salary_max": 317000,
       "salary_currency": "USD",
@@ -2019,8 +1973,7 @@
       ],
       "summary": "Rule-based screening found a 60/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Save for later",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:reddit:8022657",
@@ -2034,7 +1987,7 @@
       "department": "Global Client Solutions",
       "apply_url": "https://job-boards.greenhouse.io/reddit/jobs/8022657",
       "posted_at": "2026-08-07T20:28:25-04:00",
-      "discovered_at": "2026-08-08T04:33:59.281037+00:00",
+      "discovered_at": "2026-08-08T04:56:47.601699+00:00",
       "salary_min": 167500,
       "salary_max": 234500,
       "salary_currency": "USD",
@@ -2064,8 +2017,7 @@
       ],
       "summary": "Rule-based screening found a 59/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:reddit:8089959",
@@ -2079,7 +2031,7 @@
       "department": "Global Ads Partnerships",
       "apply_url": "https://job-boards.greenhouse.io/reddit/jobs/8089959",
       "posted_at": "2026-08-06T21:01:23-04:00",
-      "discovered_at": "2026-08-08T04:33:59.238969+00:00",
+      "discovered_at": "2026-08-08T04:56:47.573677+00:00",
       "salary_min": 189000,
       "salary_max": 264600,
       "salary_currency": "USD",
@@ -2109,8 +2061,7 @@
       ],
       "summary": "Rule-based screening found a 59/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5235692008",
@@ -2124,7 +2075,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5235692008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.948902+00:00",
+      "discovered_at": "2026-08-08T04:55:46.881116+00:00",
       "salary_min": 215000,
       "salary_max": 300000,
       "salary_currency": "USD",
@@ -2154,8 +2105,7 @@
       ],
       "summary": "Rule-based screening found a 59/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:b09b4216-426d-443c-9b87-23570fd9a694",
@@ -2169,7 +2119,7 @@
       "department": "Strategic Finance",
       "apply_url": "https://jobs.ashbyhq.com/openai/b09b4216-426d-443c-9b87-23570fd9a694/application",
       "posted_at": "2026-06-23T00:24:53.986+00:00",
-      "discovered_at": "2026-08-08T04:33:54.272149+00:00",
+      "discovered_at": "2026-08-08T04:55:41.875700+00:00",
       "salary_min": 234000,
       "salary_max": 260000,
       "salary_currency": "USD",
@@ -2199,8 +2149,7 @@
       ],
       "summary": "Rule-based screening found a 59/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:66b7c776-aa50-4e86-aec1-5c8e07868522",
@@ -2214,7 +2163,7 @@
       "department": "User Operations",
       "apply_url": "https://jobs.ashbyhq.com/openai/66b7c776-aa50-4e86-aec1-5c8e07868522/application",
       "posted_at": "2026-08-08T00:20:48.857+00:00",
-      "discovered_at": "2026-08-08T04:33:54.367629+00:00",
+      "discovered_at": "2026-08-08T04:55:41.942738+00:00",
       "salary_min": 216000,
       "salary_max": 240000,
       "salary_currency": "USD",
@@ -2244,8 +2193,7 @@
       ],
       "summary": "Rule-based screening found a 58/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5378146008",
@@ -2259,7 +2207,7 @@
       "department": "Product Management, Support, & Operations",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5378146008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.953402+00:00",
+      "discovered_at": "2026-08-08T04:55:46.883565+00:00",
       "salary_min": 205000,
       "salary_max": 240000,
       "salary_currency": "USD",
@@ -2288,8 +2236,7 @@
       ],
       "summary": "Rule-based screening found a 58/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8608546002",
@@ -2303,7 +2250,7 @@
       "department": "Sales Development",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8608546002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.131258+00:00",
+      "discovered_at": "2026-08-08T04:55:50.332008+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2333,8 +2280,7 @@
       ],
       "summary": "Rule-based screening found a 58/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:figma:6114301004",
@@ -2348,7 +2294,7 @@
       "department": "Marketing",
       "apply_url": "https://boards.greenhouse.io/figma/jobs/6114301004?gh_jid=6114301004",
       "posted_at": "2026-07-22T05:37:08-04:00",
-      "discovered_at": "2026-08-08T04:33:55.878565+00:00",
+      "discovered_at": "2026-08-08T04:56:03.969156+00:00",
       "salary_min": 153000,
       "salary_max": 317000,
       "salary_currency": "USD",
@@ -2377,8 +2323,7 @@
       ],
       "summary": "Rule-based screening found a 58/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7134079",
@@ -2392,7 +2337,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7134079/?gh_jid=7134079",
       "posted_at": "2026-08-06T15:55:59-04:00",
-      "discovered_at": "2026-08-08T04:33:58.553246+00:00",
+      "discovered_at": "2026-08-08T04:56:38.097638+00:00",
       "salary_min": 90000,
       "salary_max": 132000,
       "salary_currency": "USD",
@@ -2422,8 +2367,7 @@
       ],
       "summary": "Rule-based screening found a 57/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:7842952",
@@ -2437,7 +2381,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/7842952",
       "posted_at": "2026-08-04T17:50:39-04:00",
-      "discovered_at": "2026-08-08T04:33:58.804630+00:00",
+      "discovered_at": "2026-08-08T04:56:41.491557+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2467,8 +2411,7 @@
       ],
       "summary": "Rule-based screening found a 57/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5287327008",
@@ -2482,7 +2425,7 @@
       "department": "Engineering & Design - Product",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5287327008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.882858+00:00",
+      "discovered_at": "2026-08-08T04:55:46.840075+00:00",
       "salary_min": 220000,
       "salary_max": 270000,
       "salary_currency": "USD",
@@ -2512,8 +2455,7 @@
       ],
       "summary": "Rule-based screening found a 57/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8613199002",
@@ -2527,7 +2469,7 @@
       "department": "Customer Success",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8613199002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.168636+00:00",
+      "discovered_at": "2026-08-08T04:55:50.356456+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2556,8 +2498,7 @@
       ],
       "summary": "Rule-based screening found a 57/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:notion:f603aedb-1454-4a75-b2f0-a3afb2a8f973",
@@ -2571,7 +2512,7 @@
       "department": "Product Management",
       "apply_url": "https://jobs.ashbyhq.com/notion/f603aedb-1454-4a75-b2f0-a3afb2a8f973/application",
       "posted_at": "2026-07-02T00:13:00.462+00:00",
-      "discovered_at": "2026-08-08T04:33:57.714341+00:00",
+      "discovered_at": "2026-08-08T04:56:28.167466+00:00",
       "salary_min": 185000,
       "salary_max": 210000,
       "salary_currency": "USD",
@@ -2600,8 +2541,7 @@
       ],
       "summary": "Rule-based screening found a 57/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:airbnb:8075714",
@@ -2615,7 +2555,7 @@
       "department": "Partnerships",
       "apply_url": "https://careers.airbnb.com/positions/8075714?gh_jid=8075714",
       "posted_at": "2026-07-21T11:38:47-04:00",
-      "discovered_at": "2026-08-08T04:33:59.560662+00:00",
+      "discovered_at": "2026-08-08T04:56:50.598853+00:00",
       "salary_min": 168000,
       "salary_max": 210000,
       "salary_currency": "USD",
@@ -2645,8 +2585,7 @@
       ],
       "summary": "Rule-based screening found a 56/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:aed9985a-21ff-437d-9e0a-f82e5e420331",
@@ -2660,7 +2599,7 @@
       "department": "Global Affairs",
       "apply_url": "https://jobs.ashbyhq.com/openai/aed9985a-21ff-437d-9e0a-f82e5e420331/application",
       "posted_at": "2026-07-08T23:48:12.638+00:00",
-      "discovered_at": "2026-08-08T04:33:54.306520+00:00",
+      "discovered_at": "2026-08-08T04:55:41.899789+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2690,8 +2629,7 @@
       ],
       "summary": "Rule-based screening found a 56/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:7990647",
@@ -2705,7 +2643,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/7990647",
       "posted_at": "2026-08-07T15:32:55-04:00",
-      "discovered_at": "2026-08-08T04:33:58.805261+00:00",
+      "discovered_at": "2026-08-08T04:56:41.491962+00:00",
       "salary_min": 103376,
       "salary_max": 129220,
       "salary_currency": "USD",
@@ -2735,8 +2673,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8532272002",
@@ -2750,7 +2687,7 @@
       "department": "Sales Development",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8532272002",
       "posted_at": "2026-08-07T12:56:21-04:00",
-      "discovered_at": "2026-08-08T04:33:55.130532+00:00",
+      "discovered_at": "2026-08-08T04:55:50.331550+00:00",
       "salary_min": 59000,
       "salary_max": 84000,
       "salary_currency": "USD",
@@ -2780,8 +2717,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8646852002",
@@ -2795,7 +2731,7 @@
       "department": "Customer Success",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8646852002",
       "posted_at": "2026-08-05T05:14:00-04:00",
-      "discovered_at": "2026-08-08T04:33:55.137679+00:00",
+      "discovered_at": "2026-08-08T04:55:50.336242+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2825,8 +2761,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8617525002",
@@ -2840,7 +2775,7 @@
       "department": "Customer Success",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8617525002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.137154+00:00",
+      "discovered_at": "2026-08-08T04:55:50.335911+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2870,8 +2805,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8637995002",
@@ -2885,7 +2819,7 @@
       "department": "EMEA - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637995002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.245317+00:00",
+      "discovered_at": "2026-08-08T04:55:50.407376+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2915,8 +2849,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:hubspotjobs:7095005",
@@ -2930,7 +2863,7 @@
       "department": "Account Management",
       "apply_url": "https://www.hubspot.com/careers/jobs/7095005?gh_jid=7095005",
       "posted_at": "2026-08-03T15:08:15-04:00",
-      "discovered_at": "2026-08-08T04:33:55.443165+00:00",
+      "discovered_at": "2026-08-08T04:55:57.789850+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -2960,8 +2893,7 @@
       ],
       "summary": "Rule-based screening found a 55/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7624552",
@@ -2975,7 +2907,7 @@
       "department": "GTM Enablement",
       "apply_url": "https://careers.datadoghq.com/detail/7624552/?gh_jid=7624552",
       "posted_at": "2026-08-07T08:36:59-04:00",
-      "discovered_at": "2026-08-08T04:33:58.494335+00:00",
+      "discovered_at": "2026-08-08T04:56:38.059620+00:00",
       "salary_min": 116000,
       "salary_max": 154000,
       "salary_currency": "USD",
@@ -3005,8 +2937,7 @@
       ],
       "summary": "Rule-based screening found a 54/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8067190",
@@ -3020,7 +2951,7 @@
       "department": "GTM Enablement",
       "apply_url": "https://careers.datadoghq.com/detail/8067190/?gh_jid=8067190",
       "posted_at": "2026-08-06T11:47:30-04:00",
-      "discovered_at": "2026-08-08T04:33:58.515548+00:00",
+      "discovered_at": "2026-08-08T04:56:38.073953+00:00",
       "salary_min": 116000,
       "salary_max": 155000,
       "salary_currency": "USD",
@@ -3050,8 +2981,7 @@
       ],
       "summary": "Rule-based screening found a 54/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8027963",
@@ -3065,7 +2995,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/8027963/?gh_jid=8027963",
       "posted_at": "2026-08-06T11:35:19-04:00",
-      "discovered_at": "2026-08-08T04:33:58.398846+00:00",
+      "discovered_at": "2026-08-08T04:56:37.990115+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3094,8 +3024,7 @@
       ],
       "summary": "Rule-based screening found a 54/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:anthropic:5215052008",
@@ -3109,7 +3038,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/anthropic/jobs/5215052008",
       "posted_at": "2026-08-03T18:25:22-04:00",
-      "discovered_at": "2026-08-08T04:33:54.707463+00:00",
+      "discovered_at": "2026-08-08T04:55:46.728322+00:00",
       "salary_min": 265000,
       "salary_max": 365000,
       "salary_currency": "USD",
@@ -3139,8 +3068,7 @@
       ],
       "summary": "Rule-based screening found a 54/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:reddit:8062298",
@@ -3154,7 +3082,7 @@
       "department": "Sales Strategy & Operations",
       "apply_url": "https://job-boards.greenhouse.io/reddit/jobs/8062298",
       "posted_at": "2026-08-06T21:54:29-04:00",
-      "discovered_at": "2026-08-08T04:33:59.263010+00:00",
+      "discovered_at": "2026-08-08T04:56:47.589873+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3184,8 +3112,7 @@
       ],
       "summary": "Rule-based screening found a 53/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8520248002",
@@ -3199,7 +3126,7 @@
       "department": "EMEA - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8520248002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.244658+00:00",
+      "discovered_at": "2026-08-08T04:55:50.406945+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3229,8 +3156,7 @@
       ],
       "summary": "Rule-based screening found a 53/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8555134002",
@@ -3244,7 +3170,7 @@
       "department": "EMEA - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8555134002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.246544+00:00",
+      "discovered_at": "2026-08-08T04:55:50.408169+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3274,8 +3200,7 @@
       ],
       "summary": "Rule-based screening found a 53/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:gitlab:8609979002",
@@ -3289,7 +3214,7 @@
       "department": "EMEA - Enterprise",
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8609979002",
       "posted_at": "2026-08-03T16:43:10-04:00",
-      "discovered_at": "2026-08-08T04:33:55.248249+00:00",
+      "discovered_at": "2026-08-08T04:55:50.409259+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3319,8 +3244,7 @@
       ],
       "summary": "Rule-based screening found a 53/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:hubspotjobs:8031160",
@@ -3334,7 +3258,7 @@
       "department": "Sales",
       "apply_url": "https://www.hubspot.com/careers/jobs/8031160?gh_jid=8031160",
       "posted_at": "2026-08-07T14:00:32-04:00",
-      "discovered_at": "2026-08-08T04:33:55.476116+00:00",
+      "discovered_at": "2026-08-08T04:55:57.811267+00:00",
       "salary_min": 53800,
       "salary_max": 90000,
       "salary_currency": "USD",
@@ -3364,8 +3288,7 @@
       ],
       "summary": "Rule-based screening found a 52/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:hubspotjobs:8044985",
@@ -3379,7 +3302,7 @@
       "department": "Sales",
       "apply_url": "https://www.hubspot.com/careers/jobs/8044985?gh_jid=8044985",
       "posted_at": "2026-08-03T15:08:15-04:00",
-      "discovered_at": "2026-08-08T04:33:55.435320+00:00",
+      "discovered_at": "2026-08-08T04:55:57.784428+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3409,8 +3332,7 @@
       ],
       "summary": "Rule-based screening found a 52/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:affirm:7712707003",
@@ -3424,7 +3346,7 @@
       "department": "US Sales",
       "apply_url": "https://job-boards.greenhouse.io/affirm/jobs/7712707003",
       "posted_at": "2026-07-06T16:29:20-04:00",
-      "discovered_at": "2026-08-08T04:33:56.304640+00:00",
+      "discovered_at": "2026-08-08T04:56:13.015743+00:00",
       "salary_min": 66000,
       "salary_max": 96000,
       "salary_currency": "USD",
@@ -3453,8 +3375,7 @@
       ],
       "summary": "Rule-based screening found a 52/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:twilio:8088055",
@@ -3468,7 +3389,7 @@
       "department": "Sales",
       "apply_url": "https://job-boards.greenhouse.io/twilio/jobs/8088055",
       "posted_at": "2026-08-07T10:29:15-04:00",
-      "discovered_at": "2026-08-08T04:33:58.803967+00:00",
+      "discovered_at": "2026-08-08T04:56:41.490802+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3498,8 +3419,7 @@
       ],
       "summary": "Rule-based screening found a 51/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:8024033",
@@ -3513,7 +3433,7 @@
       "department": "1160 Partner Solution Engineering",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=8024033",
       "posted_at": "2026-08-06T12:10:12-04:00",
-      "discovered_at": "2026-08-08T04:33:57.058605+00:00",
+      "discovered_at": "2026-08-08T04:56:16.176074+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3543,8 +3463,7 @@
       ],
       "summary": "Rule-based screening found a 51/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:hubspotjobs:7807288",
@@ -3558,7 +3477,7 @@
       "department": "Account Management",
       "apply_url": "https://www.hubspot.com/careers/jobs/7807288?gh_jid=7807288",
       "posted_at": "2026-08-03T15:08:15-04:00",
-      "discovered_at": "2026-08-08T04:33:55.454860+00:00",
+      "discovered_at": "2026-08-08T04:55:57.797544+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3588,8 +3507,7 @@
       ],
       "summary": "Rule-based screening found a 51/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7131386",
@@ -3603,7 +3521,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7131386/?gh_jid=7131386",
       "posted_at": "2026-08-06T11:46:57-04:00",
-      "discovered_at": "2026-08-08T04:33:58.551523+00:00",
+      "discovered_at": "2026-08-08T04:56:38.098740+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -3634,8 +3552,7 @@
       ],
       "summary": "Rule-based screening found a 50/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7117086",
@@ -3649,7 +3566,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7117086/?gh_jid=7117086",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.553702+00:00",
+      "discovered_at": "2026-08-08T04:56:38.099336+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -3680,8 +3597,7 @@
       ],
       "summary": "Rule-based screening found a 50/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7314667",
@@ -3695,7 +3611,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7314667/?gh_jid=7314667",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.560378+00:00",
+      "discovered_at": "2026-08-08T04:56:38.104057+00:00",
       "salary_min": 100000,
       "salary_max": 150000,
       "salary_currency": "USD",
@@ -3726,8 +3642,7 @@
       ],
       "summary": "Rule-based screening found a 50/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:7993682",
@@ -3741,7 +3656,7 @@
       "department": "1512 Global Sales Enablement",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=7993682",
       "posted_at": "2026-08-06T12:10:10-04:00",
-      "discovered_at": "2026-08-08T04:33:57.028506+00:00",
+      "discovered_at": "2026-08-08T04:56:16.157196+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3770,8 +3685,7 @@
       ],
       "summary": "Rule-based screening found a 49/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7131404",
@@ -3785,7 +3699,7 @@
       "department": "Enterprise Sales",
       "apply_url": "https://careers.datadoghq.com/detail/7131404/?gh_jid=7131404",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.554108+00:00",
+      "discovered_at": "2026-08-08T04:56:38.098174+00:00",
       "salary_min": 100000,
       "salary_max": 100000,
       "salary_currency": "USD",
@@ -3815,8 +3729,7 @@
       ],
       "summary": "Rule-based screening found a 48/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:openai:30e2445d-561e-4e10-8a30-1f5baa611596",
@@ -3830,7 +3743,7 @@
       "department": "Go To Market",
       "apply_url": "https://jobs.ashbyhq.com/openai/30e2445d-561e-4e10-8a30-1f5baa611596/application",
       "posted_at": "2026-07-16T18:18:16.292+00:00",
-      "discovered_at": "2026-08-08T04:33:54.302408+00:00",
+      "discovered_at": "2026-08-08T04:55:41.896893+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3859,8 +3772,7 @@
       ],
       "summary": "Rule-based screening found a 48/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:8078333",
@@ -3874,7 +3786,7 @@
       "department": "3511 Financial Services Partnerships",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=8078333",
       "posted_at": "2026-08-06T12:10:17-04:00",
-      "discovered_at": "2026-08-08T04:33:57.087019+00:00",
+      "discovered_at": "2026-08-08T04:56:16.195229+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3904,8 +3816,7 @@
       ],
       "summary": "Rule-based screening found a 44/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:7973002",
@@ -3919,7 +3830,7 @@
       "department": "3513 Core Product Partnerships",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=7973002",
       "posted_at": "2026-08-06T12:10:09-04:00",
-      "discovered_at": "2026-08-08T04:33:57.058287+00:00",
+      "discovered_at": "2026-08-08T04:56:16.175697+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3949,8 +3860,7 @@
       ],
       "summary": "Rule-based screening found a 44/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:braze:8025153",
@@ -3964,7 +3874,7 @@
       "department": "Customer Experience",
       "apply_url": "https://boards.greenhouse.io/braze/jobs/8025153?gh_jid=8025153",
       "posted_at": "2026-07-16T15:08:29-04:00",
-      "discovered_at": "2026-08-08T04:33:57.980898+00:00",
+      "discovered_at": "2026-08-08T04:56:31.255752+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -3993,8 +3903,7 @@
       ],
       "summary": "Rule-based screening found a 44/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:braze:7918224",
@@ -4008,7 +3917,7 @@
       "department": "Customer Experience",
       "apply_url": "https://boards.greenhouse.io/braze/jobs/7918224?gh_jid=7918224",
       "posted_at": "2026-07-16T15:05:34-04:00",
-      "discovered_at": "2026-08-08T04:33:57.982253+00:00",
+      "discovered_at": "2026-08-08T04:56:31.256641+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4038,8 +3947,7 @@
       ],
       "summary": "Rule-based screening found a 44/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8012339",
@@ -4053,7 +3961,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/8012339/?gh_jid=8012339",
       "posted_at": "2026-08-07T05:33:25-04:00",
-      "discovered_at": "2026-08-08T04:33:58.379407+00:00",
+      "discovered_at": "2026-08-08T04:56:37.975169+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4082,8 +3990,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7435209",
@@ -4097,7 +4004,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7435209/?gh_jid=7435209",
       "posted_at": "2026-08-07T00:43:36-04:00",
-      "discovered_at": "2026-08-08T04:33:58.399676+00:00",
+      "discovered_at": "2026-08-08T04:56:37.989001+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4126,8 +4033,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8054774",
@@ -4141,7 +4047,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/8054774/?gh_jid=8054774",
       "posted_at": "2026-08-06T11:44:24-04:00",
-      "discovered_at": "2026-08-08T04:33:58.497123+00:00",
+      "discovered_at": "2026-08-08T04:56:38.061217+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4170,8 +4076,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:5486716",
@@ -4185,7 +4090,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/5486716/?gh_jid=5486716",
       "posted_at": "2026-08-06T11:13:57-04:00",
-      "discovered_at": "2026-08-08T04:33:58.379822+00:00",
+      "discovered_at": "2026-08-08T04:56:37.975434+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4214,8 +4119,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:airbnb:7641058",
@@ -4229,7 +4133,7 @@
       "department": "Sales",
       "apply_url": "https://careers.airbnb.com/positions/7641058?gh_jid=7641058",
       "posted_at": "2026-07-31T07:58:21-04:00",
-      "discovered_at": "2026-08-08T04:33:59.626404+00:00",
+      "discovered_at": "2026-08-08T04:56:50.644758+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4258,8 +4162,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7790048",
@@ -4273,7 +4176,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7790048/?gh_jid=7790048",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.381506+00:00",
+      "discovered_at": "2026-08-08T04:56:37.976711+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4302,8 +4205,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7794297",
@@ -4317,7 +4219,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7794297/?gh_jid=7794297",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.399272+00:00",
+      "discovered_at": "2026-08-08T04:56:37.989577+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4346,8 +4248,7 @@
       ],
       "summary": "Rule-based screening found a 43/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:pinterest:8042339",
@@ -4361,7 +4262,7 @@
       "department": "Ads Product & Innovation",
       "apply_url": "https://www.pinterestcareers.com/jobs/?gh_jid=8042339",
       "posted_at": "2026-07-28T16:24:14-04:00",
-      "discovered_at": "2026-08-08T04:33:59.030784+00:00",
+      "discovered_at": "2026-08-08T04:56:44.714725+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4391,8 +4292,7 @@
       ],
       "summary": "Rule-based screening found a 42/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:8049910",
@@ -4406,7 +4306,7 @@
       "department": "1340 Customer Success Management",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=8049910",
       "posted_at": "2026-08-06T12:10:14-04:00",
-      "discovered_at": "2026-08-08T04:33:57.000442+00:00",
+      "discovered_at": "2026-08-08T04:56:16.138780+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4435,8 +4335,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8052114",
@@ -4450,7 +4349,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/8052114/?gh_jid=8052114",
       "posted_at": "2026-08-06T11:53:49-04:00",
-      "discovered_at": "2026-08-08T04:33:58.400158+00:00",
+      "discovered_at": "2026-08-08T04:56:37.991199+00:00",
       "salary_min": 90000,
       "salary_max": 120000,
       "salary_currency": "USD",
@@ -4479,8 +4378,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:8077474",
@@ -4494,7 +4392,7 @@
       "department": "Enterprise Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/8077474/?gh_jid=8077474",
       "posted_at": "2026-08-06T11:52:44-04:00",
-      "discovered_at": "2026-08-08T04:33:58.400628+00:00",
+      "discovered_at": "2026-08-08T04:56:37.991728+00:00",
       "salary_min": 90000,
       "salary_max": 120000,
       "salary_currency": "USD",
@@ -4523,8 +4421,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:braze:7966816",
@@ -4538,7 +4435,7 @@
       "department": "Business Development",
       "apply_url": "https://boards.greenhouse.io/braze/jobs/7966816?gh_jid=7966816",
       "posted_at": "2026-08-04T10:33:15-04:00",
-      "discovered_at": "2026-08-08T04:33:58.017426+00:00",
+      "discovered_at": "2026-08-08T04:56:31.280731+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4567,8 +4464,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7172466",
@@ -4582,7 +4478,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7172466/?gh_jid=7172466",
       "posted_at": "2026-08-04T07:02:57-04:00",
-      "discovered_at": "2026-08-08T04:33:58.380292+00:00",
+      "discovered_at": "2026-08-08T04:56:37.975951+00:00",
       "salary_min": 54000,
       "salary_max": 72000,
       "salary_currency": "USD",
@@ -4611,8 +4507,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:hubspotjobs:8035828",
@@ -4626,7 +4521,7 @@
       "department": "Sales",
       "apply_url": "https://www.hubspot.com/careers/jobs/8035828?gh_jid=8035828",
       "posted_at": "2026-08-03T15:08:15-04:00",
-      "discovered_at": "2026-08-08T04:33:55.434355+00:00",
+      "discovered_at": "2026-08-08T04:55:57.785029+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4656,8 +4551,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7128703",
@@ -4671,7 +4565,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7128703/?gh_jid=7128703",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.381955+00:00",
+      "discovered_at": "2026-08-08T04:56:37.977019+00:00",
       "salary_min": 89000,
       "salary_max": 118000,
       "salary_currency": "USD",
@@ -4700,8 +4594,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:datadog:7232590",
@@ -4715,7 +4608,7 @@
       "department": "Commercial Customer Success",
       "apply_url": "https://careers.datadoghq.com/detail/7232590/?gh_jid=7232590",
       "posted_at": "2026-07-28T05:41:06-04:00",
-      "discovered_at": "2026-08-08T04:33:58.382417+00:00",
+      "discovered_at": "2026-08-08T04:56:37.977312+00:00",
       "salary_min": 89000,
       "salary_max": 118000,
       "salary_currency": "USD",
@@ -4744,8 +4637,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:figma:6003308004",
@@ -4759,7 +4651,7 @@
       "department": "Sales",
       "apply_url": "https://boards.greenhouse.io/figma/jobs/6003308004?gh_jid=6003308004",
       "posted_at": "2026-07-22T05:37:08-04:00",
-      "discovered_at": "2026-08-08T04:33:55.923180+00:00",
+      "discovered_at": "2026-08-08T04:56:04.000335+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4788,8 +4680,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:notion:05e14247-17c4-4e98-9a13-53828a4e2f13",
@@ -4803,7 +4694,7 @@
       "department": "Early Career",
       "apply_url": "https://jobs.ashbyhq.com/notion/05e14247-17c4-4e98-9a13-53828a4e2f13/application",
       "posted_at": "2026-04-02T21:00:55.755+00:00",
-      "discovered_at": "2026-08-08T04:33:57.705834+00:00",
+      "discovered_at": "2026-08-08T04:56:28.161576+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4833,8 +4724,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "ashby:notion:b21fef72-4864-4a3e-a627-91557a0f8a36",
@@ -4848,7 +4738,7 @@
       "department": "Early Career",
       "apply_url": "https://jobs.ashbyhq.com/notion/b21fef72-4864-4a3e-a627-91557a0f8a36/application",
       "posted_at": "2026-04-01T23:05:05.541+00:00",
-      "discovered_at": "2026-08-08T04:33:57.706162+00:00",
+      "discovered_at": "2026-08-08T04:56:28.161809+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4878,8 +4768,7 @@
       ],
       "summary": "Rule-based screening found a 41/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:8052814",
@@ -4893,7 +4782,7 @@
       "department": "1340 Customer Success Management",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=8052814",
       "posted_at": "2026-08-07T19:07:15-04:00",
-      "discovered_at": "2026-08-08T04:33:57.000734+00:00",
+      "discovered_at": "2026-08-08T04:56:16.138972+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4923,8 +4812,7 @@
       ],
       "summary": "Rule-based screening found a 40/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     },
     {
       "id": "greenhouse:stripe:8074199",
@@ -4938,7 +4826,7 @@
       "department": "1340 Customer Success Management",
       "apply_url": "https://stripe.com/jobs/search?gh_jid=8074199",
       "posted_at": "2026-08-06T12:10:16-04:00",
-      "discovered_at": "2026-08-08T04:33:57.000145+00:00",
+      "discovered_at": "2026-08-08T04:56:16.138590+00:00",
       "salary_min": null,
       "salary_max": null,
       "salary_currency": "USD",
@@ -4968,8 +4856,7 @@
       ],
       "summary": "Rule-based screening found a 40/100 match. Review the published responsibilities and confirm any missing salary or location details before applying.",
       "recommended_action": "Low priority",
-      "confidence": "rule-based",
-      "ai_evaluated": false
+      "confidence": "rule-based"
     }
   ]
 }

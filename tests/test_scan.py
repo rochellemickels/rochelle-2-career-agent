@@ -74,10 +74,11 @@ class ScanTests(unittest.TestCase):
                     sources,
                     output,
                     status,
-                    use_ai=False,
                 )
 
         self.assertEqual([job["id"] for job in result["jobs"]], ["relevant"])
+        self.assertEqual(result["metadata"]["matching_method"], "transparent-rules-v1")
+        self.assertEqual(result["metadata"]["cost_mode"], "free")
 
 
 if __name__ == "__main__":

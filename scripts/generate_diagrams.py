@@ -45,14 +45,14 @@ def arrow(draw, start, end, color=NAVY):
 def architecture():
     image = Image.new("RGB", (1700, 760), CANVAS)
     draw = ImageDraw.Draw(image)
-    draw.text((70, 48), "Rochelle 2.0 Career Agent", font=TITLE, fill=NAVY)
-    draw.text((70, 100), "Daily discovery, transparent scoring, and a free static portal", font=REGULAR, fill=MUTED)
+    draw.text((70, 48), "Rochelle 2.0 Career Portal", font=TITLE, fill=NAVY)
+    draw.text((70, 100), "Automated discovery, transparent scoring, and a free static portal", font=REGULAR, fill=MUTED)
 
     boxes = [
         ((70, 255, 340, 440), BLUE, "Public ATS feeds", "Greenhouse · Lever\nAshby"),
         ((405, 255, 675, 440), NAVY, "Source adapters", "Normalize · validate\nDeduplicate"),
-        ((740, 255, 1010, 440), GOLD, "Rule-based score", "Salary · remote\nTitle · quality"),
-        ((1075, 255, 1345, 440), PLUM, "AI fit analyst", "Mission · leadership\nResponsibilities · AI"),
+        ((740, 255, 1010, 440), GOLD, "Core match", "Salary · remote\nTitle · quality"),
+        ((1075, 255, 1345, 440), PLUM, "Career fit rules", "Mission · leadership\nResponsibilities · AI"),
         ((1410, 255, 1630, 440), TEAL, "Career portal", "Rank · filter\nSave · track"),
     ]
     for box, fill, title, subtitle in boxes:
@@ -62,17 +62,17 @@ def architecture():
 
     draw.rounded_rectangle((405, 530, 1345, 660), radius=18, fill=WHITE, outline="#d9dee7", width=3)
     draw.text((445, 555), "Security boundary", font=BOLD, fill=NAVY)
-    draw.text((445, 599), "OPENAI_API_KEY stays in GitHub Actions. Browser notes stay in localStorage.", font=REGULAR, fill=INK)
+    draw.text((445, 599), "No paid API calls. Browser notes stay private in localStorage.", font=REGULAR, fill=INK)
     image.save(OUT / "agent-interactions.png", optimize=True)
 
 
 def sequence():
     image = Image.new("RGB", (1450, 920), WHITE)
     draw = ImageDraw.Draw(image)
-    draw.text((60, 42), "Daily refresh sequence", font=TITLE, fill=NAVY)
-    actors = [(135, "GitHub Actions"), (480, "Job feeds"), (825, "Career agent"), (1170, "Portal data")]
+    draw.text((60, 42), "Automated refresh sequence", font=TITLE, fill=NAVY)
+    actors = [(135, "GitHub Actions"), (480, "Job feeds"), (825, "Match engine"), (1170, "Portal data")]
     for x, label in actors:
-        draw.rounded_rectangle((x - 100, 120, x + 100, 180), radius=14, fill=NAVY if label != "Career agent" else PLUM)
+        draw.rounded_rectangle((x - 100, 120, x + 100, 180), radius=14, fill=NAVY if label != "Match engine" else PLUM)
         width = draw.textbbox((0, 0), label, font=BOLD)[2]
         draw.text((x - width / 2, 136), label, font=BOLD, fill=WHITE)
         draw.line((x, 180, x, 850), fill="#d9dee7", width=3)
@@ -80,8 +80,8 @@ def sequence():
     events = [
         (245, 135, 480, "Request authorized public jobs"),
         (325, 480, 135, "Return published listings"),
-        (430, 135, 825, "Send shortlisted evidence"),
-        (515, 825, 135, "Return structured fit scores"),
+        (430, 135, 825, "Score relevant posting evidence"),
+        (515, 825, 135, "Return transparent fit scores"),
         (620, 135, 1170, "Write jobs.json + source health"),
         (725, 1170, 135, "Portal shows newest ranked roles"),
     ]
@@ -101,4 +101,3 @@ if __name__ == "__main__":
     architecture()
     sequence()
     print(f"Wrote diagrams to {OUT}")
-

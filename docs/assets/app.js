@@ -4,14 +4,17 @@ const state = {
   jobs: [],
   statuses: [],
   tracking: loadTracking(),
-  filters: { search: "", tier: "all", work: "all", company: "all", stage: "all", sort: "score" },
+  filters: { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
 
 const els = {
   jobList: document.querySelector("#jobList"),
   search: document.querySelector("#searchInput"),
   tier: document.querySelector("#tierFilter"),
+  lane: document.querySelector("#laneFilter"),
   work: document.querySelector("#workFilter"),
+  location: document.querySelector("#locationFilter"),
+  salary: document.querySelector("#salaryFilter"),
   company: document.querySelector("#companyFilter"),
   stage: document.querySelector("#stageFilter"),
   sort: document.querySelector("#sortFilter"),
@@ -74,6 +77,36 @@ function scoreColor(score) {
   return "#7b8495";
 }
 
+function matchesCareerLane(job, lane) {
+  if (lane === "all") return true;
+  const title = job.title.toLowerCase();
+  const terms = {
+    partnerships: ["partnership", "business development", "channel", "ecosystem"],
+    revenue: ["revenue", "growth", "go-to-market", "go to market", "enablement", "market development"],
+    customer: ["customer success", "customer experience"],
+    accounts: ["strategic account", "account director", "enterprise account"],
+    ai: ["ai ", "artificial intelligence", "transformation", "automation"],
+  };
+  return (terms[lane] || []).some(term => title.includes(term));
+}
+
+function matchesLocation(job, locationFilter) {
+  if (locationFilter === "all") return true;
+  const location = `${job.location} ${job.workplace_type}`.toLowerCase();
+  const isRemote = location.includes("remote");
+  const isDfw = ["dallas", "fort worth", "dfw", "grapevine", "plano", "frisco", "irving", "las colinas", "texas"].some(term => location.includes(term));
+  if (locationFilter === "remote") return isRemote;
+  if (locationFilter === "dfw") return isDfw;
+  return !isRemote && !isDfw;
+}
+
+function matchesSalary(job, salaryFilter) {
+  if (salaryFilter === "all") return true;
+  if (salaryFilter === "target") return (job.salary_max || 0) >= 150000;
+  if (salaryFilter === "below") return Boolean(job.salary_max) && job.salary_max < 150000;
+  return !job.salary_max;
+}
+
 function getFilteredJobs() {
   const query = state.filters.search.toLowerCase().trim();
   const minimum = state.filters.tier === "all" ? 0 : Number(state.filters.tier);
@@ -87,7 +120,10 @@ function getFilteredJobs() {
       || (state.filters.work === "onsite" && !work.includes("remote") && !work.includes("hybrid"));
     return (!query || haystack.includes(query))
       && job.score >= minimum
+      && matchesCareerLane(job, state.filters.lane)
       && workMatch
+      && matchesLocation(job, state.filters.location)
+      && matchesSalary(job, state.filters.salary)
       && (state.filters.company === "all" || job.company === state.filters.company)
       && (state.filters.stage === "all" || tracking.stage === state.filters.stage);
   });
@@ -125,7 +161,7 @@ function renderCard(job) {
         <div class="company-line">
           <span>${escapeHtml(job.company)}</span>
           <span class="source-badge">${escapeHtml(job.source_type)}</span>
-          ${job.ai_evaluated ? '<span class="ai-badge">AI reviewed</span>' : '<span class="source-badge">Rules reviewed</span>'}
+          <span class="source-badge">100-point match</span>
           ${tracking.stage !== "Not reviewed" ? `<span class="stage-badge">${escapeHtml(tracking.stage)}</span>` : ""}
         </div>
         <h3>${escapeHtml(job.title)}</h3>
@@ -174,16 +210,19 @@ function renderFilterChips() {
   const labels = [];
   if (state.filters.search) labels.push(`Search: ${state.filters.search}`);
   if (state.filters.tier !== "all") labels.push(`${state.filters.tier}+ match`);
+  if (state.filters.lane !== "all") labels.push(state.filters.lane);
   if (state.filters.work !== "all") labels.push(state.filters.work);
+  if (state.filters.location !== "all") labels.push(state.filters.location);
+  if (state.filters.salary !== "all") labels.push(state.filters.salary === "target" ? "$150K+" : state.filters.salary);
   if (state.filters.company !== "all") labels.push(state.filters.company);
   if (state.filters.stage !== "all") labels.push(state.filters.stage);
   els.activeFilterRow.innerHTML = labels.map(label => `<span class="filter-chip">${escapeHtml(label)}</span>`).join("");
 }
 
 function clearFilters() {
-  state.filters = { search: "", tier: "all", work: "all", company: "all", stage: "all", sort: "score" };
+  state.filters = { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" };
   els.search.value = "";
-  els.tier.value = els.work.value = els.company.value = els.stage.value = "all";
+  els.tier.value = els.lane.value = els.work.value = els.location.value = els.salary.value = els.company.value = els.stage.value = "all";
   els.sort.value = "score";
   renderJobs();
 }
@@ -230,7 +269,7 @@ function openJob(job) {
       <a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>
       <button class="button button-secondary favorite-button" type="button" id="dialogFavorite" aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
     </div>
-    <p class="date-line">Posting date: ${formatDate(job.posted_at)} · ${job.ai_evaluated ? `AI reviewed with ${escapeHtml(job.confidence)} confidence` : "Rule-based review"}</p>`;
+    <p class="date-line">Posting date: ${formatDate(job.posted_at)} · Transparent rules-based review</p>`;
 
   els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
   els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => updateTracking(job.id, { notes: event.target.value }, false));
@@ -269,7 +308,10 @@ function bindEvents() {
     searchTimer = setTimeout(() => updateFilter("search", event.target.value), 140);
   });
   els.tier.addEventListener("change", event => updateFilter("tier", event.target.value));
+  els.lane.addEventListener("change", event => updateFilter("lane", event.target.value));
   els.work.addEventListener("change", event => updateFilter("work", event.target.value));
+  els.location.addEventListener("change", event => updateFilter("location", event.target.value));
+  els.salary.addEventListener("change", event => updateFilter("salary", event.target.value));
   els.company.addEventListener("change", event => updateFilter("company", event.target.value));
   els.stage.addEventListener("change", event => updateFilter("stage", event.target.value));
   els.sort.addEventListener("change", event => updateFilter("sort", event.target.value));
@@ -296,8 +338,8 @@ async function loadData() {
     const companies = [...new Set(state.jobs.map(job => job.company))].sort((a, b) => a.localeCompare(b));
     els.company.innerHTML = '<option value="all">All companies</option>' + companies.map(company => `<option value="${escapeHtml(company)}">${escapeHtml(company)}</option>`).join("");
     document.querySelector("#lastUpdated").textContent = data.generated_at ? `Last refreshed ${new Date(data.generated_at).toLocaleString()}` : "Awaiting first automated refresh";
-    const aiStatus = data.metadata?.ai_status;
-    document.querySelector("#refreshStatus").textContent = state.jobs.length ? `${state.jobs.length} roles ready · AI ${aiStatus || "status unknown"}` : "Ready for first job refresh";
+    const costMode = data.metadata?.cost_mode === "free" ? "Free matching active" : "Matching active";
+    document.querySelector("#refreshStatus").textContent = state.jobs.length ? `${state.jobs.length} roles ready · ${costMode}` : "Ready for first job refresh";
     if (data.metadata?.sources_error) document.querySelector("#statusDot").classList.add("warning");
     renderJobs();
   } catch (error) {
