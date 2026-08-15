@@ -1,6 +1,45 @@
 const STORAGE_KEY = "rochelle-career-tracking-v1";
 const RESUME_STORAGE_KEY = "rochelle-master-resume-v1";
 
+const APPLICATION_STAGES = [
+  "Not reviewed",
+  "Interested",
+  "Preparing",
+  "Applied",
+  "Application viewed",
+  "Recruiter responded",
+  "Interview scheduled",
+  "Interviewing",
+  "Final interview",
+  "Offer",
+  "Passed / Closed",
+];
+
+const APPLIED_STAGES = new Set(APPLICATION_STAGES.slice(3));
+
+const CURATED_WEEKLY_PICKS = [
+  {
+    id: "greenhouse:pinterest:8109351",
+    reason: "Best overall fit: enablement, coaching, SMB growth, operating rhythms, and practical AI fluency without a quota-carrying sales focus.",
+  },
+  {
+    id: "greenhouse:gitlab:8604996002",
+    reason: "Strong bridge from agency and client operations into customer-success strategy, cross-functional change, and process leadership.",
+  },
+  {
+    id: "greenhouse:dropbox:8092224",
+    reason: "Excellent compensation overlap with planning, executive communication, adoption, and stakeholder coordination at the center of the role.",
+  },
+  {
+    id: "greenhouse:stripe:8042309",
+    reason: "High-value stretch role emphasizing strategic programs, change management, executive communication, and turning GTM strategy into execution.",
+  },
+  {
+    id: "greenhouse:dropbox:8048847",
+    reason: "Strong strategic-relationship fit when positioned around partner ecosystems, negotiation, adoption, and long-term growth—not direct selling.",
+  },
+];
+
 const state = {
   jobs: [],
   statuses: [],
@@ -43,6 +82,15 @@ const els = {
   copyApplicationBrief: document.querySelector("#copyApplicationBrief"),
   downloadApplicationBrief: document.querySelector("#downloadApplicationBrief"),
   studioActionStatus: document.querySelector("#studioActionStatus"),
+  weeklyTopFiveList: document.querySelector("#weeklyTopFiveList"),
+  weeklyDateLabel: document.querySelector("#weeklyDateLabel"),
+  appliedList: document.querySelector("#appliedList"),
+  appliedEmpty: document.querySelector("#appliedEmpty"),
+  metricApplied: document.querySelector("#metricApplied"),
+  pipelineApplied: document.querySelector("#pipelineApplied"),
+  pipelineViewed: document.querySelector("#pipelineViewed"),
+  pipelineResponded: document.querySelector("#pipelineResponded"),
+  pipelineInterviews: document.querySelector("#pipelineInterviews"),
 };
 
 function loadTracking() {
@@ -64,7 +112,92 @@ function saveTracking() {
 }
 
 function trackingFor(id) {
-  return state.tracking[id] || { favorite: false, stage: "Not reviewed", notes: "" };
+  const saved = state.tracking[id] || {};
+  return {
+    favorite: false,
+    stage: saved.stage === "Passed" ? "Passed / Closed" : "Not reviewed",
+    notes: "",
+    contact: "",
+    appliedAt: "",
+    nextFollowUp: "",
+    statusUpdatedAt: "",
+    history: [],
+    jobSnapshot: null,
+    ...saved,
+    stage: saved.stage === "Passed" ? "Passed / Closed" : (saved.stage || "Not reviewed"),
+  };
+}
+
+function dateInputValue(value) {
+  if (!value) return "";
+  const match = String(value).match(/^\d{4}-\d{2}-\d{2}/);
+  return match ? match[0] : "";
+}
+
+function todayInputValue() {
+  const now = new Date();
+  return [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
+}
+
+function jobSnapshot(job) {
+  return {
+    id: job.id,
+    title: job.title,
+    company: job.company,
+    location: job.location,
+    workplace_type: job.workplace_type,
+    salary_min: job.salary_min,
+    salary_max: job.salary_max,
+    salary_currency: job.salary_currency,
+    apply_url: job.apply_url,
+    score: job.score,
+  };
+}
+
+function recruiterPriorityScore(job) {
+  const text = `${job.title} ${job.department} ${plainText(job.description)}`.toLowerCase();
+  let score = Number(job.score || 0);
+  if (`${job.workplace_type} ${job.location}`.toLowerCase().includes("remote")) score += 10;
+  if (overlapsIdealSalary(job)) score += 14;
+  if (job.salary_min >= 110000 && job.salary_min <= 135000) score += 8;
+  if (/program|project|enablement|customer success|strategic partnership|client relationship|consultant|business operations/.test(text)) score += 12;
+  if (/stakeholder|trusted advisor|cross-functional|change management|executive communication/.test(text)) score += 8;
+  if (/software engineer|machine learning engineer|data scientist|quota-carrying|cold calling/.test(text)) score -= 24;
+  if (/commission only|commission-only/.test(text)) score -= 30;
+  const location = String(job.location || "").toLowerCase();
+  if (location && !location.includes("remote") && !location.includes("texas") && !location.includes("dallas") && !location.includes("grapevine")) score -= 16;
+  return score;
+}
+
+function weeklyTopPicks() {
+  const byId = new Map(state.jobs.map(job => [job.id, job]));
+  const selected = CURATED_WEEKLY_PICKS.map(pick => byId.get(pick.id)).filter(Boolean);
+  const selectedIds = new Set(selected.map(job => job.id));
+  const fallback = state.jobs
+    .filter(job => !selectedIds.has(job.id))
+    .sort((a, b) => recruiterPriorityScore(b) - recruiterPriorityScore(a));
+  return [...selected, ...fallback].slice(0, 5);
+}
+
+function weeklyPickRank(id) {
+  const index = weeklyTopPicks().findIndex(job => job.id === id);
+  return index === -1 ? null : index + 1;
+}
+
+function weeklyPickReason(job) {
+  return CURATED_WEEKLY_PICKS.find(pick => pick.id === job.id)?.reason
+    || "Current verified role with the strongest balance of transferable fit, compensation, flexibility, and realistic candidacy.";
+}
+
+function weekRangeLabel() {
+  const date = state.generatedAt ? new Date(state.generatedAt) : new Date();
+  const start = new Date(date);
+  const day = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - day);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  const short = value => value.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return `Week of ${short(start)}–${short(end)}, ${end.getFullYear()} · Recalculated from verified roles`;
 }
 
 function escapeHtml(value = "") {
@@ -192,7 +325,14 @@ function getFilteredJobs() {
       && (state.filters.stage === "all" || tracking.stage === state.filters.stage);
   });
 
+  const pinned = new Map(weeklyTopPicks().map((job, index) => [job.id, index]));
   return filtered.sort((a, b) => {
+    const aPinned = pinned.has(a.id);
+    const bPinned = pinned.has(b.id);
+    if (aPinned || bPinned) {
+      if (aPinned && bPinned) return pinned.get(a.id) - pinned.get(b.id);
+      return aPinned ? -1 : 1;
+    }
     if (state.filters.sort === "newest") return String(b.discovered_at || b.posted_at || "").localeCompare(String(a.discovered_at || a.posted_at || ""));
     if (state.filters.sort === "salary") return (b.salary_max || 0) - (a.salary_max || 0);
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
@@ -213,9 +353,11 @@ function renderCard(job) {
   const tracking = trackingFor(job.id);
   const topStrength = job.strengths?.[0];
   const topGap = job.gaps?.[0];
+  const rank = weeklyPickRank(job.id);
   return `
-    <article class="job-card" data-job-id="${escapeHtml(job.id)}">
+    <article class="job-card ${rank ? `weekly-ranked rank-${rank}` : ""}" data-job-id="${escapeHtml(job.id)}">
       <div class="score-block">
+        ${rank ? `<span class="rank-flag">#${rank}</span>` : ""}
         <div class="score-ring" style="--score-color:${scoreColor(job.score)}">
           <div><strong>${job.score}</strong><small>/100</small></div>
         </div>
@@ -226,6 +368,7 @@ function renderCard(job) {
           <span>${escapeHtml(job.company)}</span>
           <span class="source-badge">${escapeHtml(job.source_type)}</span>
           <span class="source-badge">100-point match</span>
+          ${rank ? `<span class="weekly-rank-badge rank-${rank}">Highly Recommended #${rank}</span>` : ""}
           ${tracking.stage !== "Not reviewed" ? `<span class="stage-badge">${escapeHtml(tracking.stage)}</span>` : ""}
         </div>
         <h3>${escapeHtml(job.title)}</h3>
@@ -248,7 +391,6 @@ function renderCard(job) {
       </div>
     </article>`;
 }
-
 function renderJobs() {
   const jobs = getFilteredJobs();
   els.resultSummary.textContent = `${jobs.length} of ${state.jobs.length} opportunities shown`;
@@ -261,6 +403,8 @@ function renderJobs() {
   }
   renderFilterChips();
   renderMetrics();
+  renderWeeklyTopFive();
+  renderAppliedPositions();
 }
 
 function renderMetrics() {
@@ -269,6 +413,7 @@ function renderMetrics() {
   document.querySelector("#metricRemote").textContent = state.jobs.filter(job => `${job.workplace_type} ${job.location}`.toLowerCase().includes("remote")).length;
   document.querySelector("#metricSalary").textContent = state.jobs.filter(overlapsIdealSalary).length;
   document.querySelector("#metricSaved").textContent = Object.values(state.tracking).filter(item => item.favorite).length;
+  els.metricApplied.textContent = Object.values(state.tracking).filter(item => APPLIED_STAGES.has(item.stage === "Passed" ? "Passed / Closed" : item.stage)).length;
 }
 
 function renderFilterChips() {
@@ -311,6 +456,107 @@ function breakdownRows(job) {
   }).join("");
 }
 
+function renderWeeklyTopFive() {
+  if (!els.weeklyTopFiveList) return;
+  const picks = weeklyTopPicks();
+  els.weeklyDateLabel.textContent = weekRangeLabel();
+  els.weeklyTopFiveList.innerHTML = picks.map((job, index) => {
+    const rank = index + 1;
+    return `
+      <article class="weekly-pick rank-${rank}" data-weekly-job-id="${escapeHtml(job.id)}">
+        <div class="weekly-rank-number">#${rank}</div>
+        <div class="weekly-pick-body">
+          <div class="weekly-company">${escapeHtml(job.company)} · ${escapeHtml(job.workplace_type)}</div>
+          <h3>${escapeHtml(job.title)}</h3>
+          <div class="weekly-pick-meta">
+            <span>${escapeHtml(formatSalary(job))}</span>
+            <span>${escapeHtml(job.location)}</span>
+            <span>${job.score}/100 portal match</span>
+          </div>
+          <p>${escapeHtml(weeklyPickReason(job))}</p>
+        </div>
+        <div class="weekly-pick-actions">
+          <button class="button button-primary" type="button" data-view-weekly>View role</button>
+          <button class="button button-secondary" type="button" data-prepare-weekly>Prepare</button>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function applicationProgress(tracking) {
+  const progress = {
+    "Applied": 1,
+    "Application viewed": 2,
+    "Recruiter responded": 3,
+    "Interview scheduled": 4,
+    "Interviewing": 4,
+    "Final interview": 4,
+    "Offer": 5,
+  };
+  return Math.max(
+    progress[tracking.stage] || 0,
+    ...(tracking.history || []).map(item => progress[item.stage] || 0),
+  );
+}
+
+function appliedEntries() {
+  return Object.entries(state.tracking)
+    .map(([id, value]) => {
+      const tracking = trackingFor(id);
+      if (!APPLIED_STAGES.has(tracking.stage)) return null;
+      const currentJob = state.jobs.find(job => job.id === id);
+      const job = currentJob || tracking.jobSnapshot;
+      return job ? { id, job, tracking, current: Boolean(currentJob) } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => String(b.tracking.statusUpdatedAt || b.tracking.appliedAt || "").localeCompare(String(a.tracking.statusUpdatedAt || a.tracking.appliedAt || "")));
+}
+
+function renderAppliedPositions() {
+  if (!els.appliedList) return;
+  const entries = appliedEntries();
+  const progressValues = entries.map(entry => applicationProgress(entry.tracking));
+  els.pipelineApplied.textContent = entries.length;
+  els.pipelineViewed.textContent = progressValues.filter(value => value >= 2).length;
+  els.pipelineResponded.textContent = progressValues.filter(value => value >= 3).length;
+  els.pipelineInterviews.textContent = progressValues.filter(value => value >= 4).length;
+  els.appliedEmpty.hidden = entries.length > 0;
+
+  els.appliedList.innerHTML = entries.map(({ id, job, tracking, current }) => `
+    <article class="applied-card" data-application-id="${escapeHtml(id)}">
+      <div class="applied-card-heading">
+        <div>
+          <span class="applied-company">${escapeHtml(job.company)}</span>
+          <h3>${escapeHtml(job.title)}</h3>
+          <p>${escapeHtml(job.location || "Location not listed")} · ${escapeHtml(formatSalary(job))}</p>
+        </div>
+        <span class="application-status status-${escapeHtml(tracking.stage.toLowerCase().replace(/[^a-z]+/g, "-"))}">${escapeHtml(tracking.stage)}</span>
+      </div>
+      <div class="progress-track" aria-label="Application progress">
+        <span class="${applicationProgress(tracking) >= 1 ? "complete" : ""}">Applied</span>
+        <span class="${applicationProgress(tracking) >= 2 ? "complete" : ""}">Viewed</span>
+        <span class="${applicationProgress(tracking) >= 3 ? "complete" : ""}">Response</span>
+        <span class="${applicationProgress(tracking) >= 4 ? "complete" : ""}">Interview</span>
+        <span class="${applicationProgress(tracking) >= 5 ? "complete" : ""}">Offer</span>
+      </div>
+      <div class="applied-fields">
+        <label><span>Status</span><select data-application-field="stage">${APPLICATION_STAGES.slice(3).map(stage => `<option ${stage === tracking.stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
+        <label><span>Date applied</span><input type="date" data-application-field="appliedAt" value="${escapeHtml(dateInputValue(tracking.appliedAt))}" /></label>
+        <label><span>Next follow-up</span><input type="date" data-application-field="nextFollowUp" value="${escapeHtml(dateInputValue(tracking.nextFollowUp))}" /></label>
+        <label><span>Recruiter / contact</span><input type="text" data-application-field="contact" value="${escapeHtml(tracking.contact)}" placeholder="Name or email" /></label>
+        <label class="applied-notes"><span>Notes and latest update</span><textarea data-application-field="notes" placeholder="Confirmation received, recruiter response, interview time, next action…">${escapeHtml(tracking.notes)}</textarea></label>
+      </div>
+      <div class="applied-card-footer">
+        <span>${tracking.statusUpdatedAt ? `Status updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Add your latest status update"}</span>
+        <div>
+          ${current ? `<button class="button button-secondary" type="button" data-view-applied>View role</button><button class="button button-secondary" type="button" data-prepare-applied>Tailor résumé</button>` : ""}
+          ${job.apply_url ? `<a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Employer portal</a>` : ""}
+        </div>
+      </div>
+      ${current ? "" : '<p class="closed-posting-note">The role is no longer in the active feed, but your application history is preserved.</p>'}
+    </article>`).join("");
+}
+
 function openJob(job) {
   const tracking = trackingFor(job.id);
   els.dialogContent.innerHTML = `
@@ -329,9 +575,13 @@ function openJob(job) {
     <section class="tracking-panel">
       <h3>Your private application tracker</h3>
       <div class="tracking-grid">
-        <label><span>Stage</span><select id="dialogStage">${["Not reviewed","Interested","Preparing","Applied","Interviewing","Passed"].map(stage => `<option ${stage === tracking.stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
-        <label><span>Notes</span><textarea id="dialogNotes" placeholder="Why this role stands out, contacts, next step…">${escapeHtml(tracking.notes)}</textarea></label>
+        <label><span>Stage</span><select id="dialogStage">${APPLICATION_STAGES.map(stage => `<option ${stage === tracking.stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
+        <label><span>Date applied</span><input id="dialogAppliedAt" type="date" value="${escapeHtml(dateInputValue(tracking.appliedAt))}" /></label>
+        <label><span>Recruiter / contact</span><input id="dialogContact" type="text" value="${escapeHtml(tracking.contact)}" placeholder="Name or email" /></label>
+        <label><span>Next follow-up</span><input id="dialogFollowUp" type="date" value="${escapeHtml(dateInputValue(tracking.nextFollowUp))}" /></label>
+        <label class="tracking-notes"><span>Notes and latest update</span><textarea id="dialogNotes" placeholder="Why this role stands out, confirmation received, recruiter response, interview details…">${escapeHtml(tracking.notes)}</textarea></label>
       </div>
+      <p class="tracking-updated">${tracking.statusUpdatedAt ? `Status last updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Status updates are private to this browser."}</p>
     </section>
     <div class="dialog-actions">
       <a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>
@@ -345,8 +595,14 @@ function openJob(job) {
     prepareApplication(job);
   });
   els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
+  els.dialogContent.querySelector("#dialogAppliedAt").addEventListener("change", event => updateTracking(job.id, { appliedAt: event.target.value }));
+  els.dialogContent.querySelector("#dialogContact").addEventListener("change", event => updateTracking(job.id, { contact: event.target.value }));
+  els.dialogContent.querySelector("#dialogFollowUp").addEventListener("change", event => updateTracking(job.id, { nextFollowUp: event.target.value }));
   els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => updateTracking(job.id, { notes: event.target.value }, false));
-  els.dialogContent.querySelector("#dialogNotes").addEventListener("change", renderJobs);
+  els.dialogContent.querySelector("#dialogNotes").addEventListener("change", () => {
+    renderJobs();
+    renderAppliedPositions();
+  });
   els.dialogContent.querySelector("#dialogFavorite").addEventListener("click", event => {
     const favorite = !trackingFor(job.id).favorite;
     updateTracking(job.id, { favorite });
@@ -357,7 +613,16 @@ function openJob(job) {
 }
 
 function updateTracking(id, changes, rerender = true) {
-  state.tracking[id] = { ...trackingFor(id), ...changes };
+  const current = trackingFor(id);
+  const next = { ...current, ...changes };
+  const currentJob = state.jobs.find(job => job.id === id);
+  if (changes.stage && changes.stage !== current.stage) {
+    next.statusUpdatedAt = new Date().toISOString();
+    next.history = [...(current.history || []), { stage: changes.stage, at: next.statusUpdatedAt }];
+    if (APPLIED_STAGES.has(changes.stage) && !next.appliedAt) next.appliedAt = todayInputValue();
+  }
+  if (currentJob && (APPLIED_STAGES.has(next.stage) || next.jobSnapshot)) next.jobSnapshot = jobSnapshot(currentJob);
+  state.tracking[id] = next;
   saveTracking();
   if (rerender) renderJobs();
 }
@@ -403,7 +668,14 @@ function selectedJobOption(job) {
 function renderApplicationStudio() {
   if (!els.applicationJobSelect) return;
   const selected = state.applicationJobId;
-  const jobs = [...state.jobs].sort((a, b) => b.score - a.score);
+  const pinned = new Map(weeklyTopPicks().map((job, index) => [job.id, index]));
+  const jobs = [...state.jobs].sort((a, b) => {
+    if (pinned.has(a.id) || pinned.has(b.id)) {
+      if (pinned.has(a.id) && pinned.has(b.id)) return pinned.get(a.id) - pinned.get(b.id);
+      return pinned.has(a.id) ? -1 : 1;
+    }
+    return b.score - a.score;
+  });
   els.applicationJobSelect.innerHTML = '<option value="">Select a verified role</option>'
     + jobs.map(job => `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job))}</option>`).join("");
 
@@ -497,6 +769,10 @@ async function handleResumeUpload(file) {
 
 function prepareApplication(job) {
   state.applicationJobId = job.id;
+  if (trackingFor(job.id).stage === "Not reviewed" || trackingFor(job.id).stage === "Interested") {
+    updateTracking(job.id, { stage: "Preparing" }, false);
+  }
+  renderJobs();
   renderApplicationStudio();
   document.querySelector("#application-studio").scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -592,6 +868,28 @@ function bindEvents() {
   });
   els.copyApplicationBrief.addEventListener("click", copyApplicationBrief);
   els.downloadApplicationBrief.addEventListener("click", downloadApplicationBrief);
+  els.weeklyTopFiveList.addEventListener("click", event => {
+    const card = event.target.closest("[data-weekly-job-id]");
+    if (!card) return;
+    const job = state.jobs.find(item => item.id === card.dataset.weeklyJobId);
+    if (!job) return;
+    if (event.target.closest("[data-view-weekly]")) openJob(job);
+    if (event.target.closest("[data-prepare-weekly]")) prepareApplication(job);
+  });
+  els.appliedList.addEventListener("change", event => {
+    const card = event.target.closest("[data-application-id]");
+    const field = event.target.dataset.applicationField;
+    if (!card || !field) return;
+    updateTracking(card.dataset.applicationId, { [field]: event.target.value });
+  });
+  els.appliedList.addEventListener("click", event => {
+    const card = event.target.closest("[data-application-id]");
+    if (!card) return;
+    const job = state.jobs.find(item => item.id === card.dataset.applicationId);
+    if (!job) return;
+    if (event.target.closest("[data-view-applied]")) openJob(job);
+    if (event.target.closest("[data-prepare-applied]")) prepareApplication(job);
+  });
   els.jobList.addEventListener("click", event => {
     const card = event.target.closest("[data-job-id]");
     if (!card) return;
