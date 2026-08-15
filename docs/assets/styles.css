@@ -958,3 +958,17 @@ footer a { align-self: center; font-size: .82rem; }
   .topbar { flex-wrap: wrap; gap: 10px; padding: 10px 0; }
   .top-actions { flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
 }
+
+/* Incremental opportunity rendering */
+.load-more-row {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--muted);
+  background: linear-gradient(180deg, rgba(255,255,255,.7), white);
+  border: 1px dashed #cfd5df;
+  border-radius: 15px;
+}
+.load-more-button { min-width: 220px; }
+.load-more-row span { font-size: .76rem; }
