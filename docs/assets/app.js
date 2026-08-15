@@ -1,10 +1,13 @@
 const STORAGE_KEY = "rochelle-career-tracking-v1";
+const RESUME_STORAGE_KEY = "rochelle-master-resume-v1";
 
 const state = {
   jobs: [],
   statuses: [],
   generatedAt: null,
   tracking: loadTracking(),
+  resume: loadResumeProfile(),
+  applicationJobId: "",
   filters: { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
 
@@ -27,11 +30,33 @@ const els = {
   sourceDialog: document.querySelector("#sourceDialog"),
   sourceDialogContent: document.querySelector("#sourceDialogContent"),
   sourceButton: document.querySelector("#sourceHealthButton"),
+  resumeUpload: document.querySelector("#resumeUpload"),
+  resumeStatus: document.querySelector("#resumeStatus"),
+  clearResume: document.querySelector("#clearResume"),
+  applicationJobSelect: document.querySelector("#applicationJobSelect"),
+  selectedJobSummary: document.querySelector("#selectedJobSummary"),
+  openSelectedJob: document.querySelector("#openSelectedJob"),
+  resumeMatchScore: document.querySelector("#resumeMatchScore"),
+  studioGuidance: document.querySelector("#studioGuidance"),
+  matchedKeywords: document.querySelector("#matchedKeywords"),
+  missingKeywords: document.querySelector("#missingKeywords"),
+  copyApplicationBrief: document.querySelector("#copyApplicationBrief"),
+  downloadApplicationBrief: document.querySelector("#downloadApplicationBrief"),
+  studioActionStatus: document.querySelector("#studioActionStatus"),
 };
 
 function loadTracking() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
   catch { return {}; }
+}
+
+function loadResumeProfile() {
+  try { return JSON.parse(localStorage.getItem(RESUME_STORAGE_KEY)) || { name: "", text: "" }; }
+  catch { return { name: "", text: "" }; }
+}
+
+function saveResumeProfile() {
+  localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(state.resume));
 }
 
 function saveTracking() {
@@ -65,6 +90,38 @@ function portalDateLine(job) {
   const verified = formatDate(job.verified_at || state.generatedAt);
   return `Added to portal ${added} · Verified ${verified}`;
 }
+
+function plainText(value = "") {
+  const parsed = new DOMParser().parseFromString(String(value), "text/html");
+  return (parsed.body.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+const ROLE_SIGNALS = [
+  ["Strategic partnerships", ["strategic partnerships", "partner strategy", "partner ecosystem"]],
+  ["Program management", ["program management", "program manager", "program roadmap"]],
+  ["Project management", ["project management", "project manager", "project plans"]],
+  ["Stakeholder management", ["stakeholder management", "stakeholder alignment", "stakeholder engagement"]],
+  ["Executive communication", ["executive communication", "executive stakeholders", "senior leaders", "c-suite"]],
+  ["Cross-functional leadership", ["cross-functional", "cross functional", "influence without direct authority"]],
+  ["Customer success", ["customer success", "customer outcomes", "customer satisfaction"]],
+  ["Consultative solutions", ["consultative", "trusted advisor", "solution discovery", "complex solutions"]],
+  ["Implementation", ["implementation", "onboarding", "deployment"]],
+  ["Adoption and enablement", ["adoption", "enablement", "training", "facilitation"]],
+  ["Change management", ["change management", "organizational change"]],
+  ["Go-to-market strategy", ["go-to-market", "go to market", "gtm"]],
+  ["Business operations", ["business operations", "operational excellence", "operating rhythm"]],
+  ["Revenue operations", ["revenue operations", "sales operations", "pipeline", "forecasting"]],
+  ["Growth strategy", ["growth strategy", "market expansion", "revenue growth"]],
+  ["Process improvement", ["process improvement", "continuous improvement", "operational efficiency"]],
+  ["Data-informed decisions", ["data-driven", "data informed", "metrics", "analytics"]],
+  ["AI fluency", ["artificial intelligence", "generative ai", "ai-enabled", "automation", "ai fluency"]],
+  ["SaaS or cloud", ["saas", "cloud", "software platform"]],
+  ["Commercial negotiations", ["commercial negotiations", "negotiation", "commercial strategy"]],
+  ["Financial modeling", ["financial modeling", "business case", "roi"]],
+  ["Learning and development", ["learning and development", "instructional design", "curriculum", "workshops"]],
+  ["Risk management", ["risk management", "dependencies", "blockers"]],
+  ["Documentation and playbooks", ["documentation", "playbooks", "self-service resources"]],
+];
 
 function scoreColor(score) {
   if (score >= 90) return "#147d78";
@@ -185,6 +242,7 @@ function renderCard(job) {
       </div>
       <div class="job-actions">
         <button class="button button-primary" type="button" data-view-job>View match details</button>
+        <button class="button button-secondary" type="button" data-prepare-job>Prepare application</button>
         <button class="button button-secondary favorite-button" type="button" data-favorite aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
         <span class="date-line">${escapeHtml(portalDateLine(job))}</span>
       </div>
@@ -277,10 +335,15 @@ function openJob(job) {
     </section>
     <div class="dialog-actions">
       <a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>
+      <button class="button button-secondary" type="button" id="dialogPrepare">Prepare application</button>
       <button class="button button-secondary favorite-button" type="button" id="dialogFavorite" aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
     </div>
     <p class="date-line">Employer posting date: ${formatDate(job.posted_at)} · ${escapeHtml(portalDateLine(job))} · Transparent rules-based review</p>`;
 
+  els.dialogContent.querySelector("#dialogPrepare").addEventListener("click", () => {
+    els.jobDialog.close();
+    prepareApplication(job);
+  });
   els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
   els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => updateTracking(job.id, { notes: event.target.value }, false));
   els.dialogContent.querySelector("#dialogNotes").addEventListener("change", renderJobs);
@@ -311,6 +374,194 @@ function openSourceHealth() {
   els.sourceDialog.showModal();
 }
 
+function jobForApplication() {
+  return state.jobs.find(job => job.id === state.applicationJobId);
+}
+
+function roleSignals(job) {
+  if (!job) return [];
+  const source = plainText(`${job.title} ${job.description}`).toLowerCase();
+  return ROLE_SIGNALS
+    .filter(([, terms]) => terms.some(term => source.includes(term)))
+    .map(([label, terms]) => ({ label, terms }));
+}
+
+function analyzeResume(job) {
+  const signals = roleSignals(job);
+  const resume = state.resume.text.toLowerCase();
+  const matched = signals.filter(signal => signal.terms.some(term => resume.includes(term)));
+  const missing = signals.filter(signal => !signal.terms.some(term => resume.includes(term)));
+  const coverage = signals.length ? Math.round((matched.length / signals.length) * 100) : 0;
+  return { signals, matched, missing, coverage };
+}
+
+function selectedJobOption(job) {
+  const salary = formatSalary(job);
+  return `${job.company} — ${job.title} · ${salary}`;
+}
+
+function renderApplicationStudio() {
+  if (!els.applicationJobSelect) return;
+  const selected = state.applicationJobId;
+  const jobs = [...state.jobs].sort((a, b) => b.score - a.score);
+  els.applicationJobSelect.innerHTML = '<option value="">Select a verified role</option>'
+    + jobs.map(job => `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job))}</option>`).join("");
+
+  const resumeLoaded = Boolean(state.resume.text);
+  els.resumeStatus.innerHTML = resumeLoaded
+    ? `<strong>${escapeHtml(state.resume.name)}</strong><span>${state.resume.text.split(/\s+/).filter(Boolean).length.toLocaleString()} words saved locally</span>`
+    : "No master résumé loaded yet.";
+  els.clearResume.hidden = !resumeLoaded;
+
+  const job = jobForApplication();
+  if (!job) {
+    els.selectedJobSummary.textContent = "Use a job card’s “Prepare application” button or choose a role here.";
+    els.openSelectedJob.href = "#";
+    els.openSelectedJob.setAttribute("aria-disabled", "true");
+    els.openSelectedJob.classList.add("disabled-link");
+    els.resumeMatchScore.textContent = "—";
+    els.studioGuidance.textContent = resumeLoaded
+      ? "Choose a verified job to begin the recruiter review."
+      : "Upload your master résumé and choose a job to compare your evidence with the employer’s priorities.";
+    els.matchedKeywords.innerHTML = "<li>Waiting for a selected role.</li>";
+    els.missingKeywords.innerHTML = "<li>Nothing flagged yet.</li>";
+    els.copyApplicationBrief.disabled = true;
+    els.downloadApplicationBrief.disabled = true;
+    return;
+  }
+
+  els.selectedJobSummary.innerHTML = `
+    <strong>${escapeHtml(job.company)} · ${escapeHtml(job.title)}</strong>
+    <span>${escapeHtml(job.location)} · ${escapeHtml(formatSalary(job))} · ${job.score}/100 portal match</span>
+    <span>${escapeHtml(portalDateLine(job))}</span>`;
+  els.openSelectedJob.href = job.apply_url;
+  els.openSelectedJob.removeAttribute("aria-disabled");
+  els.openSelectedJob.classList.remove("disabled-link");
+
+  const analysis = analyzeResume(job);
+  els.resumeMatchScore.textContent = resumeLoaded ? `${analysis.coverage}%` : "—";
+  els.studioGuidance.textContent = resumeLoaded
+    ? `Your master résumé explicitly supports ${analysis.matched.length} of ${analysis.signals.length} role signals. Missing does not mean unqualified—it means the evidence is not yet obvious to a fast recruiter or ATS review.`
+    : `This posting emphasizes ${analysis.signals.length} recruiter-visible signals. Upload your master résumé to see which are already supported.`;
+  els.matchedKeywords.innerHTML = (resumeLoaded && analysis.matched.length)
+    ? analysis.matched.map(item => `<li>✓ ${escapeHtml(item.label)}</li>`).join("")
+    : "<li>No supported signals measured yet.</li>";
+  els.missingKeywords.innerHTML = (resumeLoaded && analysis.missing.length)
+    ? analysis.missing.map(item => `<li>${escapeHtml(item.label)}</li>`).join("")
+    : "<li>No unsupported signals flagged.</li>";
+  els.copyApplicationBrief.disabled = !resumeLoaded;
+  els.downloadApplicationBrief.disabled = !resumeLoaded;
+}
+
+async function extractResumeText(file) {
+  const extension = file.name.toLowerCase().split(".").pop();
+  if (extension === "txt" || extension === "md") return file.text();
+
+  const data = await file.arrayBuffer();
+  if (extension === "docx") {
+    if (!window.mammoth) throw new Error("DOCX reader did not load. Refresh the portal and try again.");
+    const result = await window.mammoth.extractRawText({ arrayBuffer: data });
+    return result.value;
+  }
+  if (extension === "pdf") {
+    if (!window.pdfjsLib) throw new Error("PDF reader did not load. Refresh the portal and try again.");
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+    const pdf = await window.pdfjsLib.getDocument({ data }).promise;
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+      pages.push(content.items.map(item => item.str).join(" "));
+    }
+    return pages.join("\n");
+  }
+  throw new Error("Please choose a PDF, DOCX, TXT, or Markdown résumé.");
+}
+
+async function handleResumeUpload(file) {
+  if (!file) return;
+  els.resumeStatus.textContent = "Reading résumé locally…";
+  try {
+    const text = (await extractResumeText(file)).replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+    if (text.length < 200) throw new Error("Very little résumé text was detected. Try the DOCX version or a text-based PDF.");
+    state.resume = { name: file.name, text };
+    saveResumeProfile();
+    els.studioActionStatus.textContent = "Master résumé saved in this browser. It has not been uploaded to GitHub or an employer.";
+    renderApplicationStudio();
+  } catch (error) {
+    state.resume = { name: "", text: "" };
+    els.resumeStatus.textContent = error.message;
+    renderApplicationStudio();
+  }
+}
+
+function prepareApplication(job) {
+  state.applicationJobId = job.id;
+  renderApplicationStudio();
+  document.querySelector("#application-studio").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function buildApplicationBrief() {
+  const job = jobForApplication();
+  if (!job || !state.resume.text) return "";
+  const analysis = analyzeResume(job);
+  return `You are a senior recruiter and executive résumé writer for ${job.company}. Create the strongest truthful, ATS-friendly application for the role below. The goal is to make the candidate's transferable value unmistakable and earn a recruiter screen—without inventing credentials, tools, metrics, employers, titles, dates, or technical expertise.
+
+TARGET ROLE
+Company: ${job.company}
+Title: ${job.title}
+Location/work style: ${job.location} / ${job.workplace_type}
+Published compensation: ${formatSalary(job)}
+Employer application: ${job.apply_url}
+
+RECRUITER SIGNALS ALREADY EXPLICIT IN THE MASTER RÉSUMÉ
+${analysis.matched.map(item => `- ${item.label}`).join("\n") || "- None detected yet"}
+
+SIGNALS THAT NEED TRUTHFUL CLARIFICATION OR STRONGER EVIDENCE
+${analysis.missing.map(item => `- ${item.label}`).join("\n") || "- None detected"}
+
+FULL JOB DESCRIPTION
+${plainText(job.description)}
+
+MASTER RÉSUMÉ
+${state.resume.text}
+
+INSTRUCTIONS
+1. Preserve all real employers, job titles, dates, education, and credentials exactly unless the source résumé clearly supports a correction.
+2. Reposition the candidate around strategic relationships, consultative problem solving, cross-functional leadership, program execution, client outcomes, growth, and practical AI fluency.
+3. Do not frame her as an AI engineer or entry-level candidate.
+4. Use the employer's exact language naturally where supported, but do not keyword-stuff.
+5. Lead with quantified outcomes already present. If an important number or fact is missing, mark it [VERIFY WITH ROCHELLE] instead of guessing.
+6. Produce: (a) an ATS-ready two-page résumé, (b) a four-line executive summary, (c) a focused core-skills section, (d) rewritten accomplishment bullets, (e) a short tailored cover letter, and (f) five likely recruiter-screen questions with truthful talking points.
+7. After the draft, add a recruiter audit explaining the strongest reasons to interview, remaining risks, and any claims Rochelle must verify before applying.
+8. Keep the voice confident, specific, modern, and human. Avoid clichés, inflated claims, and fake technical depth.`;
+}
+
+async function copyApplicationBrief() {
+  const brief = buildApplicationBrief();
+  if (!brief) return;
+  try {
+    await navigator.clipboard.writeText(brief);
+    els.studioActionStatus.textContent = "Tailoring brief copied. Paste it into ChatGPT with this portal open so we can produce and review the final résumé.";
+  } catch {
+    els.studioActionStatus.textContent = "Copy was blocked by the browser. Use Download recruiter brief instead.";
+  }
+}
+
+function downloadApplicationBrief() {
+  const brief = buildApplicationBrief();
+  const job = jobForApplication();
+  if (!brief || !job) return;
+  const blob = new Blob([brief], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${job.company}-${job.title}-application-brief.txt`.replace(/[^a-z0-9.-]+/gi, "-");
+  link.click();
+  URL.revokeObjectURL(url);
+  els.studioActionStatus.textContent = "Recruiter brief downloaded. Review it before using it to customize your résumé.";
+}
+
 function bindEvents() {
   let searchTimer;
   els.search.addEventListener("input", event => {
@@ -327,12 +578,27 @@ function bindEvents() {
   els.sort.addEventListener("change", event => updateFilter("sort", event.target.value));
   els.clear.addEventListener("click", clearFilters);
   els.sourceButton.addEventListener("click", openSourceHealth);
+  els.resumeUpload.addEventListener("change", event => handleResumeUpload(event.target.files?.[0]));
+  els.clearResume.addEventListener("click", () => {
+    state.resume = { name: "", text: "" };
+    localStorage.removeItem(RESUME_STORAGE_KEY);
+    els.resumeUpload.value = "";
+    els.studioActionStatus.textContent = "Saved résumé removed from this browser.";
+    renderApplicationStudio();
+  });
+  els.applicationJobSelect.addEventListener("change", event => {
+    state.applicationJobId = event.target.value;
+    renderApplicationStudio();
+  });
+  els.copyApplicationBrief.addEventListener("click", copyApplicationBrief);
+  els.downloadApplicationBrief.addEventListener("click", downloadApplicationBrief);
   els.jobList.addEventListener("click", event => {
     const card = event.target.closest("[data-job-id]");
     if (!card) return;
     const job = state.jobs.find(item => item.id === card.dataset.jobId);
     if (!job) return;
     if (event.target.closest("[data-favorite]")) updateTracking(job.id, { favorite: !trackingFor(job.id).favorite });
+    if (event.target.closest("[data-prepare-job]")) prepareApplication(job);
     if (event.target.closest("[data-view-job]")) openJob(job);
   });
 }
@@ -348,6 +614,7 @@ async function loadData() {
     state.statuses = statusData.sources || [];
     const companies = [...new Set(state.jobs.map(job => job.company))].sort((a, b) => a.localeCompare(b));
     els.company.innerHTML = '<option value="all">All companies</option>' + companies.map(company => `<option value="${escapeHtml(company)}">${escapeHtml(company)}</option>`).join("");
+    renderApplicationStudio();
     document.querySelector("#lastUpdated").textContent = data.generated_at ? `Last refreshed ${new Date(data.generated_at).toLocaleString()}` : "Awaiting first automated refresh";
     const costMode = data.metadata?.cost_mode === "free" ? "Free matching active" : "Matching active";
     document.querySelector("#refreshStatus").textContent = state.jobs.length ? `${state.jobs.length} roles ready · ${costMode}` : "Ready for first job refresh";
