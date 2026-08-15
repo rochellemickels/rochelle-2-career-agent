@@ -68,6 +68,8 @@ class ScanTests(unittest.TestCase):
             output = temp / "jobs.json"
             status = temp / "status.json"
             sources.write_text(json.dumps({"sources": [{"company": "Example", "type": "greenhouse", "slug": "example"}]}))
+            first_seen = "2026-08-10T12:00:00+00:00"
+            output.write_text(json.dumps({"jobs": [{"id": "relevant", "discovered_at": first_seen}]}))
             with patch("rochelle_agent.scan.build_source", return_value=FakeSource([relevant, unrelated, foreign_only])):
                 result = run_scan(
                     ROOT / "config/profile.json",
@@ -79,6 +81,8 @@ class ScanTests(unittest.TestCase):
         self.assertEqual([job["id"] for job in result["jobs"]], ["relevant"])
         self.assertEqual(result["metadata"]["matching_method"], "transparent-rules-v2")
         self.assertEqual(result["metadata"]["cost_mode"], "free")
+        self.assertEqual(result["jobs"][0]["discovered_at"], first_seen)
+        self.assertEqual(result["jobs"][0]["verified_at"], result["generated_at"])
 
 
 if __name__ == "__main__":

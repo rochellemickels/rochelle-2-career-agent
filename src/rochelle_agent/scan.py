@@ -20,6 +20,21 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def load_previous_jobs(path: Path) -> dict[str, dict[str, Any]]:
+    """Return the last published jobs keyed by stable source ID."""
+    if not path.exists():
+        return {}
+    try:
+        payload = load_json(path)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return {
+        str(job["id"]): job
+        for job in payload.get("jobs", [])
+        if isinstance(job, dict) and job.get("id")
+    }
+
+
 def run_scan(
     profile_path: Path,
     sources_path: Path,
@@ -28,6 +43,8 @@ def run_scan(
 ) -> dict[str, Any]:
     profile = load_json(profile_path)
     source_config = load_json(sources_path)["sources"]
+    now = datetime.now(timezone.utc).isoformat()
+    previous_jobs = load_previous_jobs(output_path)
 
     jobs = []
     statuses = []
@@ -37,6 +54,18 @@ def run_scan(
         statuses.append(status)
 
     unique_jobs = deduplicate(jobs)
+    for job in unique_jobs:
+        previous = previous_jobs.get(job.id)
+        if previous:
+            job.discovered_at = (
+                previous.get("discovered_at")
+                or previous.get("posted_at")
+                or job.discovered_at
+            )
+        else:
+            job.discovered_at = now
+        job.verified_at = now
+
     all_scored = [score_job(job, profile) for job in unique_jobs]
     # The portal is a focused decision tool, not a mirror of every company job.
     # Keep roles with title-lane evidence and enough overall signal to merit review.
@@ -50,7 +79,6 @@ def run_scan(
     scored = scored[:200]
 
     scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
-    now = datetime.now(timezone.utc).isoformat()
     source_ok = sum(status.status == "ok" for status in statuses)
     source_errors = len(statuses) - source_ok
     payload = {
