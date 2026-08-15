@@ -22,6 +22,7 @@ class Job(BaseModel):
     discovered_at: str = Field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
+    verified_at: str | None = None
     salary_min: int | None = None
     salary_max: int | None = None
     salary_currency: str = "USD"
