@@ -23,7 +23,8 @@
           </span>
         </a>
         <div class="top-actions">
-          <span class="privacy-pill">Private notes stay in this browser</span>
+          <span class="privacy-pill">Private notes and résumé stay in this browser</span>
+          <a class="button button-quiet" href="#application-studio">Application Studio</a>
           <button id="sourceHealthButton" class="button button-quiet" type="button">
             Source health
           </button>
@@ -179,6 +180,70 @@
         <div class="active-filter-row" id="activeFilterRow" aria-live="polite"></div>
         <div class="job-list" id="jobList" aria-live="polite"></div>
       </section>
+
+      <section class="application-studio" id="application-studio" aria-labelledby="studioTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PRIVATE APPLICATION WORKSPACE</p>
+            <h2 id="studioTitle">Application Studio</h2>
+          </div>
+          <p>Tailor one honest, high-impact application at a time.</p>
+        </div>
+
+        <div class="studio-grid">
+          <article class="studio-panel">
+            <p class="step-label">STEP 1 · MASTER RÉSUMÉ</p>
+            <h3>Upload your approved résumé</h3>
+            <p>PDF, DOCX, TXT, or Markdown. The file is read locally and is never added to this public repository.</p>
+            <input class="sr-only" id="resumeUpload" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown" />
+            <label class="upload-zone" for="resumeUpload">
+              <strong>Choose résumé file</strong>
+              <span>or drop it here</span>
+            </label>
+            <div class="resume-status" id="resumeStatus">No master résumé loaded yet.</div>
+            <button class="button button-quiet" id="clearResume" type="button" hidden>Remove saved résumé</button>
+          </article>
+
+          <article class="studio-panel">
+            <p class="step-label">STEP 2 · TARGET ROLE</p>
+            <h3>Choose the job to prepare</h3>
+            <label class="studio-select-label" for="applicationJobSelect">Current verified opportunity</label>
+            <select id="applicationJobSelect">
+              <option value="">Select a role</option>
+            </select>
+            <div class="selected-job-summary" id="selectedJobSummary">Use a job card’s “Prepare application” button or choose a role here.</div>
+            <a class="button button-secondary disabled-link" id="openSelectedJob" href="#" target="_blank" rel="noreferrer" aria-disabled="true">Open employer application</a>
+          </article>
+        </div>
+
+        <article class="recruiter-panel">
+          <div class="recruiter-heading">
+            <div>
+              <p class="step-label">STEP 3 · RECRUITER REVIEW</p>
+              <h3>Build the strongest truthful case</h3>
+            </div>
+            <div class="coverage-score"><strong id="resumeMatchScore">—</strong><span>keyword coverage</span></div>
+          </div>
+          <p id="studioGuidance">Upload your master résumé and choose a job to compare your evidence with the employer’s priorities.</p>
+          <div class="keyword-grid">
+            <section>
+              <h4>Already supported</h4>
+              <ul id="matchedKeywords"><li>Waiting for résumé and role.</li></ul>
+            </section>
+            <section>
+              <h4>Needs stronger evidence</h4>
+              <ul id="missingKeywords"><li>Nothing flagged yet.</li></ul>
+            </section>
+          </div>
+          <div class="studio-actions">
+            <button class="button button-primary" id="copyApplicationBrief" type="button" disabled>Copy ChatGPT tailoring brief</button>
+            <button class="button button-secondary" id="downloadApplicationBrief" type="button" disabled>Download recruiter brief</button>
+          </div>
+          <p class="studio-note" id="studioActionStatus" aria-live="polite">
+            The brief tells ChatGPT to preserve your real employers, titles, dates, and achievements; it must flag questions instead of inventing facts.
+          </p>
+        </article>
+      </section>
     </main>
 
     <footer>
@@ -212,6 +277,8 @@
       </section>
     </template>
 
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
     <script src="assets/app.js" defer></script>
   </body>
 </html>
