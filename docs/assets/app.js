@@ -47,6 +47,10 @@ const state = {
   tracking: loadTracking(),
   resume: loadResumeProfile(),
   applicationJobId: "",
+  weeklyPicks: [],
+  weeklyRankMap: new Map(),
+  jobSearchText: new Map(),
+  visibleJobCount: 30,
   filters: { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
 
@@ -154,34 +158,46 @@ function jobSnapshot(job) {
   };
 }
 
-function recruiterPriorityScore(job) {
-  const text = `${job.title} ${job.department} ${plainText(job.description)}`.toLowerCase();
+function recruiterPriorityScore(job, text = "") {
+  const searchable = text || `${job.title} ${job.department} ${job.description}`.toLowerCase();
   let score = Number(job.score || 0);
   if (`${job.workplace_type} ${job.location}`.toLowerCase().includes("remote")) score += 10;
   if (overlapsIdealSalary(job)) score += 14;
   if (job.salary_min >= 110000 && job.salary_min <= 135000) score += 8;
-  if (/program|project|enablement|customer success|strategic partnership|client relationship|consultant|business operations/.test(text)) score += 12;
-  if (/stakeholder|trusted advisor|cross-functional|change management|executive communication/.test(text)) score += 8;
-  if (/software engineer|machine learning engineer|data scientist|quota-carrying|cold calling/.test(text)) score -= 24;
-  if (/commission only|commission-only/.test(text)) score -= 30;
+  if (/program|project|enablement|customer success|strategic partnership|client relationship|consultant|business operations/.test(searchable)) score += 12;
+  if (/stakeholder|trusted advisor|cross-functional|change management|executive communication/.test(searchable)) score += 8;
+  if (/software engineer|machine learning engineer|data scientist|quota-carrying|cold calling/.test(searchable)) score -= 24;
+  if (/commission only|commission-only/.test(searchable)) score -= 30;
   const location = String(job.location || "").toLowerCase();
   if (location && !location.includes("remote") && !location.includes("texas") && !location.includes("dallas") && !location.includes("grapevine")) score -= 16;
   return score;
 }
 
-function weeklyTopPicks() {
+function buildJobCaches() {
+  state.jobSearchText = new Map(state.jobs.map(job => [
+    job.id,
+    `${job.title} ${job.company} ${job.department} ${job.location} ${job.description}`.toLowerCase(),
+  ]));
+
   const byId = new Map(state.jobs.map(job => [job.id, job]));
   const selected = CURATED_WEEKLY_PICKS.map(pick => byId.get(pick.id)).filter(Boolean);
   const selectedIds = new Set(selected.map(job => job.id));
   const fallback = state.jobs
     .filter(job => !selectedIds.has(job.id))
-    .sort((a, b) => recruiterPriorityScore(b) - recruiterPriorityScore(a));
-  return [...selected, ...fallback].slice(0, 5);
+    .map(job => ({ job, score: recruiterPriorityScore(job, state.jobSearchText.get(job.id)) }))
+    .sort((a, b) => b.score - a.score)
+    .map(item => item.job);
+
+  state.weeklyPicks = [...selected, ...fallback].slice(0, 5);
+  state.weeklyRankMap = new Map(state.weeklyPicks.map((job, index) => [job.id, index + 1]));
+}
+
+function weeklyTopPicks() {
+  return state.weeklyPicks;
 }
 
 function weeklyPickRank(id) {
-  const index = weeklyTopPicks().findIndex(job => job.id === id);
-  return index === -1 ? null : index + 1;
+  return state.weeklyRankMap.get(id) || null;
 }
 
 function weeklyPickReason(job) {
@@ -309,7 +325,7 @@ function getFilteredJobs() {
   const minimum = state.filters.tier === "all" ? 0 : Number(state.filters.tier);
   const filtered = state.jobs.filter(job => {
     const tracking = trackingFor(job.id);
-    const haystack = `${job.title} ${job.company} ${job.department} ${job.location} ${job.description}`.toLowerCase();
+    const haystack = state.jobSearchText.get(job.id) || `${job.title} ${job.company} ${job.department} ${job.location}`.toLowerCase();
     const work = `${job.workplace_type} ${job.location}`.toLowerCase();
     const workMatch = state.filters.work === "all"
       || (state.filters.work === "remote" && work.includes("remote"))
@@ -325,7 +341,7 @@ function getFilteredJobs() {
       && (state.filters.stage === "all" || tracking.stage === state.filters.stage);
   });
 
-  const pinned = new Map(weeklyTopPicks().map((job, index) => [job.id, index]));
+  const pinned = state.weeklyRankMap;
   return filtered.sort((a, b) => {
     const aPinned = pinned.has(a.id);
     const bPinned = pinned.has(b.id);
@@ -393,20 +409,30 @@ function renderCard(job) {
 }
 function renderJobs() {
   const jobs = getFilteredJobs();
-  els.resultSummary.textContent = `${jobs.length} of ${state.jobs.length} opportunities shown`;
+  const visibleJobs = jobs.slice(0, state.visibleJobCount);
+  els.resultSummary.textContent = jobs.length
+    ? `Showing ${visibleJobs.length} of ${jobs.length} matching roles · ${state.jobs.length} current total`
+    : `0 of ${state.jobs.length} opportunities shown`;
   if (!jobs.length) {
     const template = document.querySelector("#emptyTemplate");
     els.jobList.replaceChildren(template.content.cloneNode(true));
     els.jobList.querySelector("[data-clear-filters]")?.addEventListener("click", clearFilters);
   } else {
-    els.jobList.innerHTML = jobs.map(renderCard).join("");
+    const remaining = jobs.length - visibleJobs.length;
+    els.jobList.innerHTML = visibleJobs.map(renderCard).join("")
+      + (remaining > 0 ? `
+        <div class="load-more-row">
+          <button class="button button-primary load-more-button" type="button" data-load-more>
+            Load ${Math.min(30, remaining)} more roles
+          </button>
+          <span>${remaining} additional matching roles available</span>
+        </div>` : "");
   }
   renderFilterChips();
   renderMetrics();
   renderWeeklyTopFive();
   renderAppliedPositions();
 }
-
 function renderMetrics() {
   document.querySelector("#metricTotal").textContent = state.jobs.length;
   document.querySelector("#metricTop").textContent = state.jobs.filter(job => job.score >= 80).length;
@@ -437,11 +463,13 @@ function clearFilters() {
   els.search.value = "";
   els.tier.value = els.lane.value = els.work.value = els.location.value = els.salary.value = els.company.value = els.stage.value = "all";
   els.sort.value = "score";
+  state.visibleJobCount = 30;
   renderJobs();
 }
 
 function updateFilter(key, value) {
   state.filters[key] = value;
+  state.visibleJobCount = 30;
   renderJobs();
 }
 
@@ -668,7 +696,7 @@ function selectedJobOption(job) {
 function renderApplicationStudio() {
   if (!els.applicationJobSelect) return;
   const selected = state.applicationJobId;
-  const pinned = new Map(weeklyTopPicks().map((job, index) => [job.id, index]));
+  const pinned = state.weeklyRankMap;
   const jobs = [...state.jobs].sort((a, b) => {
     if (pinned.has(a.id) || pinned.has(b.id)) {
       if (pinned.has(a.id) && pinned.has(b.id)) return pinned.get(a.id) - pinned.get(b.id);
@@ -891,6 +919,11 @@ function bindEvents() {
     if (event.target.closest("[data-prepare-applied]")) prepareApplication(job);
   });
   els.jobList.addEventListener("click", event => {
+    if (event.target.closest("[data-load-more]")) {
+      state.visibleJobCount += 30;
+      renderJobs();
+      return;
+    }
     const card = event.target.closest("[data-job-id]");
     if (!card) return;
     const job = state.jobs.find(item => item.id === card.dataset.jobId);
@@ -910,6 +943,8 @@ async function loadData() {
     state.generatedAt = data.generated_at || null;
     state.jobs = data.jobs || [];
     state.statuses = statusData.sources || [];
+    state.visibleJobCount = 30;
+    buildJobCaches();
     const companies = [...new Set(state.jobs.map(job => job.company))].sort((a, b) => a.localeCompare(b));
     els.company.innerHTML = '<option value="all">All companies</option>' + companies.map(company => `<option value="${escapeHtml(company)}">${escapeHtml(company)}</option>`).join("");
     renderApplicationStudio();
