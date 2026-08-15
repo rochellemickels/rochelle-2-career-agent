@@ -3,6 +3,7 @@ const STORAGE_KEY = "rochelle-career-tracking-v1";
 const state = {
   jobs: [],
   statuses: [],
+  generatedAt: null,
   tracking: loadTracking(),
   filters: { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
@@ -59,14 +60,10 @@ function formatDate(value) {
   return Number.isNaN(date.valueOf()) ? "Date not listed" : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function relativeDate(value) {
-  if (!value) return "Date not listed";
-  const date = new Date(value);
-  if (Number.isNaN(date.valueOf())) return "Date not listed";
-  const days = Math.max(0, Math.round((Date.now() - date.valueOf()) / 86400000));
-  if (days === 0) return "Updated today";
-  if (days === 1) return "Updated yesterday";
-  return `Updated ${days} days ago`;
+function portalDateLine(job) {
+  const added = formatDate(job.discovered_at || job.posted_at);
+  const verified = formatDate(job.verified_at || state.generatedAt);
+  return `Added to portal ${added} · Verified ${verified}`;
 }
 
 function scoreColor(score) {
@@ -139,7 +136,7 @@ function getFilteredJobs() {
   });
 
   return filtered.sort((a, b) => {
-    if (state.filters.sort === "newest") return String(b.posted_at || "").localeCompare(String(a.posted_at || ""));
+    if (state.filters.sort === "newest") return String(b.discovered_at || b.posted_at || "").localeCompare(String(a.discovered_at || a.posted_at || ""));
     if (state.filters.sort === "salary") return (b.salary_max || 0) - (a.salary_max || 0);
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
     return b.score - a.score;
@@ -189,7 +186,7 @@ function renderCard(job) {
       <div class="job-actions">
         <button class="button button-primary" type="button" data-view-job>View match details</button>
         <button class="button button-secondary favorite-button" type="button" data-favorite aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
-        <span class="date-line">${relativeDate(job.posted_at)}</span>
+        <span class="date-line">${escapeHtml(portalDateLine(job))}</span>
       </div>
     </article>`;
 }
@@ -282,7 +279,7 @@ function openJob(job) {
       <a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>
       <button class="button button-secondary favorite-button" type="button" id="dialogFavorite" aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
     </div>
-    <p class="date-line">Posting date: ${formatDate(job.posted_at)} · Transparent rules-based review</p>`;
+    <p class="date-line">Employer posting date: ${formatDate(job.posted_at)} · ${escapeHtml(portalDateLine(job))} · Transparent rules-based review</p>`;
 
   els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
   els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => updateTracking(job.id, { notes: event.target.value }, false));
@@ -346,6 +343,7 @@ async function loadData() {
     if (!jobsResponse.ok) throw new Error(`Jobs database returned ${jobsResponse.status}`);
     const data = await jobsResponse.json();
     const statusData = statusResponse.ok ? await statusResponse.json() : { sources: [] };
+    state.generatedAt = data.generated_at || null;
     state.jobs = data.jobs || [];
     state.statuses = statusData.sources || [];
     const companies = [...new Set(state.jobs.map(job => job.company))].sort((a, b) => a.localeCompare(b));
