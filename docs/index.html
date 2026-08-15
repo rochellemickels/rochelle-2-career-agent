@@ -9,7 +9,7 @@
       content="Rochelle 2.0 AI-powered career opportunity dashboard"
     />
     <title>Rochelle 2.0 Career Intelligence</title>
-    <link rel="stylesheet" href="assets/styles.css?v=20260814-application-studio" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260814-weekly-pipeline" />
   </head>
   <body>
     <a class="skip-link" href="#opportunities">Skip to opportunities</a>
@@ -24,6 +24,8 @@
         </a>
         <div class="top-actions">
           <span class="privacy-pill">Private notes and résumé stay in this browser</span>
+          <a class="button button-quiet" href="#weekly-top-five">Weekly Top 5</a>
+          <a class="button button-quiet" href="#applied-positions">Positions Applied</a>
           <a class="button button-quiet" href="#application-studio">Application Studio</a>
           <button id="sourceHealthButton" class="button button-quiet" type="button">
             Source health
@@ -79,6 +81,45 @@
           <strong id="metricSaved">0</strong>
           <small>Your short list</small>
         </article>
+        <a class="metric-card metric-link accent-coral" href="#applied-positions" id="positionsAppliedButton">
+          <span>Positions Applied</span>
+          <strong id="metricApplied">0</strong>
+          <small>View status and next steps →</small>
+        </a>
+      </section>
+
+      <section class="weekly-picks" id="weekly-top-five" aria-labelledby="weeklyTopFiveHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">RECRUITER-CURATED · UPDATED FROM CURRENT ROLES</p>
+            <h2 id="weeklyTopFiveHeading">Your Top 5 Applications This Week</h2>
+          </div>
+          <p id="weeklyDateLabel">Calculating this week’s priority order…</p>
+        </div>
+        <p class="weekly-intro">These five are pinned above the automated rankings because they best balance realistic candidacy, your $110K–$135K target, remote flexibility, and soft-skill-heavy consulting, program, enablement, and strategic relationship work.</p>
+        <div class="weekly-pick-list" id="weeklyTopFiveList"></div>
+      </section>
+
+      <section class="applied-dashboard" id="applied-positions" aria-labelledby="appliedHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PRIVATE APPLICATION PIPELINE</p>
+            <h2 id="appliedHeading">Positions Applied</h2>
+          </div>
+          <p>Track each employer response and your next follow-up.</p>
+        </div>
+        <div class="pipeline-summary" aria-label="Application pipeline summary">
+          <div><strong id="pipelineApplied">0</strong><span>Applied</span></div>
+          <div><strong id="pipelineViewed">0</strong><span>Viewed</span></div>
+          <div><strong id="pipelineResponded">0</strong><span>Responded</span></div>
+          <div><strong id="pipelineInterviews">0</strong><span>Interviews</span></div>
+        </div>
+        <div class="applied-list" id="appliedList"></div>
+        <div class="applied-empty" id="appliedEmpty">
+          <strong>No applications tracked yet.</strong>
+          <p>Open a role, change its stage to “Applied,” and it will appear here—even if the employer later closes the posting.</p>
+        </div>
+        <p class="tracking-disclosure">Employer sites do not automatically share viewing activity with this private portal. Update the status when you receive an email, portal notification, recruiter response, or interview invitation.</p>
       </section>
 
       <section class="workspace" id="opportunities">
@@ -161,8 +202,13 @@
               <option value="Interested">Interested</option>
               <option value="Preparing">Preparing</option>
               <option value="Applied">Applied</option>
+              <option value="Application viewed">Application viewed</option>
+              <option value="Recruiter responded">Recruiter responded</option>
+              <option value="Interview scheduled">Interview scheduled</option>
               <option value="Interviewing">Interviewing</option>
-              <option value="Passed">Passed</option>
+              <option value="Final interview">Final interview</option>
+              <option value="Offer">Offer</option>
+              <option value="Passed / Closed">Passed / Closed</option>
             </select>
           </label>
           <label>
@@ -279,6 +325,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
-    <script src="assets/app.js?v=20260814-application-studio" defer></script>
+    <script src="assets/app.js?v=20260814-weekly-pipeline" defer></script>
   </body>
 </html>
