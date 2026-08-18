@@ -259,6 +259,25 @@
             </select>
             <div class="selected-job-summary" id="selectedJobSummary">Use a job card’s “Prepare application” button or choose a role here.</div>
             <a class="button button-secondary disabled-link" id="openSelectedJob" href="#" target="_blank" rel="noreferrer" aria-disabled="true">Open employer application</a>
+
+            <div class="manual-job-divider">— or add a job you found yourself —</div>
+            <button class="button button-quiet" id="toggleManualJob" type="button" aria-expanded="false">+ Add a job posting manually</button>
+            <div class="manual-job-form" id="manualJobForm" hidden>
+              <label class="studio-select-label" for="manualCompany">Company</label>
+              <input type="text" id="manualCompany" placeholder="e.g. Acme Inc.">
+              <label class="studio-select-label" for="manualTitle">Job title</label>
+              <input type="text" id="manualTitle" placeholder="e.g. Strategic Partnerships Manager">
+              <label class="studio-select-label" for="manualLocation">Location / work style</label>
+              <input type="text" id="manualLocation" placeholder="e.g. Remote — United States">
+              <label class="studio-select-label" for="manualUrl">Employer application link</label>
+              <input type="text" id="manualUrl" placeholder="https://…">
+              <label class="studio-select-label" for="manualDescription">Full job description</label>
+              <textarea id="manualDescription" rows="8" placeholder="Paste the full posting text here…"></textarea>
+              <div class="manual-job-actions">
+                <button class="button button-primary" id="useManualJob" type="button">Use this job</button>
+                <button class="button button-quiet" id="clearManualJob" type="button" hidden>Clear manual job</button>
+              </div>
+            </div>
           </article>
         </div>
 
