@@ -47,6 +47,7 @@ const state = {
   tracking: loadTracking(),
   resume: loadResumeProfile(),
   applicationJobId: "",
+  manualJob: null,
   weeklyPicks: [],
   weeklyRankMap: new Map(),
   jobSearchText: new Map(),
@@ -79,6 +80,15 @@ const els = {
   applicationJobSelect: document.querySelector("#applicationJobSelect"),
   selectedJobSummary: document.querySelector("#selectedJobSummary"),
   openSelectedJob: document.querySelector("#openSelectedJob"),
+  toggleManualJob: document.querySelector("#toggleManualJob"),
+  manualJobForm: document.querySelector("#manualJobForm"),
+  manualCompany: document.querySelector("#manualCompany"),
+  manualTitle: document.querySelector("#manualTitle"),
+  manualLocation: document.querySelector("#manualLocation"),
+  manualUrl: document.querySelector("#manualUrl"),
+  manualDescription: document.querySelector("#manualDescription"),
+  useManualJob: document.querySelector("#useManualJob"),
+  clearManualJob: document.querySelector("#clearManualJob"),
   resumeMatchScore: document.querySelector("#resumeMatchScore"),
   studioGuidance: document.querySelector("#studioGuidance"),
   matchedKeywords: document.querySelector("#matchedKeywords"),
@@ -668,6 +678,7 @@ function openSourceHealth() {
 }
 
 function jobForApplication() {
+  if (state.manualJob) return state.manualJob;
   return state.jobs.find(job => job.id === state.applicationJobId);
 }
 
@@ -734,9 +745,14 @@ function renderApplicationStudio() {
     <strong>${escapeHtml(job.company)} · ${escapeHtml(job.title)}</strong>
     <span>${escapeHtml(job.location)} · ${escapeHtml(formatSalary(job))} · ${job.score}/100 portal match</span>
     <span>${escapeHtml(portalDateLine(job))}</span>`;
-  els.openSelectedJob.href = job.apply_url;
-  els.openSelectedJob.removeAttribute("aria-disabled");
-  els.openSelectedJob.classList.remove("disabled-link");
+  els.openSelectedJob.href = job.apply_url || "#";
+  if (job.apply_url) {
+    els.openSelectedJob.removeAttribute("aria-disabled");
+    els.openSelectedJob.classList.remove("disabled-link");
+  } else {
+    els.openSelectedJob.setAttribute("aria-disabled", "true");
+    els.openSelectedJob.classList.add("disabled-link");
+  }
 
   const analysis = analyzeResume(job);
   els.resumeMatchScore.textContent = resumeLoaded ? `${analysis.coverage}%` : "—";
@@ -795,6 +811,55 @@ async function handleResumeUpload(file) {
   }
 }
 
+function buildManualJob() {
+  const company = els.manualCompany.value.trim();
+  const title = els.manualTitle.value.trim();
+  const location = els.manualLocation.value.trim() || "Not specified";
+  const url = els.manualUrl.value.trim();
+  const description = els.manualDescription.value.trim();
+
+  if (!company || !title || !description) {
+    els.studioActionStatus.textContent = "Add at least the company, job title, and the full description before using this job.";
+    return;
+  }
+
+  const now = new Date().toISOString();
+  state.manualJob = {
+    id: `manual:${Date.now()}`,
+    source_type: "manual",
+    company,
+    title,
+    location,
+    workplace_type: location,
+    description,
+    apply_url: url || "",
+    salary_min: null,
+    salary_max: null,
+    salary_currency: "USD",
+    score: null,
+    discovered_at: now,
+    verified_at: now,
+  };
+  state.applicationJobId = state.manualJob.id;
+  els.clearManualJob.hidden = false;
+  renderJobs();
+  renderApplicationStudio();
+  els.studioActionStatus.textContent = "Manual job added below. Scroll down to review and build your tailored application.";
+  document.querySelector("#application-studio").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function clearManualJobEntry() {
+  state.manualJob = null;
+  state.applicationJobId = "";
+  els.manualCompany.value = "";
+  els.manualTitle.value = "";
+  els.manualLocation.value = "";
+  els.manualUrl.value = "";
+  els.manualDescription.value = "";
+  els.clearManualJob.hidden = true;
+  renderApplicationStudio();
+}
+
 function prepareApplication(job) {
   state.applicationJobId = job.id;
   if (trackingFor(job.id).stage === "Not reviewed" || trackingFor(job.id).stage === "Interested") {
@@ -846,7 +911,7 @@ async function copyApplicationBrief() {
   if (!brief) return;
   try {
     await navigator.clipboard.writeText(brief);
-    els.studioActionStatus.textContent = "Tailoring brief copied. Paste it into ChatGPT with this portal open so we can produce and review the final résumé.";
+    els.studioActionStatus.textContent = "Tailoring brief copied. Paste it into Claude with this portal open so we can produce and review the final résumé.";
   } catch {
     els.studioActionStatus.textContent = "Copy was blocked by the browser. Use Download recruiter brief instead.";
   }
@@ -891,9 +956,19 @@ function bindEvents() {
     renderApplicationStudio();
   });
   els.applicationJobSelect.addEventListener("change", event => {
+    state.manualJob = null;
+    els.clearManualJob.hidden = true;
     state.applicationJobId = event.target.value;
     renderApplicationStudio();
   });
+  els.toggleManualJob.addEventListener("click", () => {
+    const isHidden = els.manualJobForm.hidden;
+    els.manualJobForm.hidden = !isHidden;
+    els.toggleManualJob.setAttribute("aria-expanded", String(isHidden));
+    els.toggleManualJob.textContent = isHidden ? "− Add a job posting manually" : "+ Add a job posting manually";
+  });
+  els.useManualJob.addEventListener("click", buildManualJob);
+  els.clearManualJob.addEventListener("click", clearManualJobEntry);
   els.copyApplicationBrief.addEventListener("click", copyApplicationBrief);
   els.downloadApplicationBrief.addEventListener("click", downloadApplicationBrief);
   els.weeklyTopFiveList.addEventListener("click", event => {
