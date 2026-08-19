@@ -1,95 +1,95 @@
 {
-  "generated_at": "2026-08-17T14:03:31.665870+00:00",
+  "generated_at": "2026-08-19T14:17:49.167521+00:00",
   "sources": [
     {
       "company": "OpenAI",
       "source_type": "ashby",
       "slug": "openai",
       "status": "ok",
-      "jobs_found": 741,
+      "jobs_found": 730,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:32.273972+00:00"
+      "checked_at": "2026-08-19T14:17:49.654576+00:00"
     },
     {
       "company": "Anthropic",
       "source_type": "greenhouse",
       "slug": "anthropic",
       "status": "ok",
-      "jobs_found": 448,
+      "jobs_found": 471,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:32.955764+00:00"
+      "checked_at": "2026-08-19T14:17:50.267312+00:00"
     },
     {
       "company": "GitLab",
       "source_type": "greenhouse",
       "slug": "gitlab",
       "status": "ok",
-      "jobs_found": 197,
+      "jobs_found": 200,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:33.370916+00:00"
+      "checked_at": "2026-08-19T14:17:50.710174+00:00"
     },
     {
       "company": "HubSpot",
       "source_type": "greenhouse",
       "slug": "hubspotjobs",
-      "status": "ok",
-      "jobs_found": 153,
-      "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:33.814541+00:00"
+      "status": "error",
+      "jobs_found": 0,
+      "message": "TimeoutError: The read operation timed out",
+      "checked_at": "2026-08-19T14:18:15.745355+00:00"
     },
     {
       "company": "Webflow",
       "source_type": "greenhouse",
       "slug": "webflow",
       "status": "ok",
-      "jobs_found": 28,
+      "jobs_found": 29,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:33.981449+00:00"
+      "checked_at": "2026-08-19T14:18:15.874003+00:00"
     },
     {
       "company": "Figma",
       "source_type": "greenhouse",
       "slug": "figma",
       "status": "ok",
-      "jobs_found": 161,
+      "jobs_found": 163,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:34.334589+00:00"
+      "checked_at": "2026-08-19T14:18:16.101218+00:00"
     },
     {
       "company": "Dropbox",
       "source_type": "greenhouse",
       "slug": "dropbox",
       "status": "ok",
-      "jobs_found": 35,
+      "jobs_found": 39,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:34.532409+00:00"
+      "checked_at": "2026-08-19T14:18:16.551629+00:00"
     },
     {
       "company": "Affirm",
       "source_type": "greenhouse",
       "slug": "affirm",
       "status": "ok",
-      "jobs_found": 193,
+      "jobs_found": 198,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:34.872411+00:00"
+      "checked_at": "2026-08-19T14:18:16.815108+00:00"
     },
     {
       "company": "Stripe",
       "source_type": "greenhouse",
       "slug": "stripe",
       "status": "ok",
-      "jobs_found": 573,
+      "jobs_found": 572,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:35.298404+00:00"
+      "checked_at": "2026-08-19T14:18:17.236786+00:00"
     },
     {
       "company": "Zapier",
       "source_type": "ashby",
       "slug": "zapier",
       "status": "ok",
-      "jobs_found": 12,
+      "jobs_found": 10,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:35.409709+00:00"
+      "checked_at": "2026-08-19T14:18:17.292165+00:00"
     },
     {
       "company": "Vercel",
@@ -98,79 +98,79 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:35.467068+00:00"
+      "checked_at": "2026-08-19T14:18:17.330124+00:00"
     },
     {
       "company": "Remote",
       "source_type": "greenhouse",
       "slug": "remotecom",
       "status": "ok",
-      "jobs_found": 228,
+      "jobs_found": 224,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:35.998789+00:00"
+      "checked_at": "2026-08-19T14:18:17.860513+00:00"
     },
     {
       "company": "Notion",
       "source_type": "ashby",
       "slug": "notion",
       "status": "ok",
-      "jobs_found": 132,
+      "jobs_found": 127,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:36.230055+00:00"
+      "checked_at": "2026-08-19T14:18:17.963232+00:00"
     },
     {
       "company": "Braze",
       "source_type": "greenhouse",
       "slug": "braze",
       "status": "ok",
-      "jobs_found": 247,
+      "jobs_found": 258,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:36.658267+00:00"
+      "checked_at": "2026-08-19T14:18:18.311921+00:00"
     },
     {
       "company": "Datadog",
       "source_type": "greenhouse",
       "slug": "datadog",
       "status": "ok",
-      "jobs_found": 421,
+      "jobs_found": 427,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:37.184074+00:00"
+      "checked_at": "2026-08-19T14:18:18.771377+00:00"
     },
     {
       "company": "Twilio",
       "source_type": "greenhouse",
       "slug": "twilio",
       "status": "ok",
-      "jobs_found": 157,
+      "jobs_found": 150,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:37.549379+00:00"
+      "checked_at": "2026-08-19T14:18:19.010469+00:00"
     },
     {
       "company": "Pinterest",
       "source_type": "greenhouse",
       "slug": "pinterest",
       "status": "ok",
-      "jobs_found": 220,
+      "jobs_found": 216,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:37.860961+00:00"
+      "checked_at": "2026-08-19T14:18:19.307970+00:00"
     },
     {
       "company": "Reddit",
       "source_type": "greenhouse",
       "slug": "reddit",
       "status": "ok",
-      "jobs_found": 151,
+      "jobs_found": 145,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:38.131182+00:00"
+      "checked_at": "2026-08-19T14:18:19.568863+00:00"
     },
     {
       "company": "Airbnb",
       "source_type": "greenhouse",
       "slug": "airbnb",
       "status": "ok",
-      "jobs_found": 188,
+      "jobs_found": 193,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:38.486813+00:00"
+      "checked_at": "2026-08-19T14:18:19.790258+00:00"
     },
     {
       "company": "Deel",
@@ -179,7 +179,7 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public job feed refreshed successfully.",
-      "checked_at": "2026-08-17T14:03:38.590026+00:00"
+      "checked_at": "2026-08-19T14:18:19.856544+00:00"
     }
   ]
 }
