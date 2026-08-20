@@ -177,14 +177,14 @@
     },
     {
       "company": "Confluent",
-      "type": "greenhouse",
+      "type": "ashby",
       "slug": "confluent",
       "careers_url": "https://careers.confluent.io/",
       "priority": 2
     },
     {
       "company": "Plaid",
-      "type": "greenhouse",
+      "type": "ashby",
       "slug": "plaid",
       "careers_url": "https://plaid.com/careers/",
       "priority": 2
@@ -192,7 +192,7 @@
     {
       "company": "DoorDash",
       "type": "greenhouse",
-      "slug": "doordash",
+      "slug": "doordashusa",
       "careers_url": "https://careers.doordash.com/",
       "priority": 1
     },
@@ -226,23 +226,16 @@
     },
     {
       "company": "Gainsight",
-      "type": "greenhouse",
+      "type": "ashby",
       "slug": "gainsight",
       "careers_url": "https://www.gainsight.com/company/careers/",
       "priority": 2
     },
     {
       "company": "Scale AI",
-      "type": "ashby",
+      "type": "greenhouse",
       "slug": "scaleai",
       "careers_url": "https://scale.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Rippling",
-      "type": "ashby",
-      "slug": "rippling",
-      "careers_url": "https://www.rippling.com/careers",
       "priority": 2
     },
     {
@@ -254,7 +247,7 @@
     },
     {
       "company": "Ramp",
-      "type": "greenhouse",
+      "type": "ashby",
       "slug": "ramp",
       "careers_url": "https://ramp.com/careers",
       "priority": 2
