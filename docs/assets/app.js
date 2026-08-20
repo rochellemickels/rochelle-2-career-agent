@@ -31,7 +31,7 @@ const state = {
   weeklyRankMap: new Map(),
   jobSearchText: new Map(),
   visibleJobCount: 30,
-  filters: { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
+  filters: { search: "", tier: "75", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
 
 const els = {
@@ -336,7 +336,7 @@ function getFilteredJobs() {
   });
 
   const pinned = state.weeklyRankMap;
-  return filtered.sort((a, b) => {
+  const sorted = filtered.sort((a, b) => {
     const aPinned = pinned.has(a.id);
     const bPinned = pinned.has(b.id);
     if (aPinned || bPinned) {
@@ -348,6 +348,9 @@ function getFilteredJobs() {
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
     return b.score - a.score;
   });
+  // Hard cap: never show more than your top 100 matches, so the list stays a worklist, not a haystack.
+  state.trueMatchCount = sorted.length;
+  return sorted.slice(0, 100);
 }
 
 function icon(type) {
@@ -404,8 +407,9 @@ function renderCard(job) {
 function renderJobs() {
   const jobs = getFilteredJobs();
   const visibleJobs = jobs.slice(0, state.visibleJobCount);
+  const cappedNote = state.trueMatchCount > 100 ? ` (capped at your top 100 — ${state.trueMatchCount} actually matched)` : "";
   els.resultSummary.textContent = jobs.length
-    ? `Showing ${visibleJobs.length} of ${jobs.length} matching roles · ${state.jobs.length} current total`
+    ? `Showing ${visibleJobs.length} of ${jobs.length} matching roles${cappedNote} · ${state.jobs.length} current total`
     : `0 of ${state.jobs.length} opportunities shown`;
   if (!jobs.length) {
     const template = document.querySelector("#emptyTemplate");
@@ -453,9 +457,10 @@ function renderFilterChips() {
 }
 
 function clearFilters() {
-  state.filters = { search: "", tier: "all", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" };
+  state.filters = { search: "", tier: "75", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" };
   els.search.value = "";
-  els.tier.value = els.lane.value = els.work.value = els.location.value = els.salary.value = els.company.value = els.stage.value = "all";
+  els.tier.value = "75";
+  els.lane.value = els.work.value = els.location.value = els.salary.value = els.company.value = els.stage.value = "all";
   els.sort.value = "score";
   state.visibleJobCount = 30;
   renderJobs();
