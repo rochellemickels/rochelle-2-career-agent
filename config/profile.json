@@ -3,9 +3,9 @@
   "name": "Rochelle Mickels",
   "location": "Grapevine, Texas",
   "minimum_viable_base_salary": 85000,
-  "preferred_base_salary_floor": 100000,
-  "ideal_base_salary_min": 110000,
-  "ideal_base_salary_max": 135000,
+  "preferred_base_salary_floor": 105000,
+  "ideal_base_salary_min": 115000,
+  "ideal_base_salary_max": 140000,
   "work_preferences": [
     "US remote",
     "Dallas-Fort Worth hybrid"
@@ -53,7 +53,19 @@
     "go-to-market strategy manager",
     "growth strategy manager",
     "strategy and operations manager",
-    "strategy & operations manager"
+    "strategy & operations manager",
+    "ai advisor",
+    "ai consultant",
+    "ai strategy consultant",
+    "ai adoption consultant",
+    "ai business consultant",
+    "gtm ai advisor",
+    "customer ai advisor",
+    "digital advisory consultant",
+    "innovation consultant",
+    "technology advisory consultant",
+    "implementation consultant",
+    "business transformation advisor"
   ],
   "adjacent_titles": [
     "senior manager strategic partnerships",
@@ -72,7 +84,15 @@
     "sales enablement manager",
     "market development manager",
     "commercial strategy manager",
-    "business operations manager"
+    "business operations manager",
+    "management consultant",
+    "strategy consultant",
+    "client advisor",
+    "trusted advisor",
+    "process improvement consultant",
+    "change management consultant",
+    "organizational change consultant",
+    "customer transformation manager"
   ],
   "stretch_titles": [
     "director strategic partnerships",
@@ -143,13 +163,49 @@
     "intern",
     "entry level",
     "commission only",
-    "door to door"
+    "door to door",
+    "ai engineer",
+    "artificial intelligence engineer",
+    "prompt engineer",
+    "applied scientist",
+    "research scientist",
+    "quota carrying",
+    "outside sales",
+    "territory sales representative"
   ],
   "values_keywords": {
-    "mission_and_impact": ["mission", "impact", "community", "purpose", "social good", "public benefit"],
-    "inclusion": ["inclusive", "inclusion", "belonging", "diversity", "underrepresented", "equity"],
-    "people_and_customers": ["customer success", "customer outcomes", "small business", "women", "veteran", "healthcare", "benefits"],
-    "ethics_and_trust": ["ethical", "responsible ai", "trust", "transparency", "integrity"]
+    "mission_and_impact": [
+      "mission",
+      "impact",
+      "community",
+      "purpose",
+      "social good",
+      "public benefit"
+    ],
+    "inclusion": [
+      "inclusive",
+      "inclusion",
+      "belonging",
+      "diversity",
+      "underrepresented",
+      "equity"
+    ],
+    "people_and_customers": [
+      "customer success",
+      "customer outcomes",
+      "small business",
+      "women",
+      "veteran",
+      "healthcare",
+      "benefits"
+    ],
+    "ethics_and_trust": [
+      "ethical",
+      "responsible ai",
+      "trust",
+      "transparency",
+      "integrity"
+    ]
   },
   "leadership_keywords": [
     "lead strategy",
@@ -186,7 +242,9 @@
     "market expansion",
     "revenue growth",
     "build and lead",
-    "manage a team"
+    "manage a team",
+    "trusted advisor",
+    "advisory"
   ],
   "ai_keywords": [
     "artificial intelligence",
@@ -197,7 +255,9 @@
     "ai transformation",
     "automation",
     "digital transformation",
-    "llm"
+    "llm",
+    "ai advisory",
+    "ai consulting"
   ],
   "commission_risk_keywords": [
     "commission only",
