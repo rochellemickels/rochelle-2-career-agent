@@ -17,28 +17,7 @@ const APPLICATION_STAGES = [
 
 const APPLIED_STAGES = new Set(APPLICATION_STAGES.slice(3));
 
-const CURATED_WEEKLY_PICKS = [
-  {
-    id: "greenhouse:pinterest:8109351",
-    reason: "Best overall fit: enablement, coaching, SMB growth, operating rhythms, and practical AI fluency without a quota-carrying sales focus.",
-  },
-  {
-    id: "greenhouse:gitlab:8604996002",
-    reason: "Strong bridge from agency and client operations into customer-success strategy, cross-functional change, and process leadership.",
-  },
-  {
-    id: "greenhouse:dropbox:8092224",
-    reason: "Excellent compensation overlap with planning, executive communication, adoption, and stakeholder coordination at the center of the role.",
-  },
-  {
-    id: "greenhouse:stripe:8042309",
-    reason: "High-value stretch role emphasizing strategic programs, change management, executive communication, and turning GTM strategy into execution.",
-  },
-  {
-    id: "greenhouse:dropbox:8048847",
-    reason: "Strong strategic-relationship fit when positioned around partner ecosystems, negotiation, adoption, and long-term growth—not direct selling.",
-  },
-];
+// Weekly Top 5 is computed dynamically from each job's real, current score — see buildJobCaches().
 
 const state = {
   jobs: [],
@@ -189,16 +168,18 @@ function buildJobCaches() {
     `${job.title} ${job.company} ${job.department} ${job.location} ${job.description}`.toLowerCase(),
   ]));
 
-  const byId = new Map(state.jobs.map(job => [job.id, job]));
-  const selected = CURATED_WEEKLY_PICKS.map(pick => byId.get(pick.id)).filter(Boolean);
-  const selectedIds = new Set(selected.map(job => job.id));
-  const fallback = state.jobs
-    .filter(job => !selectedIds.has(job.id))
-    .map(job => ({ job, score: recruiterPriorityScore(job, state.jobSearchText.get(job.id)) }))
-    .sort((a, b) => b.score - a.score)
+  // Only jobs that are a genuine "Good Match" (70+) or better are eligible for the
+  // weekly Top 5 / "Highly Recommended" badge — this is the real, current score from
+  // the scanner, not a stale hardcoded list. Among those, recruiterPriorityScore()
+  // breaks ties using remote/salary/keyword signals.
+  const QUALITY_FLOOR = 70;
+  const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR);
+  const ranked = eligible
+    .map(job => ({ job, priority: recruiterPriorityScore(job, state.jobSearchText.get(job.id)) }))
+    .sort((a, b) => b.priority - a.priority)
     .map(item => item.job);
 
-  state.weeklyPicks = [...selected, ...fallback].slice(0, 5);
+  state.weeklyPicks = ranked.slice(0, 5);
   state.weeklyRankMap = new Map(state.weeklyPicks.map((job, index) => [job.id, index + 1]));
 }
 
@@ -211,8 +192,11 @@ function weeklyPickRank(id) {
 }
 
 function weeklyPickReason(job) {
-  return CURATED_WEEKLY_PICKS.find(pick => pick.id === job.id)?.reason
-    || "Current verified role with the strongest balance of transferable fit, compensation, flexibility, and realistic candidacy.";
+  const strengths = (job.strengths || []).slice(0, 2);
+  if (strengths.length) {
+    return `${job.tier} (${job.score}/100): ${strengths.join("; ")}.`;
+  }
+  return "Current verified role with the strongest balance of transferable fit, compensation, flexibility, and realistic candidacy.";
 }
 
 function weekRangeLabel() {
