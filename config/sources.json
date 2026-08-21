@@ -251,6 +251,62 @@
       "slug": "ramp",
       "careers_url": "https://ramp.com/careers",
       "priority": 2
+    },
+    {
+      "company": "AnswerRocket",
+      "type": "greenhouse",
+      "slug": "answerrocket",
+      "careers_url": "https://answerrocket.com/careers/",
+      "priority": 1
+    },
+    {
+      "company": "NICE",
+      "type": "greenhouse",
+      "slug": "nice",
+      "careers_url": "https://www.nice.com/careers",
+      "priority": 2
+    },
+    {
+      "company": "Zafin",
+      "type": "greenhouse",
+      "slug": "zafinlabsamericasinc",
+      "careers_url": "https://zafin.com/careers/",
+      "priority": 2
+    },
+    {
+      "company": "Nimble Gravity",
+      "type": "greenhouse",
+      "slug": "nimblegravity",
+      "careers_url": "https://nimblegravity.com/careers/",
+      "priority": 2
+    },
+    {
+      "company": "Talkdesk",
+      "type": "greenhouse",
+      "slug": "talkdesk2",
+      "careers_url": "https://www.talkdesk.com/careers/",
+      "priority": 2
+    },
+    {
+      "company": "Sitetracker",
+      "type": "lever",
+      "slug": "sitetracker",
+      "careers_url": "https://www.sitetracker.com/careers/",
+      "priority": 2
+    },
+    {
+      "company": "Atmosera",
+      "type": "lever",
+      "slug": "atmosera",
+      "careers_url": "https://atmosera.com/careers/",
+      "priority": 2
+    },
+    {
+      "company": "Buyers Edge Platform",
+      "type": "greenhouse",
+      "slug": "buyersedgeplatformrecruiting",
+      "careers_url": "https://www.buyersedgeplatform.com/careers",
+      "priority": 2
     }
   ]
 }
