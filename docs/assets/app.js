@@ -1,5 +1,6 @@
 const STORAGE_KEY = "rochelle-career-tracking-v1";
 const RESUME_STORAGE_KEY = "rochelle-master-resume-v1";
+const MANUAL_JOBS_KEY = "rochelle-manual-jobs-v1";
 
 const APPLICATION_STAGES = [
   "Not reviewed",
@@ -26,7 +27,7 @@ const state = {
   tracking: loadTracking(),
   resume: loadResumeProfile(),
   applicationJobId: "",
-  manualJob: null,
+  manualJobs: loadManualJobs(),
   weeklyPicks: [],
   weeklyRankMap: new Map(),
   jobSearchText: new Map(),
@@ -96,6 +97,15 @@ function loadResumeProfile() {
   catch { return { name: "", text: "" }; }
 }
 
+function loadManualJobs() {
+  try { return JSON.parse(localStorage.getItem(MANUAL_JOBS_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveManualJobs() {
+  localStorage.setItem(MANUAL_JOBS_KEY, JSON.stringify(state.manualJobs));
+}
+
 function saveResumeProfile() {
   localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(state.resume));
 }
@@ -116,6 +126,7 @@ function trackingFor(id) {
     statusUpdatedAt: "",
     history: [],
     jobSnapshot: null,
+    rating: 0,
     ...saved,
     stage: saved.stage === "Passed" ? "Passed / Closed" : (saved.stage || "Not reviewed"),
   };
@@ -171,7 +182,8 @@ function buildJobCaches() {
   // Only jobs that are a genuine "Good Match" (70+) or better are eligible for the
   // weekly Top 5 / "Highly Recommended" badge — this is the real, current score from
   // the scanner, not a stale hardcoded list. Among those, recruiterPriorityScore()
-  // breaks ties using remote/salary/keyword signals.
+  // breaks ties using remote/salary/keyword signals. Manually added jobs have no
+  // score by default, so they simply don't compete for this badge unless rescored.
   const QUALITY_FLOOR = 70;
   const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR);
   const ranked = eligible
@@ -237,6 +249,11 @@ function portalDateLine(job) {
 function plainText(value = "") {
   const parsed = new DOMParser().parseFromString(String(value), "text/html");
   return (parsed.body.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function starLabel(rating) {
+  const value = Number(rating) || 0;
+  return "★".repeat(value) + "☆".repeat(5 - value);
 }
 
 const ROLE_SIGNALS = [
@@ -325,8 +342,11 @@ function getFilteredJobs() {
       || (state.filters.work === "remote" && work.includes("remote"))
       || (state.filters.work === "hybrid" && work.includes("hybrid"))
       || (state.filters.work === "onsite" && !work.includes("remote") && !work.includes("hybrid"));
+    // Manually added jobs have no automated score — always let them through the match-tier filter
+    // rather than getting hidden by a minimum-score floor they were never scored against.
+    const scoreOk = job.source_type === "manual" ? true : job.score >= minimum;
     return (!query || haystack.includes(query))
-      && job.score >= minimum
+      && scoreOk
       && matchesCareerLane(job, state.filters.lane)
       && workMatch
       && matchesLocation(job, state.filters.location)
@@ -346,7 +366,7 @@ function getFilteredJobs() {
     if (state.filters.sort === "newest") return String(b.discovered_at || b.posted_at || "").localeCompare(String(a.discovered_at || a.posted_at || ""));
     if (state.filters.sort === "salary") return (b.salary_max || 0) - (a.salary_max || 0);
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
-    return b.score - a.score;
+    return (b.score || 0) - (a.score || 0);
   });
   // Hard cap: never show more than your top 100 matches, so the list stays a worklist, not a haystack.
   state.trueMatchCount = sorted.length;
@@ -367,22 +387,25 @@ function renderCard(job) {
   const topStrength = job.strengths?.[0];
   const topGap = job.gaps?.[0];
   const rank = weeklyPickRank(job.id);
+  const isManual = job.source_type === "manual";
+  const scoreDisplay = job.score != null ? job.score : "—";
   return `
     <article class="job-card ${rank ? `weekly-ranked rank-${rank}` : ""}" data-job-id="${escapeHtml(job.id)}">
       <div class="score-block">
         ${rank ? `<span class="rank-flag">#${rank}</span>` : ""}
-        <div class="score-ring" style="--score-color:${scoreColor(job.score)}">
-          <div><strong>${job.score}</strong><small>/100</small></div>
+        <div class="score-ring" style="--score-color:${scoreColor(job.score || 0)}">
+          <div><strong>${scoreDisplay}</strong><small>/100</small></div>
         </div>
-        <span class="tier-label">${escapeHtml(job.tier)}</span>
+        <span class="tier-label">${escapeHtml(job.tier || (isManual ? "Added by you" : ""))}</span>
       </div>
       <div class="job-main">
         <div class="company-line">
           <span>${escapeHtml(job.company)}</span>
-          <span class="source-badge">${escapeHtml(job.source_type)}</span>
-          <span class="source-badge">100-point match</span>
+          <span class="source-badge">${escapeHtml(isManual ? "manually added" : job.source_type)}</span>
+          ${!isManual ? '<span class="source-badge">100-point match</span>' : ""}
           ${rank ? `<span class="weekly-rank-badge rank-${rank}">Highly Recommended #${rank}</span>` : ""}
           ${tracking.stage !== "Not reviewed" ? `<span class="stage-badge">${escapeHtml(tracking.stage)}</span>` : ""}
+          ${tracking.rating ? `<span class="rating-badge" title="Your rating">${starLabel(tracking.rating)}</span>` : ""}
         </div>
         <h3>${escapeHtml(job.title)}</h3>
         <div class="job-meta">
@@ -390,7 +413,7 @@ function renderCard(job) {
           <span>${icon("briefcase")}${escapeHtml(job.workplace_type)}</span>
           <span>${icon("money")}${escapeHtml(formatSalary(job))}</span>
         </div>
-        <p class="job-summary">${escapeHtml(job.summary || job.description.slice(0, 260))}</p>
+        <p class="job-summary">${escapeHtml(job.summary || (job.description || "").slice(0, 260))}</p>
         <div class="signal-row">
           ${topStrength ? `<span class="signal">✓ ${escapeHtml(topStrength)}</span>` : ""}
           ${topGap ? `<span class="signal gap">Check: ${escapeHtml(topGap)}</span>` : ""}
@@ -473,6 +496,7 @@ function updateFilter(key, value) {
 }
 
 function breakdownRows(job) {
+  if (!job.breakdown) return "";
   const dimensions = [
     ["Role fit", "role_fit", 25], ["Compensation", "compensation", 20], ["Work style", "work_style", 15],
     ["Values", "values", 15], ["Leadership", "leadership", 10], ["AI relevance", "ai_relevance", 10], ["Quality", "quality", 5],
@@ -586,15 +610,17 @@ function renderAppliedPositions() {
 
 function openJob(job) {
   const tracking = trackingFor(job.id);
+  const hasScore = Boolean(job.breakdown) && job.score != null;
   els.dialogContent.innerHTML = `
-    <p class="dialog-kicker">${escapeHtml(job.tier)} · ${escapeHtml(job.recommended_action)}</p>
+    <p class="dialog-kicker">${escapeHtml(job.tier || "Manually added")} · ${escapeHtml(job.recommended_action || "Added by you")}</p>
     <h2>${escapeHtml(job.title)}</h2>
     <p class="dialog-company">${escapeHtml(job.company)} · ${escapeHtml(job.location)} · ${escapeHtml(formatSalary(job))}</p>
+    ${hasScore ? `
     <div class="dialog-score">
       <div class="dialog-score-number" style="color:${scoreColor(job.score)}">${job.score}<small>/100</small></div>
       <div class="breakdown">${breakdownRows(job)}</div>
-    </div>
-    <p>${escapeHtml(job.summary)}</p>
+    </div>` : '<p class="dialog-manual-note">You added this role yourself — no automated match score. Use the rating below to track your own interest.</p>'}
+    <p>${escapeHtml(job.summary || "")}</p>
     <div class="dialog-grid">
       <section class="evidence-panel"><h3>Why it matches</h3><ul>${(job.strengths || []).map(item => `<li>${escapeHtml(item)}</li>`).join("") || "<li>No strong evidence captured yet.</li>"}</ul></section>
       <section class="evidence-panel"><h3>What to verify</h3><ul>${(job.gaps || []).map(item => `<li>${escapeHtml(item)}</li>`).join("") || "<li>No material gaps captured.</li>"}</ul></section>
@@ -603,6 +629,14 @@ function openJob(job) {
       <h3>Your private application tracker</h3>
       <div class="tracking-grid">
         <label><span>Stage</span><select id="dialogStage">${APPLICATION_STAGES.map(stage => `<option ${stage === tracking.stage ? "selected" : ""}>${stage}</option>`).join("")}</select></label>
+        <label><span>Your rating</span><select id="dialogRating">
+          <option value="0" ${tracking.rating === 0 ? "selected" : ""}>Not rated</option>
+          <option value="1" ${tracking.rating === 1 ? "selected" : ""}>★☆☆☆☆</option>
+          <option value="2" ${tracking.rating === 2 ? "selected" : ""}>★★☆☆☆</option>
+          <option value="3" ${tracking.rating === 3 ? "selected" : ""}>★★★☆☆ — Good fit</option>
+          <option value="4" ${tracking.rating === 4 ? "selected" : ""}>★★★★☆</option>
+          <option value="5" ${tracking.rating === 5 ? "selected" : ""}>★★★★★ — Dream role</option>
+        </select></label>
         <label><span>Date applied</span><input id="dialogAppliedAt" type="date" value="${escapeHtml(dateInputValue(tracking.appliedAt))}" /></label>
         <label><span>Recruiter / contact</span><input id="dialogContact" type="text" value="${escapeHtml(tracking.contact)}" placeholder="Name or email" /></label>
         <label><span>Next follow-up</span><input id="dialogFollowUp" type="date" value="${escapeHtml(dateInputValue(tracking.nextFollowUp))}" /></label>
@@ -611,7 +645,7 @@ function openJob(job) {
       <p class="tracking-updated">${tracking.statusUpdatedAt ? `Status last updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Status updates are private to this browser."}</p>
     </section>
     <div class="dialog-actions">
-      <a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>
+      ${job.apply_url ? `<a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>` : ""}
       <button class="button button-secondary" type="button" id="dialogPrepare">Prepare application</button>
       <button class="button button-secondary favorite-button" type="button" id="dialogFavorite" aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
     </div>
@@ -622,6 +656,7 @@ function openJob(job) {
     prepareApplication(job);
   });
   els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
+  els.dialogContent.querySelector("#dialogRating").addEventListener("change", event => updateTracking(job.id, { rating: Number(event.target.value) }));
   els.dialogContent.querySelector("#dialogAppliedAt").addEventListener("change", event => updateTracking(job.id, { appliedAt: event.target.value }));
   els.dialogContent.querySelector("#dialogContact").addEventListener("change", event => updateTracking(job.id, { contact: event.target.value }));
   els.dialogContent.querySelector("#dialogFollowUp").addEventListener("change", event => updateTracking(job.id, { nextFollowUp: event.target.value }));
@@ -667,7 +702,6 @@ function openSourceHealth() {
 }
 
 function jobForApplication() {
-  if (state.manualJob) return state.manualJob;
   return state.jobs.find(job => job.id === state.applicationJobId);
 }
 
@@ -702,7 +736,7 @@ function renderApplicationStudio() {
       if (pinned.has(a.id) && pinned.has(b.id)) return pinned.get(a.id) - pinned.get(b.id);
       return pinned.has(a.id) ? -1 : 1;
     }
-    return b.score - a.score;
+    return (b.score || 0) - (a.score || 0);
   });
   els.applicationJobSelect.innerHTML = '<option value="">Select a verified role</option>'
     + jobs.map(job => `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job))}</option>`).join("");
@@ -732,7 +766,7 @@ function renderApplicationStudio() {
 
   els.selectedJobSummary.innerHTML = `
     <strong>${escapeHtml(job.company)} · ${escapeHtml(job.title)}</strong>
-    <span>${escapeHtml(job.location)} · ${escapeHtml(formatSalary(job))} · ${job.score}/100 portal match</span>
+    <span>${escapeHtml(job.location)} · ${escapeHtml(formatSalary(job))} · ${job.score != null ? `${job.score}/100 portal match` : "manually added"}</span>
     <span>${escapeHtml(portalDateLine(job))}</span>`;
   els.openSelectedJob.href = job.apply_url || "#";
   if (job.apply_url) {
@@ -813,7 +847,7 @@ function buildManualJob() {
   }
 
   const now = new Date().toISOString();
-  state.manualJob = {
+  const newJob = {
     id: `manual:${Date.now()}`,
     source_type: "manual",
     company,
@@ -826,27 +860,40 @@ function buildManualJob() {
     salary_max: null,
     salary_currency: "USD",
     score: null,
+    tier: "Added by you",
+    recommended_action: "Added by you",
     discovered_at: now,
     verified_at: now,
   };
-  state.applicationJobId = state.manualJob.id;
-  els.clearManualJob.hidden = false;
-  renderJobs();
-  renderApplicationStudio();
-  els.studioActionStatus.textContent = "Manual job added below. Scroll down to review and build your tailored application.";
-  document.querySelector("#application-studio").scrollIntoView({ behavior: "smooth", block: "start" });
-}
 
-function clearManualJobEntry() {
-  state.manualJob = null;
-  state.applicationJobId = "";
+  // Persist so this job survives a page reload, appears as a real card in the
+  // main list, and can carry its own stage, notes, and rating — not just a
+  // one-time staging slot for the tailoring tool.
+  state.manualJobs.push(newJob);
+  saveManualJobs();
+  state.jobs.push(newJob);
+  state.jobSearchText.set(newJob.id, `${newJob.title} ${newJob.company} ${newJob.location} ${newJob.description}`.toLowerCase());
+  updateTracking(newJob.id, { stage: "Interested" }, false);
+
+  state.applicationJobId = newJob.id;
   els.manualCompany.value = "";
   els.manualTitle.value = "";
   els.manualLocation.value = "";
   els.manualUrl.value = "";
   els.manualDescription.value = "";
-  els.clearManualJob.hidden = true;
+
+  renderJobs();
   renderApplicationStudio();
+  els.studioActionStatus.textContent = `${company} — ${title} added to your job board and tracker. Scroll down to review and build your tailored application.`;
+  document.querySelector("#application-studio").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function clearManualJobEntry() {
+  els.manualCompany.value = "";
+  els.manualTitle.value = "";
+  els.manualLocation.value = "";
+  els.manualUrl.value = "";
+  els.manualDescription.value = "";
 }
 
 function prepareApplication(job) {
@@ -945,8 +992,6 @@ function bindEvents() {
     renderApplicationStudio();
   });
   els.applicationJobSelect.addEventListener("change", event => {
-    state.manualJob = null;
-    els.clearManualJob.hidden = true;
     state.applicationJobId = event.target.value;
     renderApplicationStudio();
   });
@@ -1005,7 +1050,7 @@ async function loadData() {
     const data = await jobsResponse.json();
     const statusData = statusResponse.ok ? await statusResponse.json() : { sources: [] };
     state.generatedAt = data.generated_at || null;
-    state.jobs = data.jobs || [];
+    state.jobs = [...(data.jobs || []), ...state.manualJobs];
     state.statuses = statusData.sources || [];
     state.visibleJobCount = 30;
     buildJobCaches();
