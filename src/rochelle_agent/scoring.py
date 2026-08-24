@@ -30,6 +30,30 @@ def is_us_eligible_location(job: Job, profile: dict[str, Any]) -> bool:
     return not has_non_us_constraint or has_us_or_global_scope
 
 
+def _resume_signal_matches(body: str, profile: dict[str, Any]) -> list[str]:
+    """
+    For every signal category this JOB actually emphasizes, check whether Rochelle's
+    real master résumé explicitly supports it too. This mirrors exactly how the
+    Application Studio's per-application keyword-coverage check works — same 24
+    categories, same overlap logic — so the main job-level score is now grounded in
+    her ACTUAL résumé, not a separate generic hand-authored keyword list. A job that
+    emphasizes signals her résumé doesn't support gets fewer matches here, same as it
+    would show a lower keyword-coverage percentage in the Studio.
+    """
+    resume = profile.get("master_resume_text", "").lower()
+    if not resume:
+        return _contains(body, profile["transferable_strength_keywords"])
+    matched: list[str] = []
+    for label, terms in profile.get("role_signal_categories", []):
+        job_relevant = any(term.lower() in body for term in terms)
+        if not job_relevant:
+            continue
+        resume_supports = any(term.lower() in resume for term in terms)
+        if resume_supports:
+            matched.append(label)
+    return matched
+
+
 def _score_role_fit(
     title: str,
     body: str,
@@ -42,7 +66,7 @@ def _score_role_fit(
     adjacent = _contains(title, profile["adjacent_titles"])
     stretch = _contains(title, profile["stretch_titles"])
     executive_stretch = _contains(title, profile["executive_stretch_titles"])
-    transferable_hits = _contains(body, profile["transferable_strength_keywords"])
+    transferable_hits = _resume_signal_matches(body, profile)
 
     if excluded:
         role_fit = 1
@@ -98,10 +122,24 @@ def _score_role_fit(
         else:
             gaps.append("Title is not an obvious match to the priority career lanes")
 
+    # A title match alone isn't enough — a role can be titled "Customer Success Manager"
+    # or "Solutions Consultant" and still be a poor fit if the actual day-to-day requires
+    # owning a personal sales/incentive quota, or requires deep hands-on technical
+    # practitioner depth (e.g., Git/DevSecOps mastery, technical support, building AI
+    # models) rather than advisory-level fluency. These are hard caps, not proportional
+    # subtractions — a role with genuine disqualifying content should read as a clear
+    # skip, not just a slightly-lower "Strong Match." A strong title match should never
+    # be able to mostly cancel out a real red flag in the body of the posting.
     sales_dominance = _contains(body, profile["sales_dominance_risk_keywords"])
     if sales_dominance:
-        role_fit = max(1, role_fit - min(6, len(sales_dominance) * 2))
-        gaps.append("Role may emphasize individual quota-selling more than strategic relationship work")
+        role_fit = min(role_fit, 8)
+        gaps.append("Role may emphasize individual sales quota, or incentive/compensation-plan ownership, over strategic relationship or implementation work")
+
+    technical_depth = _contains(body, profile.get("deep_technical_practitioner_keywords", []))
+    if len(technical_depth) >= 2:
+        role_fit = min(role_fit, 8)
+        gaps.append("Role may require hands-on technical practitioner depth (e.g., Git/DevSecOps, technical support, AI model building) beyond advisory-level fluency")
+
     return role_fit
 
 
