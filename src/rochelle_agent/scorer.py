@@ -125,18 +125,20 @@ def _score_role_fit(
     # A title match alone isn't enough — a role can be titled "Customer Success Manager"
     # or "Solutions Consultant" and still be a poor fit if the actual day-to-day requires
     # owning a personal sales/incentive quota, or requires deep hands-on technical
-    # practitioner depth (e.g., Git/DevSecOps mastery, building AI models) rather than
-    # advisory-level fluency. Both are scored as real penalties, not just noted as gaps,
-    # because a high title-match score was exactly what let these slip through before.
+    # practitioner depth (e.g., Git/DevSecOps mastery, technical support, building AI
+    # models) rather than advisory-level fluency. These are hard caps, not proportional
+    # subtractions — a role with genuine disqualifying content should read as a clear
+    # skip, not just a slightly-lower "Strong Match." A strong title match should never
+    # be able to mostly cancel out a real red flag in the body of the posting.
     sales_dominance = _contains(body, profile["sales_dominance_risk_keywords"])
     if sales_dominance:
-        role_fit = max(1, role_fit - min(14, len(sales_dominance) * 4))
+        role_fit = min(role_fit, 8)
         gaps.append("Role may emphasize individual sales quota, or incentive/compensation-plan ownership, over strategic relationship or implementation work")
 
     technical_depth = _contains(body, profile.get("deep_technical_practitioner_keywords", []))
     if len(technical_depth) >= 2:
-        role_fit = max(1, role_fit - min(14, len(technical_depth) * 3))
-        gaps.append("Role may require hands-on technical practitioner depth (e.g., Git/DevSecOps, AI model building) beyond advisory-level fluency")
+        role_fit = min(role_fit, 8)
+        gaps.append("Role may require hands-on technical practitioner depth (e.g., Git/DevSecOps, technical support, AI model building) beyond advisory-level fluency")
 
     return role_fit
 
