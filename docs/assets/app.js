@@ -30,6 +30,7 @@ const state = {
   applicationJobId: "",
   manualJobs: loadManualJobs(),
   visibleJobCount: 30,
+  showClosedApplications: false,
   jobSearchText: new Map(),
   filters: { search: "", tier: "75", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
@@ -487,6 +488,10 @@ function appliedEntries() {
     .map(([id, value]) => {
       const tracking = trackingFor(id);
       if (!APPLIED_STAGES.has(tracking.stage)) return null;
+      // "Passed / Closed" is a resolved outcome, not something she's actively
+      // following up on — hidden by default, but never actually deleted. She can
+      // still glance back at closed roles with the toggle below the list.
+      if (tracking.stage === "Passed / Closed" && !state.showClosedApplications) return null;
       const currentJob = state.jobs.find(job => job.id === id);
       const job = currentJob || tracking.jobSnapshot;
       return job ? { id, job, tracking, current: Boolean(currentJob) } : null;
@@ -495,8 +500,30 @@ function appliedEntries() {
     .sort((a, b) => String(b.tracking.statusUpdatedAt || b.tracking.appliedAt || "").localeCompare(String(a.tracking.statusUpdatedAt || a.tracking.appliedAt || "")));
 }
 
+function ensureClosedToggle() {
+  if (document.querySelector("#showClosedToggleWrap") || !els.appliedList) return;
+  const wrap = document.createElement("label");
+  wrap.id = "showClosedToggleWrap";
+  wrap.style.cssText = "display:flex; align-items:center; gap:8px; font-size:13px; color:var(--slate,#6b6b6b); margin:0 0 14px; cursor:pointer;";
+  wrap.innerHTML = `<input type="checkbox" id="showClosedToggle" /> <span id="showClosedToggleLabel">Show closed / passed roles</span>`;
+  els.appliedList.parentNode.insertBefore(wrap, els.appliedList);
+  document.querySelector("#showClosedToggle").addEventListener("change", event => {
+    state.showClosedApplications = event.target.checked;
+    renderAppliedPositions();
+  });
+}
+
 function renderAppliedPositions() {
   if (!els.appliedList) return;
+  ensureClosedToggle();
+  const closedCount = Object.values(state.tracking).filter(item => (item.stage || "") === "Passed / Closed").length;
+  const toggleLabel = document.querySelector("#showClosedToggleLabel");
+  if (toggleLabel) toggleLabel.textContent = closedCount ? `Show closed / passed roles (${closedCount})` : "Show closed / passed roles";
+  const toggleInput = document.querySelector("#showClosedToggle");
+  const toggleWrap = document.querySelector("#showClosedToggleWrap");
+  if (toggleWrap) toggleWrap.style.display = closedCount ? "flex" : "none";
+  if (toggleInput) toggleInput.checked = Boolean(state.showClosedApplications);
+
   const entries = appliedEntries();
   const progressValues = entries.map(entry => applicationProgress(entry.tracking));
   els.pipelineApplied.textContent = entries.length;
