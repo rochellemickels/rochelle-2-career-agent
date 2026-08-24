@@ -4,6 +4,7 @@ const MANUAL_JOBS_KEY = "rochelle-manual-jobs-v1";
 
 const APPLICATION_STAGES = [
   "Not reviewed",
+  "Skip - Not a good fit",
   "Interested",
   "Preparing",
   "Applied",
@@ -16,7 +17,7 @@ const APPLICATION_STAGES = [
   "Passed / Closed",
 ];
 
-const APPLIED_STAGES = new Set(APPLICATION_STAGES.slice(3));
+const APPLIED_STAGES = new Set(APPLICATION_STAGES.slice(4));
 
 // Weekly Top 5 is computed dynamically from each job's real, current score — see buildJobCaches().
 
@@ -173,11 +174,12 @@ function recruiterPriorityScore(job, text = "") {
   return score;
 }
 
-// A role is "resolved" once she's applied to it (or beyond) or marked it Passed/Closed —
-// either way, it's a decision that's already been made and shouldn't keep resurfacing.
+// A role is "resolved" once she's applied to it (or beyond), marked it Passed/Closed,
+// or explicitly skipped it as not a good fit — any of these means a decision has
+// already been made and it shouldn't keep taking up space in the active view.
 function isResolved(id) {
   const stage = trackingFor(id).stage;
-  return APPLIED_STAGES.has(stage) || stage === "Passed / Closed";
+  return APPLIED_STAGES.has(stage) || stage === "Passed / Closed" || stage === "Skip - Not a good fit";
 }
 
 function buildJobCaches() {
@@ -437,6 +439,7 @@ function renderCard(job) {
         <button class="button button-primary" type="button" data-view-job>View match details</button>
         <button class="button button-secondary" type="button" data-prepare-job>Prepare application</button>
         <button class="button button-secondary favorite-button" type="button" data-favorite aria-pressed="${tracking.favorite}">${tracking.favorite ? "★ Saved" : "☆ Save role"}</button>
+        <button class="button button-secondary skip-button" type="button" data-skip-job title="Not a good fit — hide this role">✕ Skip</button>
         <span class="date-line">${escapeHtml(portalDateLine(job))}</span>
       </div>
     </article>`;
@@ -1085,6 +1088,7 @@ function bindEvents() {
     if (event.target.closest("[data-favorite]")) updateTracking(job.id, { favorite: !trackingFor(job.id).favorite });
     if (event.target.closest("[data-prepare-job]")) prepareApplication(job);
     if (event.target.closest("[data-view-job]")) openJob(job);
+    if (event.target.closest("[data-skip-job]")) updateTracking(job.id, { stage: "Skip - Not a good fit" });
   });
 }
 
