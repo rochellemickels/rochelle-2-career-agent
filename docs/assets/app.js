@@ -19,7 +19,7 @@ const APPLICATION_STAGES = [
 
 const APPLIED_STAGES = new Set(APPLICATION_STAGES.slice(4));
 
-// Weekly Top 5 is computed dynamically from each job's real, current score — see buildJobCaches().
+// Job scores are recomputed here whenever tracking changes — see buildJobCaches().
 
 const state = {
   jobs: [],
@@ -29,10 +29,8 @@ const state = {
   resume: loadResumeProfile(),
   applicationJobId: "",
   manualJobs: loadManualJobs(),
-  weeklyPicks: [],
-  weeklyRankMap: new Map(),
-  jobSearchText: new Map(),
   visibleJobCount: 30,
+  jobSearchText: new Map(),
   filters: { search: "", tier: "75", lane: "all", work: "all", location: "all", salary: "all", company: "all", stage: "all", sort: "score" },
 };
 
@@ -77,8 +75,6 @@ const els = {
   copyApplicationBrief: document.querySelector("#copyApplicationBrief"),
   downloadApplicationBrief: document.querySelector("#downloadApplicationBrief"),
   studioActionStatus: document.querySelector("#studioActionStatus"),
-  weeklyTopFiveList: document.querySelector("#weeklyTopFiveList"),
-  weeklyDateLabel: document.querySelector("#weeklyDateLabel"),
   appliedList: document.querySelector("#appliedList"),
   appliedEmpty: document.querySelector("#appliedEmpty"),
   metricApplied: document.querySelector("#metricApplied"),
@@ -174,7 +170,7 @@ function buildJobCaches() {
   ]));
 
   // Only jobs that are a genuine "Good Match" (70+) or better, AND not already resolved
-  // (applied, passed, or skipped), are eligible for the weekly Top 5 / "Highly Recommended"
+  // (applied, passed, or skipped), are eligible to appear in the active list at all
   // badge. Ranked strictly by job.score — the exact same number shown on every card and
   // used for the main list's default sort. There is deliberately no second, hidden
   // ranking formula here: whatever score you see is the only number driving order,
@@ -183,35 +179,10 @@ function buildJobCaches() {
   const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR && !isResolved(job.id));
   const ranked = eligible.slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
 
-  state.weeklyPicks = ranked.slice(0, 5);
-  state.weeklyRankMap = new Map(state.weeklyPicks.map((job, index) => [job.id, index + 1]));
-}
-
-function weeklyTopPicks() {
-  return state.weeklyPicks;
-}
-
-function weeklyPickRank(id) {
-  return state.weeklyRankMap.get(id) || null;
-}
-
-function weeklyPickReason(job) {
-  const strengths = (job.strengths || []).slice(0, 2);
-  if (strengths.length) {
-    return `${job.tier} (${job.score}/100): ${strengths.join("; ")}.`;
-  }
-  return "Current verified role with the strongest balance of transferable fit, compensation, flexibility, and realistic candidacy.";
-}
-
-function weekRangeLabel() {
-  const date = state.generatedAt ? new Date(state.generatedAt) : new Date();
-  const start = new Date(date);
-  const day = (start.getDay() + 6) % 7;
-  start.setDate(start.getDate() - day);
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  const short = value => value.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  return `Week of ${short(start)}–${short(end)}, ${end.getFullYear()} · Recalculated from verified roles`;
+  // No separate "Top 5" list anymore — the main sorted list, driven by this exact
+  // score, already surfaces the best-fit roles at the top. A parallel curated pick
+  // list was its own source of confusion once it could disagree with the card score.
+  state.rankedJobIds = ranked.map(job => job.id);
 }
 
 function escapeHtml(value = "") {
@@ -353,14 +324,7 @@ function getFilteredJobs() {
       && (state.filters.stage === "all" || tracking.stage === state.filters.stage);
   });
 
-  const pinned = state.weeklyRankMap;
   const sorted = filtered.sort((a, b) => {
-    const aPinned = pinned.has(a.id);
-    const bPinned = pinned.has(b.id);
-    if (aPinned || bPinned) {
-      if (aPinned && bPinned) return pinned.get(a.id) - pinned.get(b.id);
-      return aPinned ? -1 : 1;
-    }
     if (state.filters.sort === "newest") return String(b.discovered_at || b.posted_at || "").localeCompare(String(a.discovered_at || a.posted_at || ""));
     if (state.filters.sort === "salary") return (b.salary_max || 0) - (a.salary_max || 0);
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
@@ -384,13 +348,11 @@ function renderCard(job) {
   const tracking = trackingFor(job.id);
   const topStrength = job.strengths?.[0];
   const topGap = job.gaps?.[0];
-  const rank = weeklyPickRank(job.id);
-  const isManual = job.source_type === "manual";
   const scoreDisplay = job.score != null ? job.score : "—";
+  const isManual = job.source_type === "manual";
   return `
-    <article class="job-card ${rank ? `weekly-ranked rank-${rank}` : ""}" data-job-id="${escapeHtml(job.id)}">
+    <article class="job-card" data-job-id="${escapeHtml(job.id)}">
       <div class="score-block">
-        ${rank ? `<span class="rank-flag">#${rank}</span>` : ""}
         <div class="score-ring" style="--score-color:${scoreColor(job.score || 0)}">
           <div><strong>${scoreDisplay}</strong><small>/100</small></div>
         </div>
@@ -401,7 +363,6 @@ function renderCard(job) {
           <span>${escapeHtml(job.company)}</span>
           <span class="source-badge">${escapeHtml(isManual ? "manually added" : job.source_type)}</span>
           ${!isManual ? '<span class="source-badge">100-point match</span>' : ""}
-          ${rank ? `<span class="weekly-rank-badge rank-${rank}">Highly Recommended #${rank}</span>` : ""}
           ${tracking.stage !== "Not reviewed" ? `<span class="stage-badge">${escapeHtml(tracking.stage)}</span>` : ""}
           ${tracking.rating ? `<span class="rating-badge" title="Your rating">${starLabel(tracking.rating)}</span>` : ""}
         </div>
@@ -450,7 +411,6 @@ function renderJobs() {
   }
   renderFilterChips();
   renderMetrics();
-  renderWeeklyTopFive();
   renderAppliedPositions();
 }
 function renderMetrics() {
@@ -503,33 +463,6 @@ function breakdownRows(job) {
   return dimensions.map(([label, key, max]) => {
     const value = job.breakdown[key];
     return `<div class="breakdown-row"><span>${label}</span><div class="bar"><i style="width:${(value / max) * 100}%"></i></div><strong>${value}/${max}</strong></div>`;
-  }).join("");
-}
-
-function renderWeeklyTopFive() {
-  if (!els.weeklyTopFiveList) return;
-  const picks = weeklyTopPicks();
-  els.weeklyDateLabel.textContent = weekRangeLabel();
-  els.weeklyTopFiveList.innerHTML = picks.map((job, index) => {
-    const rank = index + 1;
-    return `
-      <article class="weekly-pick rank-${rank}" data-weekly-job-id="${escapeHtml(job.id)}">
-        <div class="weekly-rank-number">#${rank}</div>
-        <div class="weekly-pick-body">
-          <div class="weekly-company">${escapeHtml(job.company)} · ${escapeHtml(job.workplace_type)}</div>
-          <h3>${escapeHtml(job.title)}</h3>
-          <div class="weekly-pick-meta">
-            <span>${escapeHtml(formatSalary(job))}</span>
-            <span>${escapeHtml(job.location)}</span>
-            <span>${job.score}/100 portal match</span>
-          </div>
-          <p>${escapeHtml(weeklyPickReason(job))}</p>
-        </div>
-        <div class="weekly-pick-actions">
-          <button class="button button-primary" type="button" data-view-weekly>View role</button>
-          <button class="button button-secondary" type="button" data-prepare-weekly>Prepare</button>
-        </div>
-      </article>`;
   }).join("");
 }
 
@@ -704,7 +637,7 @@ function updateTracking(id, changes, rerender = true) {
   }
   if (currentJob && (APPLIED_STAGES.has(next.stage) || next.jobSnapshot)) next.jobSnapshot = jobSnapshot(currentJob);
   state.tracking[id] = next;
-  // A stage change can move a role in or out of "resolved" — rebuild Weekly Top 5 right
+  // A stage change can move a role in or out of "resolved" — refresh eligibility right
   // now so it never shows something she's already applied to or passed on.
   if (stageChanged) buildJobCaches();
   saveTracking();
@@ -752,14 +685,7 @@ function selectedJobOption(job) {
 function renderApplicationStudio() {
   if (!els.applicationJobSelect) return;
   const selected = state.applicationJobId;
-  const pinned = state.weeklyRankMap;
-  const jobs = [...state.jobs].sort((a, b) => {
-    if (pinned.has(a.id) || pinned.has(b.id)) {
-      if (pinned.has(a.id) && pinned.has(b.id)) return pinned.get(a.id) - pinned.get(b.id);
-      return pinned.has(a.id) ? -1 : 1;
-    }
-    return (b.score || 0) - (a.score || 0);
-  });
+  const jobs = [...state.jobs].sort((a, b) => (b.score || 0) - (a.score || 0));
   els.applicationJobSelect.innerHTML = '<option value="">Select a verified role</option>'
     + jobs.map(job => `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job))}</option>`).join("");
 
@@ -1027,14 +953,6 @@ function bindEvents() {
   els.clearManualJob.addEventListener("click", clearManualJobEntry);
   els.copyApplicationBrief.addEventListener("click", copyApplicationBrief);
   els.downloadApplicationBrief.addEventListener("click", downloadApplicationBrief);
-  els.weeklyTopFiveList.addEventListener("click", event => {
-    const card = event.target.closest("[data-weekly-job-id]");
-    if (!card) return;
-    const job = state.jobs.find(item => item.id === card.dataset.weeklyJobId);
-    if (!job) return;
-    if (event.target.closest("[data-view-weekly]")) openJob(job);
-    if (event.target.closest("[data-prepare-weekly]")) prepareApplication(job);
-  });
   els.appliedList.addEventListener("change", event => {
     const card = event.target.closest("[data-application-id]");
     const field = event.target.dataset.applicationField;
