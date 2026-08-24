@@ -331,9 +331,28 @@ function getFilteredJobs() {
     if (state.filters.sort === "company") return a.company.localeCompare(b.company);
     return (b.score || 0) - (a.score || 0);
   });
-  // Hard cap: never show more than your top 100 matches, so the list stays a worklist, not a haystack.
+
   state.trueMatchCount = sorted.length;
-  return sorted.slice(0, 100);
+
+  // A single company with many near-duplicate regional postings shouldn't be able to
+  // fill the entire default view — cap it to a handful of its best-scoring roles here,
+  // and let the rest surface once she works through other companies. Deliberately
+  // filtering to one company (Company filter set) shows everything from it, uncapped,
+  // since that's a genuine choice to browse that company specifically.
+  const PER_COMPANY_CAP = 3;
+  let display = sorted;
+  if (state.filters.company === "all") {
+    const seenCount = new Map();
+    display = sorted.filter(job => {
+      const count = seenCount.get(job.company) || 0;
+      if (count >= PER_COMPANY_CAP) return false;
+      seenCount.set(job.company, count + 1);
+      return true;
+    });
+  }
+
+  // Hard cap: never show more than your top 100 matches, so the list stays a worklist, not a haystack.
+  return display.slice(0, 100);
 }
 
 function icon(type) {
@@ -712,9 +731,21 @@ function selectedJobOption(job) {
 function renderApplicationStudio() {
   if (!els.applicationJobSelect) return;
   const selected = state.applicationJobId;
-  const jobs = [...state.jobs].sort((a, b) => (b.score || 0) - (a.score || 0));
+  // Active, undecided roles first (sorted by score); anything already Applied,
+  // Passed/Closed, or Skipped sinks to the bottom and is labeled, so this list
+  // isn't dominated by roles you've already resolved one way or another.
+  const jobs = [...state.jobs].sort((a, b) => {
+    const aResolved = isResolved(a.id);
+    const bResolved = isResolved(b.id);
+    if (aResolved !== bResolved) return aResolved ? 1 : -1;
+    return (b.score || 0) - (a.score || 0);
+  });
   els.applicationJobSelect.innerHTML = '<option value="">Select a verified role</option>'
-    + jobs.map(job => `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job))}</option>`).join("");
+    + jobs.map(job => {
+        const stage = trackingFor(job.id).stage;
+        const tag = isResolved(job.id) ? ` [${stage}]` : "";
+        return `<option value="${escapeHtml(job.id)}" ${job.id === selected ? "selected" : ""}>${escapeHtml(selectedJobOption(job) + tag)}</option>`;
+      }).join("");
 
   const resumeLoaded = Boolean(state.resume.text);
   els.resumeStatus.innerHTML = resumeLoaded
