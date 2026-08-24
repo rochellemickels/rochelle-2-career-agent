@@ -159,21 +159,6 @@ function jobSnapshot(job) {
   };
 }
 
-function recruiterPriorityScore(job, text = "") {
-  const searchable = text || `${job.title} ${job.department} ${job.description}`.toLowerCase();
-  let score = Number(job.score || 0);
-  if (`${job.workplace_type} ${job.location}`.toLowerCase().includes("remote")) score += 10;
-  if (overlapsIdealSalary(job)) score += 14;
-  if (job.salary_min >= 110000 && job.salary_min <= 135000) score += 8;
-  if (/program|project|enablement|customer success|strategic partnership|client relationship|consultant|business operations/.test(searchable)) score += 12;
-  if (/stakeholder|trusted advisor|cross-functional|change management|executive communication/.test(searchable)) score += 8;
-  if (/software engineer|machine learning engineer|data scientist|quota-carrying|cold calling/.test(searchable)) score -= 24;
-  if (/commission only|commission-only/.test(searchable)) score -= 30;
-  const location = String(job.location || "").toLowerCase();
-  if (location && !location.includes("remote") && !location.includes("texas") && !location.includes("dallas") && !location.includes("grapevine")) score -= 16;
-  return score;
-}
-
 // A role is "resolved" once she's applied to it (or beyond), marked it Passed/Closed,
 // or explicitly skipped it as not a good fit — any of these means a decision has
 // already been made and it shouldn't keep taking up space in the active view.
@@ -189,17 +174,14 @@ function buildJobCaches() {
   ]));
 
   // Only jobs that are a genuine "Good Match" (70+) or better, AND not already resolved
-  // (applied or passed), are eligible for the weekly Top 5 / "Highly Recommended" badge.
-  // This is the real, current score from the scanner, not a stale hardcoded list. Among
-  // those, recruiterPriorityScore() breaks ties using remote/salary/keyword signals.
-  // Manually added jobs have no score by default, so they simply don't compete for this
-  // badge unless rescored.
+  // (applied, passed, or skipped), are eligible for the weekly Top 5 / "Highly Recommended"
+  // badge. Ranked strictly by job.score — the exact same number shown on every card and
+  // used for the main list's default sort. There is deliberately no second, hidden
+  // ranking formula here: whatever score you see is the only number driving order,
+  // eligibility, and the Top 5 list, everywhere in the portal.
   const QUALITY_FLOOR = 70;
   const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR && !isResolved(job.id));
-  const ranked = eligible
-    .map(job => ({ job, priority: recruiterPriorityScore(job, state.jobSearchText.get(job.id)) }))
-    .sort((a, b) => b.priority - a.priority)
-    .map(item => item.job);
+  const ranked = eligible.slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
 
   state.weeklyPicks = ranked.slice(0, 5);
   state.weeklyRankMap = new Map(state.weeklyPicks.map((job, index) => [job.id, index + 1]));
