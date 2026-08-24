@@ -612,7 +612,7 @@ function renderAppliedPositions() {
         <label class="applied-notes"><span>Notes and latest update</span><textarea data-application-field="notes" placeholder="Confirmation received, recruiter response, interview time, next action…">${escapeHtml(tracking.notes)}</textarea></label>
       </div>
       <div class="applied-card-footer">
-        <span>${tracking.statusUpdatedAt ? `Status updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Add your latest status update"}</span>
+        <span>${tracking.statusUpdatedAt ? `Status updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Add your latest status update"} <span class="applied-save-flash" aria-live="polite" style="color:#3fbf6f;font-weight:600;margin-left:8px;"></span></span>
         <div>
           ${current ? `<button class="button button-secondary" type="button" data-view-applied>View role</button><button class="button button-secondary" type="button" data-prepare-applied>Tailor résumé</button>` : ""}
           ${job.apply_url ? `<a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Employer portal</a>` : ""}
@@ -656,7 +656,7 @@ function openJob(job) {
         <label><span>Next follow-up</span><input id="dialogFollowUp" type="date" value="${escapeHtml(dateInputValue(tracking.nextFollowUp))}" /></label>
         <label class="tracking-notes"><span>Notes and latest update</span><textarea id="dialogNotes" placeholder="Why this role stands out, confirmation received, recruiter response, interview details…">${escapeHtml(tracking.notes)}</textarea></label>
       </div>
-      <p class="tracking-updated">${tracking.statusUpdatedAt ? `Status last updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Status updates are private to this browser."}</p>
+      <p class="tracking-updated">${tracking.statusUpdatedAt ? `Status last updated ${escapeHtml(formatDate(tracking.statusUpdatedAt))}` : "Status updates are private to this browser."} <span id="dialogSaveFlash" aria-live="polite" style="color:#3fbf6f;font-weight:600;margin-left:8px;"></span></p>
     </section>
     <div class="dialog-actions">
       ${job.apply_url ? `<a class="button button-primary" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noreferrer">Open employer listing</a>` : ""}
@@ -665,25 +665,44 @@ function openJob(job) {
     </div>
     <p class="date-line">Employer posting date: ${formatDate(job.posted_at)} · ${escapeHtml(portalDateLine(job))} · Transparent rules-based review</p>`;
 
+  const saveFlash = els.dialogContent.querySelector("#dialogSaveFlash");
+  let saveFlashTimer;
+  let notesDebounceTimer;
+  function flashSaved() {
+    if (!saveFlash) return;
+    saveFlash.textContent = "✓ Saved";
+    clearTimeout(saveFlashTimer);
+    saveFlashTimer = setTimeout(() => { saveFlash.textContent = ""; }, 1800);
+  }
+
   els.dialogContent.querySelector("#dialogPrepare").addEventListener("click", () => {
     els.jobDialog.close();
     prepareApplication(job);
   });
-  els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => updateTracking(job.id, { stage: event.target.value }));
-  els.dialogContent.querySelector("#dialogRating").addEventListener("change", event => updateTracking(job.id, { rating: Number(event.target.value) }));
-  els.dialogContent.querySelector("#dialogAppliedAt").addEventListener("change", event => updateTracking(job.id, { appliedAt: event.target.value }));
-  els.dialogContent.querySelector("#dialogContact").addEventListener("change", event => updateTracking(job.id, { contact: event.target.value }));
-  els.dialogContent.querySelector("#dialogFollowUp").addEventListener("change", event => updateTracking(job.id, { nextFollowUp: event.target.value }));
-  els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => updateTracking(job.id, { notes: event.target.value }, false));
+  els.dialogContent.querySelector("#dialogStage").addEventListener("change", event => { updateTracking(job.id, { stage: event.target.value }); flashSaved(); });
+  els.dialogContent.querySelector("#dialogRating").addEventListener("change", event => { updateTracking(job.id, { rating: Number(event.target.value) }); flashSaved(); });
+  els.dialogContent.querySelector("#dialogAppliedAt").addEventListener("change", event => { updateTracking(job.id, { appliedAt: event.target.value }); flashSaved(); });
+  els.dialogContent.querySelector("#dialogContact").addEventListener("change", event => { updateTracking(job.id, { contact: event.target.value }); flashSaved(); });
+  els.dialogContent.querySelector("#dialogFollowUp").addEventListener("change", event => { updateTracking(job.id, { nextFollowUp: event.target.value }); flashSaved(); });
+  els.dialogContent.querySelector("#dialogNotes").addEventListener("input", event => {
+    const value = event.target.value;
+    updateTracking(job.id, { notes: value }, false);
+    // Debounce the visible confirmation so it doesn't flash on every keystroke —
+    // it settles ~600ms after she stops typing, once the save has actually landed.
+    clearTimeout(notesDebounceTimer);
+    notesDebounceTimer = setTimeout(flashSaved, 600);
+  });
   els.dialogContent.querySelector("#dialogNotes").addEventListener("change", () => {
     renderJobs();
     renderAppliedPositions();
+    flashSaved();
   });
   els.dialogContent.querySelector("#dialogFavorite").addEventListener("click", event => {
     const favorite = !trackingFor(job.id).favorite;
     updateTracking(job.id, { favorite });
     event.currentTarget.setAttribute("aria-pressed", String(favorite));
     event.currentTarget.textContent = favorite ? "★ Saved" : "☆ Save role";
+    flashSaved();
   });
   els.jobDialog.showModal();
 }
@@ -1035,7 +1054,15 @@ function bindEvents() {
     const card = event.target.closest("[data-application-id]");
     const field = event.target.dataset.applicationField;
     if (!card || !field) return;
-    updateTracking(card.dataset.applicationId, { [field]: event.target.value });
+    const id = card.dataset.applicationId;
+    updateTracking(id, { [field]: event.target.value });
+    // updateTracking rebuilt this card's DOM — find the fresh copy and flash it.
+    const freshCard = els.appliedList.querySelector(`[data-application-id="${CSS.escape(id)}"]`);
+    const flash = freshCard?.querySelector(".applied-save-flash");
+    if (flash) {
+      flash.textContent = "✓ Saved";
+      setTimeout(() => { flash.textContent = ""; }, 1800);
+    }
   });
   els.appliedList.addEventListener("click", event => {
     const card = event.target.closest("[data-application-id]");
