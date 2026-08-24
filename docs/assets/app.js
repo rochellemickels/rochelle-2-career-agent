@@ -173,19 +173,27 @@ function recruiterPriorityScore(job, text = "") {
   return score;
 }
 
+// A role is "resolved" once she's applied to it (or beyond) or marked it Passed/Closed —
+// either way, it's a decision that's already been made and shouldn't keep resurfacing.
+function isResolved(id) {
+  const stage = trackingFor(id).stage;
+  return APPLIED_STAGES.has(stage) || stage === "Passed / Closed";
+}
+
 function buildJobCaches() {
   state.jobSearchText = new Map(state.jobs.map(job => [
     job.id,
     `${job.title} ${job.company} ${job.department} ${job.location} ${job.description}`.toLowerCase(),
   ]));
 
-  // Only jobs that are a genuine "Good Match" (70+) or better are eligible for the
-  // weekly Top 5 / "Highly Recommended" badge — this is the real, current score from
-  // the scanner, not a stale hardcoded list. Among those, recruiterPriorityScore()
-  // breaks ties using remote/salary/keyword signals. Manually added jobs have no
-  // score by default, so they simply don't compete for this badge unless rescored.
+  // Only jobs that are a genuine "Good Match" (70+) or better, AND not already resolved
+  // (applied or passed), are eligible for the weekly Top 5 / "Highly Recommended" badge.
+  // This is the real, current score from the scanner, not a stale hardcoded list. Among
+  // those, recruiterPriorityScore() breaks ties using remote/salary/keyword signals.
+  // Manually added jobs have no score by default, so they simply don't compete for this
+  // badge unless rescored.
   const QUALITY_FLOOR = 70;
-  const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR);
+  const eligible = state.jobs.filter(job => Number(job.score || 0) >= QUALITY_FLOOR && !isResolved(job.id));
   const ranked = eligible
     .map(job => ({ job, priority: recruiterPriorityScore(job, state.jobSearchText.get(job.id)) }))
     .sort((a, b) => b.priority - a.priority)
@@ -345,7 +353,13 @@ function getFilteredJobs() {
     // Manually added jobs have no automated score — always let them through the match-tier filter
     // rather than getting hidden by a minimum-score floor they were never scored against.
     const scoreOk = job.source_type === "manual" ? true : job.score >= minimum;
-    return (!query || haystack.includes(query))
+    // Once a role is resolved (applied, or marked Passed/Closed), it drops out of the
+    // default browsing view automatically — no manual filtering needed. She can still
+    // deliberately look one up by picking its exact stage in the Stage filter.
+    const stageFilterActive = state.filters.stage !== "all";
+    const hideResolved = !stageFilterActive && isResolved(job.id);
+    return !hideResolved
+      && (!query || haystack.includes(query))
       && scoreOk
       && matchesCareerLane(job, state.filters.lane)
       && workMatch
@@ -678,13 +692,17 @@ function updateTracking(id, changes, rerender = true) {
   const current = trackingFor(id);
   const next = { ...current, ...changes };
   const currentJob = state.jobs.find(job => job.id === id);
-  if (changes.stage && changes.stage !== current.stage) {
+  const stageChanged = changes.stage && changes.stage !== current.stage;
+  if (stageChanged) {
     next.statusUpdatedAt = new Date().toISOString();
     next.history = [...(current.history || []), { stage: changes.stage, at: next.statusUpdatedAt }];
     if (APPLIED_STAGES.has(changes.stage) && !next.appliedAt) next.appliedAt = todayInputValue();
   }
   if (currentJob && (APPLIED_STAGES.has(next.stage) || next.jobSnapshot)) next.jobSnapshot = jobSnapshot(currentJob);
   state.tracking[id] = next;
+  // A stage change can move a role in or out of "resolved" — rebuild Weekly Top 5 right
+  // now so it never shows something she's already applied to or passed on.
+  if (stageChanged) buildJobCaches();
   saveTracking();
   if (rerender) renderJobs();
 }
