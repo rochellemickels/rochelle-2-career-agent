@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T02:52:12.907262+00:00",
+  "generated_at": "2026-08-25T03:27:34.175052+00:00",
   "state": "complete",
   "message": "Scan, score, commit, and publish workflow completed.",
   "sources": [
@@ -8,18 +8,18 @@
       "source_type": "ashby",
       "slug": "openai",
       "status": "ok",
-      "jobs_found": 757,
+      "jobs_found": 758,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:13.356001+00:00"
+      "checked_at": "2026-08-25T03:27:34.630337+00:00"
     },
     {
       "company": "Anthropic",
       "source_type": "greenhouse",
       "slug": "anthropic",
       "status": "ok",
-      "jobs_found": 535,
+      "jobs_found": 536,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:13.975085+00:00"
+      "checked_at": "2026-08-25T03:27:35.405299+00:00"
     },
     {
       "company": "GitLab",
@@ -28,7 +28,7 @@
       "status": "ok",
       "jobs_found": 210,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:14.283694+00:00"
+      "checked_at": "2026-08-25T03:27:35.863314+00:00"
     },
     {
       "company": "HubSpot",
@@ -37,7 +37,52 @@
       "status": "ok",
       "jobs_found": 154,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:14.561406+00:00"
+      "checked_at": "2026-08-25T03:27:36.312502+00:00"
+    },
+    {
+      "company": "Gusto",
+      "source_type": "greenhouse",
+      "slug": "gusto",
+      "status": "ok",
+      "jobs_found": 90,
+      "message": "Public career feed refreshed.",
+      "checked_at": "2026-08-25T03:27:36.663121+00:00"
+    },
+    {
+      "company": "Toast",
+      "source_type": "greenhouse",
+      "slug": "toast",
+      "status": "ok",
+      "jobs_found": 305,
+      "message": "Public career feed refreshed.",
+      "checked_at": "2026-08-25T03:27:37.316115+00:00"
+    },
+    {
+      "company": "Dialpad",
+      "source_type": "greenhouse",
+      "slug": "dialpad",
+      "status": "ok",
+      "jobs_found": 85,
+      "message": "Public career feed refreshed.",
+      "checked_at": "2026-08-25T03:27:37.674696+00:00"
+    },
+    {
+      "company": "GoDaddy",
+      "source_type": "greenhouse",
+      "slug": "godaddy",
+      "status": "ok",
+      "jobs_found": 26,
+      "message": "Public career feed refreshed.",
+      "checked_at": "2026-08-25T03:27:37.911735+00:00"
+    },
+    {
+      "company": "Block",
+      "source_type": "greenhouse",
+      "slug": "block",
+      "status": "ok",
+      "jobs_found": 185,
+      "message": "Public career feed refreshed.",
+      "checked_at": "2026-08-25T03:27:38.287854+00:00"
     },
     {
       "company": "Webflow",
@@ -46,7 +91,7 @@
       "status": "ok",
       "jobs_found": 28,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:14.649501+00:00"
+      "checked_at": "2026-08-25T03:27:38.458579+00:00"
     },
     {
       "company": "Figma",
@@ -55,7 +100,7 @@
       "status": "ok",
       "jobs_found": 159,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:14.835563+00:00"
+      "checked_at": "2026-08-25T03:27:38.798645+00:00"
     },
     {
       "company": "Dropbox",
@@ -64,7 +109,7 @@
       "status": "ok",
       "jobs_found": 41,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:14.949407+00:00"
+      "checked_at": "2026-08-25T03:27:39.051937+00:00"
     },
     {
       "company": "Affirm",
@@ -73,7 +118,7 @@
       "status": "ok",
       "jobs_found": 210,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.191768+00:00"
+      "checked_at": "2026-08-25T03:27:39.461618+00:00"
     },
     {
       "company": "Stripe",
@@ -82,7 +127,7 @@
       "status": "ok",
       "jobs_found": 582,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.514638+00:00"
+      "checked_at": "2026-08-25T03:27:40.075154+00:00"
     },
     {
       "company": "Zapier",
@@ -91,7 +136,7 @@
       "status": "ok",
       "jobs_found": 8,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.539524+00:00"
+      "checked_at": "2026-08-25T03:27:40.103101+00:00"
     },
     {
       "company": "Vercel",
@@ -100,7 +145,7 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.556090+00:00"
+      "checked_at": "2026-08-25T03:27:40.126459+00:00"
     },
     {
       "company": "Remote",
@@ -109,7 +154,7 @@
       "status": "ok",
       "jobs_found": 221,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.876853+00:00"
+      "checked_at": "2026-08-25T03:27:40.681372+00:00"
     },
     {
       "company": "Notion",
@@ -118,7 +163,7 @@
       "status": "ok",
       "jobs_found": 132,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:15.972743+00:00"
+      "checked_at": "2026-08-25T03:27:40.765907+00:00"
     },
     {
       "company": "DoorDash",
@@ -127,7 +172,7 @@
       "status": "ok",
       "jobs_found": 458,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:16.448439+00:00"
+      "checked_at": "2026-08-25T03:27:41.549545+00:00"
     },
     {
       "company": "AnswerRocket",
@@ -136,7 +181,7 @@
       "status": "ok",
       "jobs_found": 2,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:16.487765+00:00"
+      "checked_at": "2026-08-25T03:27:41.633338+00:00"
     },
     {
       "company": "Braze",
@@ -145,7 +190,7 @@
       "status": "ok",
       "jobs_found": 281,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:16.834078+00:00"
+      "checked_at": "2026-08-25T03:27:42.113943+00:00"
     },
     {
       "company": "Datadog",
@@ -154,7 +199,7 @@
       "status": "ok",
       "jobs_found": 452,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:17.225710+00:00"
+      "checked_at": "2026-08-25T03:27:42.652792+00:00"
     },
     {
       "company": "Twilio",
@@ -163,7 +208,7 @@
       "status": "ok",
       "jobs_found": 143,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:17.393401+00:00"
+      "checked_at": "2026-08-25T03:27:43.005859+00:00"
     },
     {
       "company": "Pinterest",
@@ -172,7 +217,7 @@
       "status": "ok",
       "jobs_found": 219,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:17.598975+00:00"
+      "checked_at": "2026-08-25T03:27:43.392305+00:00"
     },
     {
       "company": "Reddit",
@@ -181,7 +226,7 @@
       "status": "ok",
       "jobs_found": 149,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:17.879262+00:00"
+      "checked_at": "2026-08-25T03:27:43.728524+00:00"
     },
     {
       "company": "Airbnb",
@@ -190,7 +235,7 @@
       "status": "ok",
       "jobs_found": 194,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.065483+00:00"
+      "checked_at": "2026-08-25T03:27:44.101653+00:00"
     },
     {
       "company": "Deel",
@@ -199,7 +244,7 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.087160+00:00"
+      "checked_at": "2026-08-25T03:27:44.154866+00:00"
     },
     {
       "company": "Asana",
@@ -208,7 +253,7 @@
       "status": "ok",
       "jobs_found": 126,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.228792+00:00"
+      "checked_at": "2026-08-25T03:27:44.514930+00:00"
     },
     {
       "company": "Intercom",
@@ -217,7 +262,7 @@
       "status": "ok",
       "jobs_found": 118,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.378511+00:00"
+      "checked_at": "2026-08-25T03:27:44.811754+00:00"
     },
     {
       "company": "Samsara",
@@ -226,7 +271,7 @@
       "status": "ok",
       "jobs_found": 266,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.697658+00:00"
+      "checked_at": "2026-08-25T03:27:45.359724+00:00"
     },
     {
       "company": "Klaviyo",
@@ -235,7 +280,7 @@
       "status": "ok",
       "jobs_found": 145,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:18.975671+00:00"
+      "checked_at": "2026-08-25T03:27:45.730709+00:00"
     },
     {
       "company": "Amplitude",
@@ -244,7 +289,7 @@
       "status": "ok",
       "jobs_found": 33,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.059820+00:00"
+      "checked_at": "2026-08-25T03:27:45.928790+00:00"
     },
     {
       "company": "Confluent",
@@ -253,7 +298,7 @@
       "status": "ok",
       "jobs_found": 30,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.104353+00:00"
+      "checked_at": "2026-08-25T03:27:45.960551+00:00"
     },
     {
       "company": "Plaid",
@@ -262,7 +307,7 @@
       "status": "ok",
       "jobs_found": 104,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.170920+00:00"
+      "checked_at": "2026-08-25T03:27:46.029905+00:00"
     },
     {
       "company": "Instacart",
@@ -271,7 +316,7 @@
       "status": "ok",
       "jobs_found": 123,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.337501+00:00"
+      "checked_at": "2026-08-25T03:27:46.368517+00:00"
     },
     {
       "company": "Coinbase",
@@ -280,7 +325,7 @@
       "status": "ok",
       "jobs_found": 174,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.489577+00:00"
+      "checked_at": "2026-08-25T03:27:46.729598+00:00"
     },
     {
       "company": "Squarespace",
@@ -289,7 +334,7 @@
       "status": "ok",
       "jobs_found": 24,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.549311+00:00"
+      "checked_at": "2026-08-25T03:27:46.896284+00:00"
     },
     {
       "company": "Elastic",
@@ -298,7 +343,7 @@
       "status": "ok",
       "jobs_found": 279,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.900161+00:00"
+      "checked_at": "2026-08-25T03:27:47.502224+00:00"
     },
     {
       "company": "Gainsight",
@@ -307,7 +352,7 @@
       "status": "ok",
       "jobs_found": 10,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:19.925236+00:00"
+      "checked_at": "2026-08-25T03:27:47.572506+00:00"
     },
     {
       "company": "Scale AI",
@@ -316,7 +361,7 @@
       "status": "ok",
       "jobs_found": 216,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.123872+00:00"
+      "checked_at": "2026-08-25T03:27:47.995429+00:00"
     },
     {
       "company": "Brex",
@@ -325,7 +370,7 @@
       "status": "ok",
       "jobs_found": 292,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.329923+00:00"
+      "checked_at": "2026-08-25T03:27:48.381903+00:00"
     },
     {
       "company": "Ramp",
@@ -334,7 +379,7 @@
       "status": "ok",
       "jobs_found": 139,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.439372+00:00"
+      "checked_at": "2026-08-25T03:27:48.488329+00:00"
     },
     {
       "company": "NICE",
@@ -343,7 +388,7 @@
       "status": "ok",
       "jobs_found": 227,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.709506+00:00"
+      "checked_at": "2026-08-25T03:27:49.001603+00:00"
     },
     {
       "company": "Zafin",
@@ -352,7 +397,7 @@
       "status": "ok",
       "jobs_found": 18,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.856699+00:00"
+      "checked_at": "2026-08-25T03:27:49.207312+00:00"
     },
     {
       "company": "Nimble Gravity",
@@ -361,7 +406,7 @@
       "status": "ok",
       "jobs_found": 16,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.907888+00:00"
+      "checked_at": "2026-08-25T03:27:49.354468+00:00"
     },
     {
       "company": "Talkdesk",
@@ -370,7 +415,7 @@
       "status": "ok",
       "jobs_found": 48,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:20.982848+00:00"
+      "checked_at": "2026-08-25T03:27:49.543185+00:00"
     },
     {
       "company": "Sitetracker",
@@ -379,7 +424,7 @@
       "status": "ok",
       "jobs_found": 19,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:21.737078+00:00"
+      "checked_at": "2026-08-25T03:27:50.238328+00:00"
     },
     {
       "company": "Atmosera",
@@ -388,7 +433,7 @@
       "status": "ok",
       "jobs_found": 11,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:22.514052+00:00"
+      "checked_at": "2026-08-25T03:27:50.927337+00:00"
     },
     {
       "company": "Buyers Edge Platform",
@@ -397,7 +442,7 @@
       "status": "ok",
       "jobs_found": 38,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-08-25T02:52:22.588890+00:00"
+      "checked_at": "2026-08-25T03:27:51.118091+00:00"
     }
   ]
 }
