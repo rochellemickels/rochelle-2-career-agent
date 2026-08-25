@@ -125,13 +125,57 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow teal">APPLICATION STUDIO</p>
-            <h2>Prepare the strongest truthful application</h2>
-            <p>Select a role to see the exact same score, strengths, and gaps used everywhere else.</p>
+            <h2>Tailor truthfully. Format beautifully.</h2>
+            <p>The portal prepares the evidence brief and finished documents. ChatGPT or Claude does the writing—without an API key in this public site.</p>
           </div>
         </div>
-        <div class="studio-card">
-          <label>Choose a position<select id="studioSelect"><option value="">Select a role…</option></select></label>
-          <div id="studioContent" class="studio-content empty-state">Choose a position to begin.</div>
+        <section class="studio-card studio-setup">
+          <div class="studio-step"><span>1</span><div><strong>Choose any scanned position</strong><small>The authoritative backend score and full job details are used—never a second ranking formula.</small></div></div>
+          <label>Position<select id="studioSelect"><option value="">Select a role…</option></select></label>
+          <div id="studioJobSummary" class="studio-content empty-state">Choose a position to begin.</div>
+        </section>
+
+        <section class="studio-card">
+          <div class="studio-step"><span>2</span><div><strong>Confirm your master résumé</strong><small>Loaded from this browser and kept here. It is never published to GitHub.</small></div></div>
+          <textarea id="masterResumeText" class="studio-textarea master-resume" placeholder="Paste your complete master résumé text here…"></textarea>
+          <div class="studio-actions"><button id="saveMasterResume" class="button button-teal">Save master résumé locally</button><span id="masterResumeStatus" class="local-status"></span></div>
+        </section>
+
+        <section class="studio-card">
+          <div class="studio-step"><span>3</span><div><strong>Copy the tailoring brief</strong><small>Paste this into ChatGPT or Claude. It includes the selected job, your résumé evidence, and every locked voice rule.</small></div></div>
+          <textarea id="tailoringBrief" class="studio-textarea brief-output" readonly placeholder="Choose a position and confirm your master résumé to generate the brief."></textarea>
+          <div class="studio-actions"><button id="copyBrief" class="button button-coral" disabled>Copy complete tailoring brief</button></div>
+        </section>
+
+        <section class="studio-card">
+          <div class="studio-step"><span>4</span><div><strong>Set the shared document header</strong><small>This exact centered header is applied to both Word documents and Google Docs copy.</small></div></div>
+          <div class="document-profile-grid">
+            <label>Name<input id="documentName" value="Rochelle Magpantay"></label>
+            <label>Headline<input id="documentHeadline" value="PARTNERSHIPS, GROWTH &amp; IMPLEMENTATION LEADER"></label>
+            <label>Tagline<input id="documentTagline" value="Change Adoption | Cross-Functional Enablement | Practical AI Fluency"></label>
+            <label>Contact line<input id="documentContact" placeholder="Dallas–Fort Worth | phone | email | LinkedIn"></label>
+          </div>
+        </section>
+
+        <div class="studio-output-grid">
+          <section class="studio-card">
+            <div class="studio-step"><span>5A</span><div><strong>Finished tailored résumé</strong><small>Paste the AI-written text beginning with EXECUTIVE PROFILE. The portal adds the header.</small></div></div>
+            <textarea id="finishedResume" class="studio-textarea finished-output" placeholder="EXECUTIVE PROFILE&#10;…"></textarea>
+            <div id="resumeValidation" class="validation-list" aria-live="polite"></div>
+            <div class="studio-actions">
+              <button id="downloadResume" class="button button-teal">Download real Word résumé</button>
+              <button id="copyResume" class="button button-outline">Copy formatted for Google Docs</button>
+            </div>
+          </section>
+          <section class="studio-card">
+            <div class="studio-step"><span>5B</span><div><strong>Finished cover letter</strong><small>Paste the salutation and body. The locked “Best Regards” sign-off is applied automatically.</small></div></div>
+            <textarea id="finishedCover" class="studio-textarea finished-output" placeholder="Dear Hiring Manager,&#10;&#10;I…"></textarea>
+            <div id="coverValidation" class="validation-list" aria-live="polite"></div>
+            <div class="studio-actions">
+              <button id="downloadCover" class="button button-teal">Download real Word cover letter</button>
+              <button id="copyCover" class="button button-outline">Copy formatted for Google Docs</button>
+            </div>
+          </section>
         </div>
       </section>
     </main>
@@ -143,6 +187,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <noscript>This portal requires JavaScript to filter and track applications.</noscript>
-    <script type="module" src="assets/app.mjs?v=20260825-legacy-migration"></script>
+    <script type="module" src="assets/app.mjs?v=20260825-application-studio"></script>
   </body>
 </html>

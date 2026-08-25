@@ -1,3 +1,15 @@
+import {
+  buildTailoringBrief,
+  copyForGoogleDocs,
+  downloadDocx,
+  loadMasterResumeText,
+  loadStudioDrafts,
+  saveMasterResumeText,
+  saveStudioDrafts,
+  validateCoverLetterText,
+  validateResumeText,
+} from "./studio.mjs";
+
 const STORAGE_KEY = "rochelleCareerTrackingV3";
 const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
 const LEGACY_MANUAL_JOBS_KEY = "rochelle-manual-jobs-v1";
@@ -118,6 +130,9 @@ const portal = {
   tracking: loadTracking(),
   visibleCount: PAGE_SIZE,
   currentDialogId: null,
+  currentStudioId: "",
+  masterResumeText: loadMasterResumeText(),
+  studioDrafts: loadStudioDrafts(),
 };
 
 function loadTracking() {
@@ -317,7 +332,7 @@ function populateFilters() {
   const studio = document.querySelector("#studioSelect");
   const first = studio.options[0];
   studio.replaceChildren(first);
-  portal.jobs.filter((job) => job.default_visible).forEach((job) => {
+  portal.jobs.forEach((job) => {
     const option = document.createElement("option");
     option.value = job.id;
     option.textContent = `${job.score} — ${job.company} — ${job.title}`;
@@ -440,13 +455,17 @@ function renderApplied() {
 }
 
 function renderStudio(id = document.querySelector("#studioSelect").value) {
-  const target = document.querySelector("#studioContent");
+  const target = document.querySelector("#studioJobSummary");
   const job = portal.jobs.find((item) => item.id === id);
   if (!job) {
+    portal.currentStudioId = "";
     target.className = "studio-content empty-state";
     target.textContent = "Choose a position to begin.";
+    document.querySelector("#tailoringBrief").value = "";
+    document.querySelector("#copyBrief").disabled = true;
     return;
   }
+  portal.currentStudioId = id;
   target.className = "studio-content";
   target.innerHTML = `
     <div class="studio-grid">
@@ -456,7 +475,7 @@ function renderStudio(id = document.querySelector("#studioSelect").value) {
         <h2>${e(job.title)}</h2>
         <p class="job-company">${e(job.company)}</p>
         <p>${e(job.summary)}</p>
-        <a class="button button-coral" href="${e(job.apply_url)}" target="_blank" rel="noopener">Apply on company website ↗</a>
+        <a class="button button-soft" href="${e(job.apply_url)}" target="_blank" rel="noopener">View company posting ↗</a>
       </div>
     </div>
     <div class="evidence-columns">
@@ -464,6 +483,87 @@ function renderStudio(id = document.querySelector("#studioSelect").value) {
       <section class="evidence-box gaps"><h3>Questions or gaps to verify</h3><ul>${(job.gaps || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No major rule-based gap detected.</li>"}</ul></section>
     </div>
   `;
+  const draft = portal.studioDrafts.jobs[id] || {};
+  document.querySelector("#finishedResume").value = draft.resume || "";
+  document.querySelector("#finishedCover").value = draft.cover || "";
+  document.querySelector("#resumeValidation").replaceChildren();
+  document.querySelector("#coverValidation").replaceChildren();
+  refreshTailoringBrief();
+}
+
+function studioProfileFromFields() {
+  return {
+    name: document.querySelector("#documentName").value.trim(),
+    headline: document.querySelector("#documentHeadline").value.trim(),
+    tagline: document.querySelector("#documentTagline").value.trim(),
+    contact: document.querySelector("#documentContact").value.trim(),
+  };
+}
+
+function currentStudioJob() {
+  const id = document.querySelector("#studioSelect").value;
+  return portal.jobs.find((job) => job.id === id) || null;
+}
+
+function refreshTailoringBrief() {
+  const job = currentStudioJob();
+  const brief = buildTailoringBrief(job, portal.masterResumeText, studioProfileFromFields());
+  document.querySelector("#tailoringBrief").value = brief;
+  document.querySelector("#copyBrief").disabled = !job || !portal.masterResumeText.trim();
+}
+
+function persistStudioDraft() {
+  const draftId = portal.currentStudioId;
+  portal.studioDrafts.profile = studioProfileFromFields();
+  if (draftId) {
+    portal.studioDrafts.jobs[draftId] = {
+      resume: document.querySelector("#finishedResume").value,
+      cover: document.querySelector("#finishedCover").value,
+      updatedAt: new Date().toISOString(),
+    };
+  }
+  saveStudioDrafts(portal.studioDrafts);
+}
+
+function showValidation(targetId, errors) {
+  const target = document.querySelector(targetId);
+  target.classList.toggle("success", !errors.length);
+  target.innerHTML = errors.length
+    ? `<ul>${errors.map((error) => `<li>${e(error)}</li>`).join("")}</ul>`
+    : "Ready—voice and structure checks passed.";
+}
+
+function documentProfileErrors(profile) {
+  const errors = [];
+  if (!profile.name) errors.push("Add the document name.");
+  if (!profile.headline) errors.push("Add the document headline.");
+  if (!profile.tagline) errors.push("Add the document tagline.");
+  if (!profile.contact) errors.push("Add the contact line before creating the document.");
+  return errors;
+}
+
+async function runStudioOutput(type, action) {
+  const job = currentStudioJob();
+  if (!job) {
+    showToast("Choose a position first.");
+    return;
+  }
+  const profile = studioProfileFromFields();
+  const text = document.querySelector(type === "resume" ? "#finishedResume" : "#finishedCover").value;
+  const errors = [
+    ...documentProfileErrors(profile),
+    ...(type === "resume" ? validateResumeText(text, job) : validateCoverLetterText(text)),
+  ];
+  showValidation(type === "resume" ? "#resumeValidation" : "#coverValidation", errors);
+  if (errors.length) return;
+  persistStudioDraft();
+  try {
+    if (action === "download") await downloadDocx(type, text, profile, job);
+    else await copyForGoogleDocs(type, text, profile);
+    showToast(action === "download" ? "Your real Word document is downloading." : "Formatted document copied for Google Docs.");
+  } catch {
+    showToast(action === "download" ? "Word generation could not load. Check your connection and try again." : "Copy failed. Allow clipboard access and try again.");
+  }
 }
 
 function renderDialog(id) {
@@ -577,7 +677,38 @@ function bindEvents() {
     renderJobs(false);
   });
   document.querySelector("#showClosedApplied").addEventListener("change", renderApplied);
-  document.querySelector("#studioSelect").addEventListener("change", (event) => renderStudio(event.target.value));
+  document.querySelector("#studioSelect").addEventListener("change", (event) => {
+    persistStudioDraft();
+    renderStudio(event.target.value);
+  });
+  document.querySelector("#saveMasterResume").addEventListener("click", () => {
+    portal.masterResumeText = document.querySelector("#masterResumeText").value.trim();
+    saveMasterResumeText(portal.masterResumeText);
+    document.querySelector("#masterResumeStatus").textContent = portal.masterResumeText ? "Saved in this browser." : "No résumé text saved.";
+    refreshTailoringBrief();
+    showToast("Master résumé saved locally.");
+  });
+  document.querySelector("#copyBrief").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(document.querySelector("#tailoringBrief").value);
+      showToast("Complete tailoring brief copied.");
+    } catch {
+      showToast("Copy failed. Allow clipboard access and try again.");
+    }
+  });
+  ["#documentName", "#documentHeadline", "#documentTagline", "#documentContact"].forEach((selector) => {
+    document.querySelector(selector).addEventListener("input", () => {
+      persistStudioDraft();
+      refreshTailoringBrief();
+    });
+  });
+  ["#finishedResume", "#finishedCover"].forEach((selector) => {
+    document.querySelector(selector).addEventListener("input", persistStudioDraft);
+  });
+  document.querySelector("#downloadResume").addEventListener("click", () => runStudioOutput("resume", "download"));
+  document.querySelector("#copyResume").addEventListener("click", () => runStudioOutput("resume", "copy"));
+  document.querySelector("#downloadCover").addEventListener("click", () => runStudioOutput("cover", "download"));
+  document.querySelector("#copyCover").addEventListener("click", () => runStudioOutput("cover", "copy"));
   document.querySelectorAll(".nav-tab").forEach((button) => button.addEventListener("click", () => {
     document.querySelectorAll(".nav-tab").forEach((item) => item.classList.toggle("active", item === button));
     document.querySelectorAll(".view").forEach((view) => {
@@ -605,6 +736,12 @@ function bindEvents() {
 
 async function bootstrap() {
   bindEvents();
+  document.querySelector("#masterResumeText").value = portal.masterResumeText;
+  document.querySelector("#masterResumeStatus").textContent = portal.masterResumeText ? "Master résumé found in this browser." : "Paste your master résumé once, then save it locally.";
+  Object.entries(portal.studioDrafts.profile || {}).forEach(([key, value]) => {
+    const ids = { name: "#documentName", headline: "#documentHeadline", tagline: "#documentTagline", contact: "#documentContact" };
+    if (ids[key] && value) document.querySelector(ids[key]).value = value;
+  });
   loadWorkflowState();
   try {
     await loadPortal();

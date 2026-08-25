@@ -44,6 +44,17 @@ jobs:
           python-version: "3.12"
           cache: pip
 
+      - name: Set up the browser Word generator
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Pin and vendor the real DOCX library
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund docx@9.5.1
+          mkdir -p docs/assets/vendor
+          cp node_modules/docx/dist/index.mjs docs/assets/vendor/docx.mjs
+
       - name: Install the scanner
         run: python -m pip install --upgrade pip && python -m pip install -e .
 
@@ -53,6 +64,8 @@ jobs:
           node --test tests/test_frontend.mjs
           python -m compileall -q src tests
           node --check docs/assets/app.mjs
+          node --check docs/assets/studio.mjs
+          test -s docs/assets/vendor/docx.mjs
 
       - name: Scan and compute the one authoritative score
         run: python -m rochelle_agent.scan

@@ -9,6 +9,13 @@ import {
   migrateLegacyTracking,
   normalizeLegacyStage,
 } from "../docs/assets/app.mjs";
+import {
+  buildTailoringBrief,
+  createDocumentDefinition,
+  resumeTextFromStoredValue,
+  validateCoverLetterText,
+  validateResumeText,
+} from "../docs/assets/studio.mjs";
 
 const base = {
   title: "Implementation Program Manager",
@@ -79,4 +86,53 @@ test("legacy migration preserves application evidence but newer tracking wins", 
   assert.equal(result.old.jobSnapshot.title, "Role");
   assert.equal(result.changed.stage, "interview");
   assert.equal(result.skipped.confirmedApplied, false);
+});
+
+test("legacy master resume storage is read without publishing it", () => {
+  assert.equal(resumeTextFromStoredValue(JSON.stringify({ name: "resume.docx", text: "Approved résumé facts" })), "Approved résumé facts");
+});
+
+test("tailoring brief includes full job evidence, resume, and locked voice rules", () => {
+  const brief = buildTailoringBrief({
+    company: "Pinterest",
+    title: "Lead Program Manager",
+    description: "Lead enablement programs.",
+    score: 78,
+    strengths: ["Cross-functional leadership"],
+    gaps: ["Global scope"],
+  }, "AO Globe Life approved evidence", { name: "Rochelle Magpantay", headline: "Leader", tagline: "Adoption", contact: "Dallas" });
+  assert.match(brief, /Lead enablement programs/);
+  assert.match(brief, /AO Globe Life approved evidence/);
+  assert.match(brief, /Never use she, her, or hers/);
+  assert.match(brief, /EARLIER LEADERSHIP & BUSINESS DEVELOPMENT EXPERIENCE/);
+});
+
+test("resume and cover letter validation enforce the locked voice", () => {
+  const sections = [
+    "EXECUTIVE PROFILE\nBuilt programs.",
+    "CORE STRENGTHS\nTrust | Adoption",
+    "PROFESSIONAL EXPERIENCE\nAO Globe Life",
+    "EARLIER LEADERSHIP & BUSINESS DEVELOPMENT EXPERIENCE\nVerizon",
+    "EDUCATION & PROFESSIONAL DEVELOPMENT\nB.S.",
+  ].join("\n");
+  assert.deepEqual(validateResumeText(sections, { title: "Program Manager" }), []);
+  assert.ok(validateResumeText(`${sections}\nPRACTICAL AI USE\nI use AI.`, { title: "Program Manager" }).length >= 2);
+  assert.ok(validateCoverLetterText("She is a perfect fit.").length >= 2);
+});
+
+test("Word definition uses the locked margins and header styling", () => {
+  class Item { constructor(options) { this.options = options; } }
+  const fakeDocx = {
+    AlignmentType: { CENTER: "center" },
+    BorderStyle: { SINGLE: "single" },
+    Document: Item,
+    Paragraph: Item,
+    TextRun: Item,
+  };
+  const doc = createDocumentDefinition(fakeDocx, "cover", "Dear Hiring Manager,\n\nI build durable programs.", {
+    name: "Rochelle Magpantay", headline: "LEADER", tagline: "Adoption", contact: "Dallas",
+  });
+  assert.deepEqual(doc.options.sections[0].properties.page.margin, { top: 835, bottom: 792, left: 979, right: 979 });
+  assert.equal(doc.options.sections[0].children[0].options.children[0].options.color, "17365D");
+  assert.equal(doc.options.sections[0].children[0].options.children[0].options.size, 44);
 });
