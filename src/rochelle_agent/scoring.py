@@ -109,6 +109,12 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
     text = _text(job.title, job.description, job.department, job.location)
     location = determine_location(job, profile)
     band = salary_band(job, profile)
+    workplace_text = _text(job.workplace_type, job.location)
+    is_remote = "remote" in workplace_text
+    is_dfw_hybrid = location == "Eligible — DFW" and "hybrid" in workplace_text
+    preferred_work_style = (
+        is_remote and location in {"Eligible — US", "Eligible — DFW"}
+    ) or is_dfw_hybrid
 
     lane, role_points, lane_hits = _career_lane(title, job.description, profile)
     evidence_points, evidence_matches = _resume_evidence_score(text, profile)
@@ -116,9 +122,9 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
     people_hits = _hits(text, profile["people_leadership_signals"])
     people_points = min(14, len(set(people_hits)) * 2)
 
-    if location == "Eligible — DFW" and "hybrid" in text:
+    if is_dfw_hybrid:
         work_points = 12
-    elif location == "Eligible — US" and "remote" in text:
+    elif is_remote and location in {"Eligible — US", "Eligible — DFW"}:
         work_points = 12
     elif location == "Needs location review" and "remote" in text:
         work_points = 7
@@ -182,9 +188,15 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         gaps.append("Base salary is not listed")
     if location == "Needs location review":
         gaps.append("US eligibility needs verification")
+    if not preferred_work_style and location != "Non-US only":
+        gaps.append("Outside the remote-US or DFW-hybrid target")
     gaps.extend(hard_flags)
 
-    default_visible = score >= profile["default_view_min_score"] and not hard_flags
+    default_visible = (
+        score >= profile["default_view_min_score"]
+        and not hard_flags
+        and preferred_work_style
+    )
     action = "Apply early" if score >= 82 else "Strong review" if score >= 70 else "Review carefully"
     if not default_visible:
         action = "Hidden from default view"
