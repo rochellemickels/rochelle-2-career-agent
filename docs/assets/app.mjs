@@ -1,12 +1,16 @@
 const STORAGE_KEY = "rochelleCareerTrackingV3";
+const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
+const LEGACY_MANUAL_JOBS_KEY = "rochelle-manual-jobs-v1";
 const PAGE_SIZE = 60;
-const ACTIVE_APPLICATION_STAGES = new Set(["applied", "interview", "offer"]);
+const ACTIVE_APPLICATION_STAGES = new Set(["applied", "viewed", "responded", "interview", "offer"]);
 const CLOSED_STAGES = new Set(["skipped", "passed"]);
 const STAGE_LABELS = {
   "": "Not tracked",
   saved: "Saved",
   preparing: "Preparing",
   applied: "Applied",
+  viewed: "Application viewed",
+  responded: "Employer responded",
   interview: "Interview",
   offer: "Offer",
   skipped: "Skipped by me",
@@ -52,8 +56,63 @@ export function applicationIdentity(item) {
   return `${normalize(item.company)}|${normalize(item.title)}`;
 }
 
+export function normalizeLegacyStage(value) {
+  const stage = String(value || "").trim().toLocaleLowerCase();
+  const mapping = {
+    applied: "applied",
+    viewed: "viewed",
+    "application viewed": "viewed",
+    response: "responded",
+    responded: "responded",
+    "employer responded": "responded",
+    interview: "interview",
+    interviewing: "interview",
+    offer: "offer",
+    saved: "saved",
+    preparing: "preparing",
+    "skip - not a good fit": "skipped",
+    skip: "skipped",
+    skipped: "skipped",
+    "passed / closed": "passed",
+    passed: "passed",
+    closed: "passed",
+  };
+  return mapping[stage] || "";
+}
+
+export function migrateLegacyTracking(currentRecords = {}, legacyRecords = {}) {
+  const migrated = {};
+  Object.entries(legacyRecords || {}).forEach(([id, legacy]) => {
+    if (!legacy || typeof legacy !== "object") return;
+    const stage = normalizeLegacyStage(legacy.stage);
+    migrated[id] = {
+      stage,
+      updatedAt: legacy.updatedAt || legacy.statusUpdatedAt || null,
+      appliedAt: legacy.appliedAt || null,
+      confirmedApplied: Boolean(
+        legacy.appliedAt
+        || legacy.confirmedApplied
+        || ["applied", "viewed", "responded", "interview", "offer"].includes(stage)
+      ),
+      favorite: Boolean(legacy.favorite),
+      notes: legacy.notes || "",
+      contact: legacy.contact || "",
+      history: Array.isArray(legacy.history) ? legacy.history : [],
+      jobSnapshot: legacy.jobSnapshot && typeof legacy.jobSnapshot === "object" ? legacy.jobSnapshot : null,
+      legacyStage: legacy.stage || "",
+      migratedFromLegacy: true,
+    };
+  });
+  // New-portal changes always win, making this migration safe to run repeatedly.
+  return { ...migrated, ...(currentRecords || {}) };
+}
+
+let legacyMigrationCount = 0;
+
 const portal = {
   jobs: [],
+  legacyArchiveJobs: [],
+  legacyManualJobs: loadLegacyManualJobs(),
   seedApplications: [],
   payload: null,
   tracking: loadTracking(),
@@ -64,9 +123,24 @@ const portal = {
 function loadTracking() {
   if (typeof localStorage === "undefined") return {};
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {};
+    const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {};
+    const legacy = JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY) || "{}") || {};
+    const merged = migrateLegacyTracking(current, legacy);
+    legacyMigrationCount = Object.keys(legacy).filter((id) => !current[id]).length;
+    if (Object.keys(legacy).length) localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    return merged;
   } catch {
     return {};
+  }
+}
+
+function loadLegacyManualJobs() {
+  if (typeof localStorage === "undefined") return [];
+  try {
+    const jobs = JSON.parse(localStorage.getItem(LEGACY_MANUAL_JOBS_KEY) || "[]");
+    return Array.isArray(jobs) ? jobs : [];
+  } catch {
+    return [];
   }
 }
 
@@ -139,10 +213,25 @@ function applicationJobs() {
     };
   });
   const seededKeys = new Set(seeded.map(applicationIdentity));
-  const locallyTracked = portal.jobs.filter((job) => {
+  const liveIds = new Set(portal.jobs.map((job) => job.id));
+  const catalog = new Map();
+  [...portal.legacyArchiveJobs, ...portal.legacyManualJobs, ...portal.jobs].forEach((job) => {
+    if (job?.id) catalog.set(job.id, { ...job, detailsId: liveIds.has(job.id) ? job.id : null });
+  });
+  Object.entries(portal.tracking).forEach(([id, tracking]) => {
+    if (tracking?.jobSnapshot && !catalog.has(id)) {
+      catalog.set(id, { ...tracking.jobSnapshot, id, detailsId: null });
+    }
+  });
+  const locallyTracked = [...catalog.values()].filter((job) => {
     const tracking = trackingFor(job.id);
     return (tracking.appliedAt || tracking.confirmedApplied) && !seededKeys.has(applicationIdentity(job));
-  });
+  }).map((job) => ({
+    ...job,
+    applicationNote: job.applicationNote || trackingFor(job.id).notes || (trackingFor(job.id).migratedFromLegacy
+      ? "Migrated from the original career portal in this browser."
+      : ""),
+  }));
   return [...seeded, ...locallyTracked];
 }
 
@@ -315,6 +404,12 @@ function renderApplied() {
     return showClosed && tracking.stage === "passed";
   });
   const target = document.querySelector("#appliedList");
+  const migrationSummary = document.querySelector("#migrationSummary");
+  if (migrationSummary) {
+    migrationSummary.textContent = legacyMigrationCount
+      ? `${legacyMigrationCount} original-portal tracking records restored in this browser.`
+      : "Original-portal history is checked automatically in this browser.";
+  }
   if (!jobs.length) {
     target.innerHTML = '<div class="empty-state">No active submitted applications yet. Use the Applied button only after you submit one.</div>';
     return;
@@ -334,7 +429,7 @@ function renderApplied() {
         </div>
         <div class="job-actions">
           <select aria-label="Update application stage" data-stage-id="${e(job.id)}">
-            ${["applied", "interview", "offer", "passed"].map((stage) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(STAGE_LABELS[stage])}</option>`).join("")}
+            ${["applied", "viewed", "responded", "interview", "offer", "passed"].map((stage) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(STAGE_LABELS[stage])}</option>`).join("")}
           </select>
           ${job.detailsId ? `<button class="button button-small button-soft" data-action="details" data-id="${e(job.detailsId)}">View details</button>` : ""}
           ${job.apply_url ? `<a class="button button-small button-outline" href="${e(job.apply_url)}" target="_blank" rel="noopener">Company page ↗</a>` : ""}
@@ -440,15 +535,17 @@ async function loadWorkflowState() {
 
 async function loadPortal() {
   const cacheBust = Date.now();
-  const [jobsResponse, statusResponse, appliedResponse] = await Promise.all([
+  const [jobsResponse, statusResponse, appliedResponse, legacyJobsResponse] = await Promise.all([
     fetch(`data/jobs.json?v=${cacheBust}`, { cache: "no-store" }),
     fetch(`data/status.json?v=${cacheBust}`, { cache: "no-store" }),
     fetch(`data/applied.json?v=${cacheBust}`, { cache: "no-store" }),
+    fetch(`data/legacy-jobs.json?v=${cacheBust}`, { cache: "no-store" }),
   ]);
   if (!jobsResponse.ok) throw new Error("The jobs database could not be loaded.");
   portal.payload = await jobsResponse.json();
   portal.jobs = portal.payload.jobs || [];
   portal.seedApplications = appliedResponse.ok ? (await appliedResponse.json()).applications || [] : [];
+  portal.legacyArchiveJobs = legacyJobsResponse.ok ? (await legacyJobsResponse.json()).jobs || [] : [];
   const status = statusResponse.ok ? await statusResponse.json() : null;
   document.querySelector("#lastUpdated").textContent = `Published ${formatDate(status?.generated_at || portal.payload.generated_at, true)}`;
   populateFilters();

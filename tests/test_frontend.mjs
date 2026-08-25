@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { applicationIdentity, applyCompanyCap, formatDate, matchesFilters } from "../docs/assets/app.mjs";
+import {
+  applicationIdentity,
+  applyCompanyCap,
+  formatDate,
+  matchesFilters,
+  migrateLegacyTracking,
+  normalizeLegacyStage,
+} from "../docs/assets/app.mjs";
 
 const base = {
   title: "Implementation Program Manager",
@@ -51,4 +58,25 @@ test("application identity matches the same role despite case and spacing", () =
 
 test("date-only application records preserve the stated calendar date", () => {
   assert.equal(formatDate("2026-08-21"), "August 21, 2026");
+});
+
+test("legacy stages map to the new application pipeline", () => {
+  assert.equal(normalizeLegacyStage("Skip - Not a good fit"), "skipped");
+  assert.equal(normalizeLegacyStage("Passed / Closed"), "passed");
+  assert.equal(normalizeLegacyStage("Application Viewed"), "viewed");
+  assert.equal(normalizeLegacyStage("Employer Responded"), "responded");
+});
+
+test("legacy migration preserves application evidence but newer tracking wins", () => {
+  const legacy = {
+    old: { stage: "Applied", appliedAt: "2026-08-20", notes: "Referral", jobSnapshot: { company: "Example", title: "Role" } },
+    changed: { stage: "Applied", appliedAt: "2026-08-21" },
+    skipped: { stage: "Skip - Not a good fit", appliedAt: "" },
+  };
+  const result = migrateLegacyTracking({ changed: { stage: "interview", appliedAt: "2026-08-21" } }, legacy);
+  assert.equal(result.old.stage, "applied");
+  assert.equal(result.old.confirmedApplied, true);
+  assert.equal(result.old.jobSnapshot.title, "Role");
+  assert.equal(result.changed.stage, "interview");
+  assert.equal(result.skipped.confirmedApplied, false);
 });
