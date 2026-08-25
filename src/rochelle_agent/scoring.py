@@ -1,304 +1,222 @@
+"""The only scoring and ranking authority for the portal.
+
+Every displayed score is created by ``score_job``. The scanner sorts only by that
+integer score, and the frontend preserves backend order. There is no second rank.
+"""
+
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from typing import Any
 
 from .models import Job, ScoreBreakdown, ScoredJob
 
 
-def _contains(text: str, terms: list[str]) -> list[str]:
-    lowered = text.lower()
-    return [term for term in terms if term.lower() in lowered]
+def _text(*values: str) -> str:
+    return " ".join(value for value in values if value).casefold()
 
 
-def _tier(score: int) -> str:
-    if score >= 90:
-        return "Exceptional Match"
-    if score >= 80:
-        return "Strong Match"
-    if score >= 70:
-        return "Good Match"
-    if score >= 60:
-        return "Possible Match"
-    return "Low Match"
+def _hits(text: str, phrases: Iterable[str]) -> list[str]:
+    return [phrase for phrase in phrases if phrase.casefold() in text]
 
 
-def is_us_eligible_location(job: Job, profile: dict[str, Any]) -> bool:
-    location = f"{job.location} {job.workplace_type}".lower()
-    has_non_us_constraint = bool(_contains(location, profile["non_us_only_keywords"]))
-    has_us_or_global_scope = bool(_contains(location, profile["us_eligibility_keywords"]))
-    return not has_non_us_constraint or has_us_or_global_scope
+def _regex_hits(text: str, patterns: Iterable[str]) -> list[str]:
+    return [pattern for pattern in patterns if re.search(pattern, text, re.IGNORECASE)]
 
 
-def _resume_signal_matches(body: str, profile: dict[str, Any]) -> list[str]:
-    """
-    For every signal category this JOB actually emphasizes, check whether Rochelle's
-    real master résumé explicitly supports it too. This mirrors exactly how the
-    Application Studio's per-application keyword-coverage check works — same 24
-    categories, same overlap logic — so the main job-level score is now grounded in
-    her ACTUAL résumé, not a separate generic hand-authored keyword list. A job that
-    emphasizes signals her résumé doesn't support gets fewer matches here, same as it
-    would show a lower keyword-coverage percentage in the Studio.
-    """
-    resume = profile.get("master_resume_text", "").lower()
-    if not resume:
-        return _contains(body, profile["transferable_strength_keywords"])
+def determine_location(job: Job, profile: dict[str, Any]) -> str:
+    location = job.location.casefold().strip()
+    workplace = job.workplace_type.casefold().strip()
+    combined = f"{location} {workplace}"
+
+    # Ontario, California is a US city; never classify it by the province name alone.
+    if re.search(r"\bontario\s*,\s*ca\b", combined):
+        return "Eligible — US"
+
+    us_markers = profile["location_rules"]["us_markers"]
+    non_us_patterns = profile["location_rules"]["non_us_patterns"]
+    has_us = bool(_hits(combined, us_markers))
+    has_non_us = bool(_regex_hits(combined, non_us_patterns))
+
+    if has_non_us and not has_us:
+        return "Non-US only"
+    if _hits(combined, profile["location_rules"]["dfw_markers"]):
+        return "Eligible — DFW"
+    if has_us:
+        return "Eligible — US"
+    if "remote" in combined:
+        return "Needs location review"
+    return "Needs location review"
+
+
+def salary_band(job: Job, profile: dict[str, Any]) -> str:
+    low, high = job.salary_min, job.salary_max
+    if low is None and high is None:
+        return "Not listed"
+    low = low or high or 0
+    high = high or low
+    floor = profile["salary"]["viable_floor"]
+    ideal_low = profile["salary"]["ideal_min"]
+    ideal_high = profile["salary"]["ideal_max"]
+    if high < floor:
+        return "Below viable floor"
+    if low <= ideal_high and high >= ideal_low:
+        return "Ideal overlap"
+    if high < ideal_low:
+        return "Viable — below target"
+    if low > ideal_high:
+        return "Above target"
+    return "Viable"
+
+
+def _career_lane(title: str, description: str, profile: dict[str, Any]) -> tuple[str, int, list[str]]:
+    title_text = title.casefold()
+    full_text = f"{title_text} {description.casefold()}"
+    best_lane = "Adjacent / review"
+    best_points = 0
+    best_hits: list[str] = []
+    for lane, rules in profile["career_lanes"].items():
+        title_hits = _hits(title_text, rules["title_terms"])
+        description_hits = _hits(full_text, rules["description_terms"])
+        # One clear target phrase in the title is strong evidence; description
+        # signals then confirm that the responsibilities match the title.
+        title_points = 0 if not title_hits else 22 if len(title_hits) == 1 else 24
+        points = title_points + min(6, len(description_hits) * 2)
+        if points > best_points:
+            best_lane = lane
+            best_points = points
+            best_hits = [*title_hits, *description_hits]
+    return best_lane, min(30, best_points), best_hits
+
+
+def _resume_evidence_score(text: str, profile: dict[str, Any]) -> tuple[int, list[str]]:
+    resume = profile["master_resume_text"].casefold()
+    points = 0
     matched: list[str] = []
-    for label, terms in profile.get("role_signal_categories", []):
-        job_relevant = any(term.lower() in body for term in terms)
-        if not job_relevant:
-            continue
-        resume_supports = any(term.lower() in resume for term in terms)
-        if resume_supports:
-            matched.append(label)
-    return matched
-
-
-def _score_role_fit(
-    title: str,
-    body: str,
-    profile: dict[str, Any],
-    strengths: list[str],
-    gaps: list[str],
-) -> int:
-    excluded = _contains(title, profile["exclude_title_keywords"])
-    exact = _contains(title, profile["target_titles"])
-    adjacent = _contains(title, profile["adjacent_titles"])
-    stretch = _contains(title, profile["stretch_titles"])
-    executive_stretch = _contains(title, profile["executive_stretch_titles"])
-    transferable_hits = _resume_signal_matches(body, profile)
-
-    if excluded:
-        role_fit = 1
-        gaps.append(f"Title appears outside target lane: {excluded[0]}")
-    elif exact:
-        role_fit = 25
-        strengths.append("Manager-level title directly matches the preferred career bridge")
-    elif adjacent:
-        role_fit = min(24, 19 + min(5, len(transferable_hits)))
-        strengths.append("Title is adjacent to the preferred manager-level career lane")
-    elif stretch:
-        # Director is not a disqualifier. Strong evidence of Rochelle's transferable
-        # leadership, relationship, solutions, and growth strengths can earn full points.
-        role_fit = min(25, 17 + min(8, len(transferable_hits) * 2))
-        if len(transferable_hits) >= 3:
-            strengths.append("Director scope aligns with proven team, relationship, and growth leadership")
-        else:
-            gaps.append("Director-level stretch: confirm industry onboarding and operational ramp support")
-    elif executive_stretch:
-        role_fit = min(20, 12 + min(8, len(transferable_hits) * 2))
-        gaps.append("Executive-level stretch: validate expectations and direct industry experience required")
-    else:
-        lane_hits = _contains(
-            title,
-            [
-                "partnership",
-                "business development",
-                "relationship manager",
-                "alliances",
-                "partner success",
-                "partner enablement",
-                "implementation",
-                "program manager",
-                "project manager",
-                "transformation",
-                "change management",
-                "customer success",
-                "client solutions",
-                "customer solutions",
-                "go to market",
-                "go-to-market",
-                "growth strategy",
-                "strategy and operations",
-                "strategy & operations",
-                "market development",
-                "revenue enablement",
-            ],
-        )
-        manager_level = bool(_contains(title, ["manager", "lead", "consultant", "advisor"]))
-        role_fit = min(22, 5 + len(lane_hits) * 6 + (5 if manager_level else 0))
-        if lane_hits:
-            strengths.append("Responsibilities are within the relationships, solutions, implementation, or growth lane")
-        else:
-            gaps.append("Title is not an obvious match to the priority career lanes")
-
-    # A title match alone isn't enough — a role can be titled "Customer Success Manager"
-    # or "Solutions Consultant" and still be a poor fit if the actual day-to-day requires
-    # owning a personal sales/incentive quota, or requires deep hands-on technical
-    # practitioner depth (e.g., Git/DevSecOps mastery, technical support, building AI
-    # models) rather than advisory-level fluency. These are hard caps, not proportional
-    # subtractions — a role with genuine disqualifying content should read as a clear
-    # skip, not just a slightly-lower "Strong Match." A strong title match should never
-    # be able to mostly cancel out a real red flag in the body of the posting.
-    sales_dominance = _contains(body, profile["sales_dominance_risk_keywords"])
-    if sales_dominance:
-        role_fit = min(role_fit, 8)
-        gaps.append("Role may emphasize individual sales quota, or incentive/compensation-plan ownership, over strategic relationship or implementation work")
-
-    technical_depth = _contains(body, profile.get("deep_technical_practitioner_keywords", []))
-    if len(technical_depth) >= 2:
-        role_fit = min(role_fit, 8)
-        gaps.append("Role may require hands-on technical practitioner depth (e.g., Git/DevSecOps, technical support, AI model building) beyond advisory-level fluency")
-
-    return role_fit
-
-
-def _score_compensation(
-    job: Job,
-    body: str,
-    profile: dict[str, Any],
-    strengths: list[str],
-    gaps: list[str],
-) -> int:
-    ideal_min = profile["ideal_base_salary_min"]
-    ideal_max = profile["ideal_base_salary_max"]
-    preferred_floor = profile["preferred_base_salary_floor"]
-    viable_floor = profile["minimum_viable_base_salary"]
-    salary_min = job.salary_min
-    salary_max = job.salary_max
-
-    if salary_max is None:
-        compensation = 6
-        gaps.append("Salary is not confirmed in the public posting")
-    elif salary_min is not None and salary_min >= ideal_min and salary_max <= ideal_max:
-        compensation = 20
-        strengths.append("Published base range sits fully inside the $110K–$135K ideal target")
-    elif salary_min is not None and ideal_min <= salary_min <= ideal_max:
-        compensation = 20
-        strengths.append("Published base range starts inside the $110K–$135K ideal target")
-    elif salary_min is not None and salary_min > ideal_max:
-        compensation = 18
-        strengths.append("Published base range exceeds the ideal target")
-    elif salary_max >= ideal_min:
-        compensation = 17
-        strengths.append("Published base range reaches the $110K–$135K ideal target")
-        gaps.append("Lower end of the published range is below the $110K ideal floor")
-    elif salary_max >= preferred_floor:
-        compensation = 15
-        strengths.append("Published base range reaches the $100K+ preferred floor")
-        gaps.append("Published range does not reach the $110K ideal floor")
-    elif salary_max >= viable_floor:
-        compensation = 9
-        gaps.append("Published range is in the $85K–$99K bridge range, below the preferred target")
-    else:
-        compensation = 3
-        gaps.append("Published compensation is below the $85K viable floor")
-
-    bonus_hits = _contains(body, profile["bonus_keywords"])
-    if bonus_hits:
-        compensation = min(20, compensation + 1)
-        strengths.append("Posting indicates bonus or incentive compensation potential")
-
-    commission_risk = _contains(body, profile["commission_risk_keywords"])
-    if commission_risk:
-        compensation = max(0, compensation - 6)
-        gaps.append("Posting contains commission-heavy compensation language")
-    return compensation
+    for category in profile["resume_evidence"]:
+        resume_proof = _hits(resume, category["resume_terms"])
+        job_need = _hits(text, category["job_signals"])
+        if resume_proof and job_need:
+            points += category["points"]
+            matched.append(category["label"])
+    return min(24, points), matched
 
 
 def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
-    title = re.sub(r"[^a-z0-9]+", " ", job.title.lower()).strip()
-    body = f"{job.title} {job.department} {job.location} {job.description}".lower()
-    strengths: list[str] = []
-    gaps: list[str] = []
+    """Compute the portal's one and only 0–100 score for a job."""
+    title = job.title.casefold()
+    text = _text(job.title, job.description, job.department, job.location)
+    location = determine_location(job, profile)
+    band = salary_band(job, profile)
 
-    role_fit = _score_role_fit(title, body, profile, strengths, gaps)
-    compensation = _score_compensation(job, body, profile, strengths, gaps)
+    lane, role_points, lane_hits = _career_lane(title, job.description, profile)
+    evidence_points, evidence_matches = _resume_evidence_score(text, profile)
 
-    location = f"{job.location} {job.workplace_type}".lower()
-    if not is_us_eligible_location(job, profile):
-        work_style = 1
-        gaps.append("Location appears restricted outside the United States")
-    elif "remote" in location and any(term in location for term in ["united states", "u.s.", "us ", "usa", "north america"]):
-        work_style = 15
-        strengths.append("U.S. remote work matches the preferred work style")
-    elif "remote" in location:
-        work_style = 13
-        strengths.append("Remote work is indicated")
-    elif "hybrid" in location and _contains(location, profile["dfw_keywords"]):
-        work_style = 11
-        strengths.append("DFW-area hybrid work is acceptable")
-    elif "hybrid" in location:
-        work_style = 6
-        gaps.append("Hybrid location may require relocation or travel")
-    elif _contains(location, profile["dfw_keywords"]):
-        work_style = 5
-        gaps.append("DFW location fits geographically, but remote/hybrid status is unclear")
+    people_hits = _hits(text, profile["people_leadership_signals"])
+    people_points = min(14, len(set(people_hits)) * 2)
+
+    if location == "Eligible — DFW" and "hybrid" in text:
+        work_points = 12
+    elif location == "Eligible — US" and "remote" in text:
+        work_points = 12
+    elif location == "Needs location review" and "remote" in text:
+        work_points = 7
+    elif location.startswith("Eligible"):
+        work_points = 4
     else:
-        work_style = 2
-        gaps.append("Work style or location does not clearly match the preference")
+        work_points = 0
 
-    value_groups = [
-        name for name, terms in profile["values_keywords"].items() if _contains(body, terms)
-    ]
-    values = min(15, 4 + len(value_groups) * 3)
-    if value_groups:
-        strengths.append("Posting includes mission or values evidence")
-    else:
-        gaps.append("Mission and values alignment is not yet evidenced")
+    compensation_points = {
+        "Ideal overlap": 10,
+        "Above target": 7,
+        "Viable": 7,
+        "Viable — below target": 5,
+        "Not listed": 4,
+        "Below viable floor": 0,
+    }[band]
 
-    leadership_hits = _contains(body, profile["leadership_keywords"])
-    title_leadership = _contains(title, ["manager", "lead", "director", "vice president", "vp", "head"])
-    leadership = min(10, len(leadership_hits) * 2 + (3 if title_leadership else 1))
-    if leadership >= 7:
-        strengths.append("Role shows strategic leadership and cross-functional influence")
-    elif leadership <= 3:
-        gaps.append("Leadership scope is not clear from the posting")
+    context_hits = _hits(text, profile["business_context_signals"])
+    context_points = min(10, len(set(context_hits)) * 2)
 
-    ai_hits = _contains(body, profile["ai_keywords"])
-    ai_relevance = min(10, len(ai_hits) * 3)
-    if ai_hits:
-        strengths.append("Role includes AI, automation, or digital-transformation work")
-    else:
-        gaps.append("AI or future-facing strategy is not a visible part of the role")
-
-    quality = 2
-    if len(job.description) >= 700:
-        quality += 1
-    if job.salary_max is not None:
-        quality += 1
-    if job.apply_url.startswith("https://"):
-        quality += 1
-    quality = min(5, quality)
+    hard_flags: list[str] = []
+    penalty = 0
+    if _regex_hits(text, profile["hard_penalties"]["personal_quota_patterns"]):
+        hard_flags.append("Personal quota / incentive-compensation ownership")
+        penalty -= 65
+    if _regex_hits(text, profile["hard_penalties"]["deep_technical_patterns"]):
+        hard_flags.append("Deep hands-on technical practitioner requirements")
+        penalty -= 70
+    if _hits(title, profile["hard_penalties"]["excluded_title_terms"]):
+        hard_flags.append("Role family is outside Rochelle's target path")
+        penalty -= 70
+    if location == "Non-US only":
+        hard_flags.append("Non-US-only location")
+        penalty = -100
+    penalty = max(-100, penalty)
 
     breakdown = ScoreBreakdown(
-        role_fit=role_fit,
-        compensation=compensation,
-        work_style=work_style,
-        values=values,
-        leadership=leadership,
-        ai_relevance=ai_relevance,
-        quality=quality,
+        role_alignment=role_points,
+        resume_evidence=evidence_points,
+        people_leadership=people_points,
+        work_style=work_points,
+        compensation=compensation_points,
+        business_context=context_points,
+        hard_penalty=penalty,
     )
-    total = breakdown.total
-    action = "Apply now" if total >= 86 else "Review closely" if total >= 70 else "Save for later" if total >= 60 else "Low priority"
-    summary = (
-        f"Rule-based screening found a {total}/100 match. "
-        "Review the responsibilities and confirm salary, bonus, onboarding, and location details before applying."
-    )
+    score = breakdown.total
+
+    strengths: list[str] = []
+    if lane_hits:
+        strengths.append(f"Strong {lane.lower()} language")
+    strengths.extend(f"Resume evidence: {item}" for item in evidence_matches[:4])
+    if work_points >= 10:
+        strengths.append("Preferred remote or DFW-hybrid work style")
+    if band == "Ideal overlap":
+        strengths.append("Published compensation overlaps the ideal base range")
+    if people_points >= 8:
+        strengths.append("Values cross-functional influence and people-first leadership")
+
+    gaps: list[str] = []
+    if band == "Not listed":
+        gaps.append("Base salary is not listed")
+    if location == "Needs location review":
+        gaps.append("US eligibility needs verification")
+    gaps.extend(hard_flags)
+
+    default_visible = score >= profile["default_view_min_score"] and not hard_flags
+    action = "Apply early" if score >= 82 else "Strong review" if score >= 70 else "Review carefully"
+    if not default_visible:
+        action = "Hidden from default view"
+
+    summary_bits = [f"Best aligned with {lane.lower()} work."]
+    if evidence_matches:
+        summary_bits.append("Supported by " + ", ".join(evidence_matches[:3]).lower() + ".")
+    if hard_flags:
+        summary_bits.append("Hard penalty: " + "; ".join(hard_flags) + ".")
+
     return ScoredJob(
         **job.model_dump(),
-        score=total,
-        tier=_tier(total),
+        score=score,
         breakdown=breakdown,
-        strengths=list(dict.fromkeys(strengths))[:5],
-        gaps=list(dict.fromkeys(gaps))[:5],
-        summary=summary,
+        career_lane=lane,
+        location_eligibility=location,
+        salary_band=band,
+        strengths=strengths[:6],
+        gaps=gaps[:5],
+        hard_flags=hard_flags,
+        default_visible=default_visible,
+        summary=" ".join(summary_bits),
         recommended_action=action,
     )
 
 
 def deduplicate(jobs: list[Job]) -> list[Job]:
-    selected: dict[str, Job] = {}
+    unique: dict[str, Job] = {}
+    fingerprints: set[str] = set()
     for job in jobs:
-        key = "|".join(
-            [
-                re.sub(r"\W+", "", job.company.lower()),
-                re.sub(r"\W+", "", job.title.lower()),
-                re.sub(r"\W+", "", job.location.lower()),
-            ]
-        )
-        current = selected.get(key)
-        if current is None or len(job.description) > len(current.description):
-            selected[key] = job
-    return list(selected.values())
+        if job.id in unique or job.content_fingerprint in fingerprints:
+            continue
+        unique[job.id] = job
+        fingerprints.add(job.content_fingerprint)
+    return list(unique.values())

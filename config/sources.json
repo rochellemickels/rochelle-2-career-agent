@@ -1,312 +1,48 @@
 {
   "sources": [
-    {
-      "company": "OpenAI",
-      "type": "ashby",
-      "slug": "openai",
-      "careers_url": "https://openai.com/careers/",
-      "priority": 1
-    },
-    {
-      "company": "Anthropic",
-      "type": "greenhouse",
-      "slug": "anthropic",
-      "careers_url": "https://www.anthropic.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "GitLab",
-      "type": "greenhouse",
-      "slug": "gitlab",
-      "careers_url": "https://about.gitlab.com/jobs/",
-      "priority": 1
-    },
-    {
-      "company": "HubSpot",
-      "type": "greenhouse",
-      "slug": "hubspotjobs",
-      "careers_url": "https://www.hubspot.com/careers/jobs",
-      "priority": 1
-    },
-    {
-      "company": "Webflow",
-      "type": "greenhouse",
-      "slug": "webflow",
-      "careers_url": "https://webflow.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "Figma",
-      "type": "greenhouse",
-      "slug": "figma",
-      "careers_url": "https://www.figma.com/careers/",
-      "priority": 1
-    },
-    {
-      "company": "Dropbox",
-      "type": "greenhouse",
-      "slug": "dropbox",
-      "careers_url": "https://jobs.dropbox.com/",
-      "priority": 1
-    },
-    {
-      "company": "Affirm",
-      "type": "greenhouse",
-      "slug": "affirm",
-      "careers_url": "https://www.affirm.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "Braze",
-      "type": "greenhouse",
-      "slug": "braze",
-      "careers_url": "https://www.braze.com/company/careers",
-      "priority": 2
-    },
-    {
-      "company": "Datadog",
-      "type": "greenhouse",
-      "slug": "datadog",
-      "careers_url": "https://careers.datadoghq.com/",
-      "priority": 2
-    },
-    {
-      "company": "Stripe",
-      "type": "greenhouse",
-      "slug": "stripe",
-      "careers_url": "https://stripe.com/jobs",
-      "priority": 1
-    },
-    {
-      "company": "Twilio",
-      "type": "greenhouse",
-      "slug": "twilio",
-      "careers_url": "https://www.twilio.com/en-us/company/jobs",
-      "priority": 2
-    },
-    {
-      "company": "Pinterest",
-      "type": "greenhouse",
-      "slug": "pinterest",
-      "careers_url": "https://www.pinterestcareers.com/",
-      "priority": 2
-    },
-    {
-      "company": "Reddit",
-      "type": "greenhouse",
-      "slug": "reddit",
-      "careers_url": "https://www.redditinc.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Airbnb",
-      "type": "greenhouse",
-      "slug": "airbnb",
-      "careers_url": "https://careers.airbnb.com/",
-      "priority": 2
-    },
-    {
-      "company": "Zapier",
-      "type": "ashby",
-      "slug": "zapier",
-      "careers_url": "https://zapier.com/jobs",
-      "priority": 1
-    },
-    {
-      "company": "Vercel",
-      "type": "ashby",
-      "slug": "vercel",
-      "careers_url": "https://vercel.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "Remote",
-      "type": "greenhouse",
-      "slug": "remotecom",
-      "careers_url": "https://remote.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "Deel",
-      "type": "ashby",
-      "slug": "deel",
-      "careers_url": "https://www.deel.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Notion",
-      "type": "ashby",
-      "slug": "notion",
-      "careers_url": "https://www.notion.com/careers",
-      "priority": 1
-    },
-    {
-      "company": "Asana",
-      "type": "greenhouse",
-      "slug": "asana",
-      "careers_url": "https://asana.com/jobs",
-      "priority": 2
-    },
-    {
-      "company": "Intercom",
-      "type": "greenhouse",
-      "slug": "intercom",
-      "careers_url": "https://www.intercom.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Samsara",
-      "type": "greenhouse",
-      "slug": "samsara",
-      "careers_url": "https://www.samsara.com/company/careers",
-      "priority": 2
-    },
-    {
-      "company": "Klaviyo",
-      "type": "greenhouse",
-      "slug": "klaviyo",
-      "careers_url": "https://www.klaviyo.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Amplitude",
-      "type": "greenhouse",
-      "slug": "amplitude",
-      "careers_url": "https://amplitude.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Confluent",
-      "type": "ashby",
-      "slug": "confluent",
-      "careers_url": "https://careers.confluent.io/",
-      "priority": 2
-    },
-    {
-      "company": "Plaid",
-      "type": "ashby",
-      "slug": "plaid",
-      "careers_url": "https://plaid.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "DoorDash",
-      "type": "greenhouse",
-      "slug": "doordashusa",
-      "careers_url": "https://careers.doordash.com/",
-      "priority": 1
-    },
-    {
-      "company": "Instacart",
-      "type": "greenhouse",
-      "slug": "instacart",
-      "careers_url": "https://instacart.careers/",
-      "priority": 2
-    },
-    {
-      "company": "Coinbase",
-      "type": "greenhouse",
-      "slug": "coinbase",
-      "careers_url": "https://www.coinbase.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Squarespace",
-      "type": "greenhouse",
-      "slug": "squarespace",
-      "careers_url": "https://www.squarespace.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Elastic",
-      "type": "greenhouse",
-      "slug": "elastic",
-      "careers_url": "https://www.elastic.co/careers",
-      "priority": 2
-    },
-    {
-      "company": "Gainsight",
-      "type": "ashby",
-      "slug": "gainsight",
-      "careers_url": "https://www.gainsight.com/company/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Scale AI",
-      "type": "greenhouse",
-      "slug": "scaleai",
-      "careers_url": "https://scale.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Brex",
-      "type": "greenhouse",
-      "slug": "brex",
-      "careers_url": "https://www.brex.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Ramp",
-      "type": "ashby",
-      "slug": "ramp",
-      "careers_url": "https://ramp.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "AnswerRocket",
-      "type": "greenhouse",
-      "slug": "answerrocket",
-      "careers_url": "https://answerrocket.com/careers/",
-      "priority": 1
-    },
-    {
-      "company": "NICE",
-      "type": "greenhouse",
-      "slug": "nice",
-      "careers_url": "https://www.nice.com/careers",
-      "priority": 2
-    },
-    {
-      "company": "Zafin",
-      "type": "greenhouse",
-      "slug": "zafinlabsamericasinc",
-      "careers_url": "https://zafin.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Nimble Gravity",
-      "type": "greenhouse",
-      "slug": "nimblegravity",
-      "careers_url": "https://nimblegravity.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Talkdesk",
-      "type": "greenhouse",
-      "slug": "talkdesk2",
-      "careers_url": "https://www.talkdesk.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Sitetracker",
-      "type": "lever",
-      "slug": "sitetracker",
-      "careers_url": "https://www.sitetracker.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Atmosera",
-      "type": "lever",
-      "slug": "atmosera",
-      "careers_url": "https://atmosera.com/careers/",
-      "priority": 2
-    },
-    {
-      "company": "Buyers Edge Platform",
-      "type": "greenhouse",
-      "slug": "buyersedgeplatformrecruiting",
-      "careers_url": "https://www.buyersedgeplatform.com/careers",
-      "priority": 2
-    }
+    {"company":"OpenAI","type":"ashby","slug":"openai","careers_url":"https://openai.com/careers/","priority":1},
+    {"company":"Anthropic","type":"greenhouse","slug":"anthropic","careers_url":"https://www.anthropic.com/careers","priority":1},
+    {"company":"GitLab","type":"greenhouse","slug":"gitlab","careers_url":"https://about.gitlab.com/jobs/","priority":1},
+    {"company":"HubSpot","type":"greenhouse","slug":"hubspotjobs","careers_url":"https://www.hubspot.com/careers/jobs","priority":1},
+    {"company":"Webflow","type":"greenhouse","slug":"webflow","careers_url":"https://webflow.com/careers","priority":1},
+    {"company":"Figma","type":"greenhouse","slug":"figma","careers_url":"https://www.figma.com/careers/","priority":1},
+    {"company":"Dropbox","type":"greenhouse","slug":"dropbox","careers_url":"https://jobs.dropbox.com/","priority":1},
+    {"company":"Affirm","type":"greenhouse","slug":"affirm","careers_url":"https://www.affirm.com/careers","priority":1},
+    {"company":"Stripe","type":"greenhouse","slug":"stripe","careers_url":"https://stripe.com/jobs","priority":1},
+    {"company":"Zapier","type":"ashby","slug":"zapier","careers_url":"https://zapier.com/jobs","priority":1},
+    {"company":"Vercel","type":"ashby","slug":"vercel","careers_url":"https://vercel.com/careers","priority":1},
+    {"company":"Remote","type":"greenhouse","slug":"remotecom","careers_url":"https://remote.com/careers","priority":1},
+    {"company":"Notion","type":"ashby","slug":"notion","careers_url":"https://www.notion.com/careers","priority":1},
+    {"company":"DoorDash","type":"greenhouse","slug":"doordashusa","careers_url":"https://careers.doordash.com/","priority":1},
+    {"company":"AnswerRocket","type":"greenhouse","slug":"answerrocket","careers_url":"https://answerrocket.com/careers/","priority":1},
+    {"company":"Braze","type":"greenhouse","slug":"braze","careers_url":"https://www.braze.com/company/careers","priority":2},
+    {"company":"Datadog","type":"greenhouse","slug":"datadog","careers_url":"https://careers.datadoghq.com/","priority":2},
+    {"company":"Twilio","type":"greenhouse","slug":"twilio","careers_url":"https://www.twilio.com/en-us/company/jobs","priority":2},
+    {"company":"Pinterest","type":"greenhouse","slug":"pinterest","careers_url":"https://www.pinterestcareers.com/","priority":2},
+    {"company":"Reddit","type":"greenhouse","slug":"reddit","careers_url":"https://www.redditinc.com/careers","priority":2},
+    {"company":"Airbnb","type":"greenhouse","slug":"airbnb","careers_url":"https://careers.airbnb.com/","priority":2},
+    {"company":"Deel","type":"ashby","slug":"deel","careers_url":"https://www.deel.com/careers/","priority":2},
+    {"company":"Asana","type":"greenhouse","slug":"asana","careers_url":"https://asana.com/jobs","priority":2},
+    {"company":"Intercom","type":"greenhouse","slug":"intercom","careers_url":"https://www.intercom.com/careers","priority":2},
+    {"company":"Samsara","type":"greenhouse","slug":"samsara","careers_url":"https://www.samsara.com/company/careers","priority":2},
+    {"company":"Klaviyo","type":"greenhouse","slug":"klaviyo","careers_url":"https://www.klaviyo.com/careers","priority":2},
+    {"company":"Amplitude","type":"greenhouse","slug":"amplitude","careers_url":"https://amplitude.com/careers","priority":2},
+    {"company":"Confluent","type":"ashby","slug":"confluent","careers_url":"https://careers.confluent.io/","priority":2},
+    {"company":"Plaid","type":"ashby","slug":"plaid","careers_url":"https://plaid.com/careers/","priority":2},
+    {"company":"Instacart","type":"greenhouse","slug":"instacart","careers_url":"https://instacart.careers/","priority":2},
+    {"company":"Coinbase","type":"greenhouse","slug":"coinbase","careers_url":"https://www.coinbase.com/careers","priority":2},
+    {"company":"Squarespace","type":"greenhouse","slug":"squarespace","careers_url":"https://www.squarespace.com/careers","priority":2},
+    {"company":"Elastic","type":"greenhouse","slug":"elastic","careers_url":"https://www.elastic.co/careers","priority":2},
+    {"company":"Gainsight","type":"ashby","slug":"gainsight","careers_url":"https://www.gainsight.com/company/careers/","priority":2},
+    {"company":"Scale AI","type":"greenhouse","slug":"scaleai","careers_url":"https://scale.com/careers","priority":2},
+    {"company":"Brex","type":"greenhouse","slug":"brex","careers_url":"https://www.brex.com/careers","priority":2},
+    {"company":"Ramp","type":"ashby","slug":"ramp","careers_url":"https://ramp.com/careers","priority":2},
+    {"company":"NICE","type":"greenhouse","slug":"nice","careers_url":"https://www.nice.com/careers","priority":2},
+    {"company":"Zafin","type":"greenhouse","slug":"zafinlabsamericasinc","careers_url":"https://zafin.com/careers/","priority":2},
+    {"company":"Nimble Gravity","type":"greenhouse","slug":"nimblegravity","careers_url":"https://nimblegravity.com/careers/","priority":2},
+    {"company":"Talkdesk","type":"greenhouse","slug":"talkdesk2","careers_url":"https://www.talkdesk.com/careers/","priority":2},
+    {"company":"Sitetracker","type":"lever","slug":"sitetracker","careers_url":"https://www.sitetracker.com/careers/","priority":2},
+    {"company":"Atmosera","type":"lever","slug":"atmosera","careers_url":"https://atmosera.com/careers/","priority":2},
+    {"company":"Buyers Edge Platform","type":"greenhouse","slug":"buyersedgeplatformrecruiting","careers_url":"https://www.buyersedgeplatform.com/careers","priority":2}
   ]
 }

@@ -6,13 +6,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .scoring import deduplicate, is_us_eligible_location, score_job
+# This is the only live scoring import. There is intentionally no scorer.py.
+from .scoring import deduplicate, score_job
 from .sources import build_source
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    with path.open(encoding="utf-8") as handle:
-        return json.load(handle)
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -20,85 +20,60 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def load_previous_jobs(path: Path) -> dict[str, dict[str, Any]]:
-    """Return the last published jobs keyed by stable source ID."""
+def previous_jobs(path: Path) -> dict[str, dict[str, Any]]:
     if not path.exists():
         return {}
     try:
-        payload = load_json(path)
+        data = load_json(path)
     except (OSError, json.JSONDecodeError):
         return {}
-    return {
-        str(job["id"]): job
-        for job in payload.get("jobs", [])
-        if isinstance(job, dict) and job.get("id")
-    }
+    return {str(job["id"]): job for job in data.get("jobs", []) if job.get("id")}
 
 
-def run_scan(
-    profile_path: Path,
-    sources_path: Path,
-    output_path: Path,
-    status_path: Path,
-) -> dict[str, Any]:
+def run_scan(profile_path: Path, sources_path: Path, output_path: Path, status_path: Path) -> dict[str, Any]:
     profile = load_json(profile_path)
-    source_config = load_json(sources_path)["sources"]
+    source_configs = load_json(sources_path)["sources"]
+    old_jobs = previous_jobs(output_path)
     now = datetime.now(timezone.utc).isoformat()
-    previous_jobs = load_previous_jobs(output_path)
 
-    jobs = []
+    raw_jobs = []
     statuses = []
-    for config in sorted(source_config, key=lambda item: item.get("priority", 99)):
-        source_jobs, status = build_source(config).collect()
-        jobs.extend(source_jobs)
+    for config in sorted(source_configs, key=lambda item: item.get("priority", 99)):
+        jobs, status = build_source(config).collect()
+        raw_jobs.extend(jobs)
         statuses.append(status)
 
-    unique_jobs = deduplicate(jobs)
+    unique_jobs = deduplicate(raw_jobs)
     for job in unique_jobs:
-        previous = previous_jobs.get(job.id)
-        if previous:
-            job.discovered_at = (
-                previous.get("discovered_at")
-                or previous.get("posted_at")
-                or job.discovered_at
-            )
-        else:
-            job.discovered_at = now
+        old = old_jobs.get(job.id, {})
+        job.discovered_at = old.get("discovered_at") or old.get("posted_at") or now
         job.verified_at = now
 
-    all_scored = [score_job(job, profile) for job in unique_jobs]
-    # The portal is a focused decision tool, not a mirror of every company job.
-    # Keep roles with title-lane evidence and enough overall signal to merit review.
-    scored = [
-        job for job in all_scored
-        if job.breakdown.role_fit >= 15
-        and job.score >= 45
-        and is_us_eligible_location(job, profile)
-    ]
-    scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
-    scored = scored[:200]
+    # One score, computed once. Sorting uses only the same displayed integer score.
+    scored = [score_job(job, profile) for job in unique_jobs]
+    scored.sort(key=lambda job: job.score, reverse=True)
 
-    scored.sort(key=lambda job: (job.score, job.posted_at or ""), reverse=True)
-    source_ok = sum(status.status == "ok" for status in statuses)
-    source_errors = len(statuses) - source_ok
+    # Clearly non-US-only postings are excluded from the published US search universe.
+    published = [job for job in scored if job.location_eligibility != "Non-US only"][:1000]
     payload = {
         "generated_at": now,
         "profile_version": profile["profile_version"],
-        "is_sample": False,
         "metadata": {
-            "total_jobs": len(scored),
-            "sources_ok": source_ok,
-            "sources_error": source_errors,
-            "matching_method": "transparent-rules-v2",
-            "cost_mode": "free",
+            "product": "Rochelle 2.0 AI Career Portal",
+            "roles_scanned": len(scored),
+            "roles_published": len(published),
+            "default_matches": sum(job.default_visible for job in published),
+            "sources_ok": sum(status.status == "ok" for status in statuses),
+            "sources_error": sum(status.status == "error" for status in statuses),
+            "scoring_authority": "src/rochelle_agent/scoring.py::score_job",
+            "sort_rule": "displayed score descending; backend order preserved for ties",
         },
-        "jobs": [
-            {**job.model_dump(), "description": job.description[:3500]}
-            for job in scored
-        ],
+        "jobs": [{**job.model_dump(), "description": job.description[:5000]} for job in published],
     }
     status_payload = {
         "generated_at": now,
+        "state": "complete",
+        "message": "Scan, score, commit, and publish workflow completed.",
         "sources": [status.model_dump() for status in statuses],
     }
     write_json(output_path, payload)
@@ -107,7 +82,7 @@ def run_scan(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Refresh Rochelle's career opportunity database.")
+    parser = argparse.ArgumentParser(description="Refresh Rochelle 2.0 AI Career Portal.")
     parser.add_argument("--profile", type=Path, default=Path("config/profile.json"))
     parser.add_argument("--sources", type=Path, default=Path("config/sources.json"))
     parser.add_argument("--output", type=Path, default=Path("docs/data/jobs.json"))
@@ -117,17 +92,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    payload = run_scan(
-        args.profile,
-        args.sources,
-        args.output,
-        args.status_output,
-    )
-    metadata = payload["metadata"]
-    print(
-        f"Refreshed {metadata['total_jobs']} jobs from {metadata['sources_ok']} healthy sources "
-        "using the free transparent matching engine."
-    )
+    payload = run_scan(args.profile, args.sources, args.output, args.status_output)
+    meta = payload["metadata"]
+    print(f"Published {meta['roles_published']} US-eligible roles; {meta['default_matches']} default matches.")
 
 
 if __name__ == "__main__":

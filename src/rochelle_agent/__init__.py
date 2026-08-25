@@ -1,4 +1,3 @@
-"""Rochelle 2.0 career discovery package."""
+"""Rochelle 2.0 AI Career Portal backend."""
 
-__version__ = "0.1.0"
-
+__version__ = "2.0.0"

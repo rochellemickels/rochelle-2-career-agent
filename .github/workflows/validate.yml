@@ -1,0 +1,21 @@
+name: Validate Career Portal
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -p "test_*.py" -v
+      - run: node --test tests/test_frontend.mjs
+      - run: python -m compileall -q src tests && node --check docs/assets/app.mjs

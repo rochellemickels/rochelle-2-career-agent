@@ -4,15 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rochelle-2-career-agent"
-version = "0.1.0"
-description = "Automated career discovery and job-matching portal for Rochelle 2.0"
+version = "2.0.0"
+description = "Rochelle 2.0 AI Career Portal scanner, scorer, and static dashboard"
 requires-python = ">=3.11"
-dependencies = [
-  "pydantic>=2.10",
-]
+dependencies = ["pydantic>=2.10"]
 
 [project.scripts]
-rochelle-career-scan = "rochelle_agent.scan:main"
+rochelle-career-refresh = "rochelle_agent.scan:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,88 +1,62 @@
 import json
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+from rochelle_agent.models import Job, SourceStatus
+from rochelle_agent.scan import run_scan
 
-from rochelle_agent.models import Job, SourceStatus  # noqa: E402
-from rochelle_agent.scan import run_scan  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class FakeSource:
-    def __init__(self, jobs):
-        self.jobs = jobs
-
     def collect(self):
-        return self.jobs, SourceStatus(
-            company="Example",
-            source_type="greenhouse",
-            slug="example",
-            status="ok",
-            jobs_found=len(self.jobs),
-        )
+        jobs = [
+            Job(
+                id="fake:us",
+                source_type="fake",
+                source_slug="fake",
+                company="Example",
+                title="Implementation Program Manager",
+                location="Remote - United States",
+                workplace_type="Remote",
+                description="Lead cross-functional implementation, onboarding, customer adoption, training, and stakeholder alignment for SMB customers.",
+                apply_url="https://example.com/us",
+                salary_min=110000,
+                salary_max=135000,
+            ).ensure_fingerprint(),
+            Job(
+                id="fake:ca",
+                source_type="fake",
+                source_slug="fake",
+                company="Example",
+                title="Partnerships Manager",
+                location="Toronto, Ontario, Canada",
+                workplace_type="Remote",
+                description="Lead strategic partnerships.",
+                apply_url="https://example.com/ca",
+            ).ensure_fingerprint(),
+        ]
+        return jobs, SourceStatus(company="Example", source_type="fake", slug="fake", status="ok", jobs_found=2)
 
 
 class ScanTests(unittest.TestCase):
-    def test_portal_database_keeps_relevant_roles_only(self):
-        relevant = Job(
-            id="relevant",
-            source_type="greenhouse",
-            source_slug="example",
-            company="Example",
-            title="Director, Strategic Partnerships",
-            location="Remote - United States",
-            workplace_type="Remote",
-            description="Lead executive partnerships and market expansion.",
-            apply_url="https://example.com/relevant",
-        ).ensure_fingerprint()
-        unrelated = Job(
-            id="unrelated",
-            source_type="greenhouse",
-            source_slug="example",
-            company="Example",
-            title="Senior Director of Product, Ads Platform",
-            location="Remote - United States",
-            workplace_type="Remote",
-            description="Lead the product roadmap and product management organization.",
-            apply_url="https://example.com/unrelated",
-        ).ensure_fingerprint()
-        foreign_only = Job(
-            id="foreign",
-            source_type="greenhouse",
-            source_slug="example",
-            company="Example",
-            title="Director, Strategic Partnerships",
-            location="Remote - United Kingdom",
-            workplace_type="Remote",
-            description="Lead strategic partnerships and executive relationships.",
-            apply_url="https://example.com/foreign",
-        ).ensure_fingerprint()
-
-        with tempfile.TemporaryDirectory() as folder:
-            temp = Path(folder)
-            sources = temp / "sources.json"
-            output = temp / "jobs.json"
-            status = temp / "status.json"
-            sources.write_text(json.dumps({"sources": [{"company": "Example", "type": "greenhouse", "slug": "example"}]}))
-            first_seen = "2026-08-10T12:00:00+00:00"
-            output.write_text(json.dumps({"jobs": [{"id": "relevant", "discovered_at": first_seen}]}))
-            with patch("rochelle_agent.scan.build_source", return_value=FakeSource([relevant, unrelated, foreign_only])):
-                result = run_scan(
-                    ROOT / "config/profile.json",
-                    sources,
-                    output,
-                    status,
-                )
-
-        self.assertEqual([job["id"] for job in result["jobs"]], ["relevant"])
-        self.assertEqual(result["metadata"]["matching_method"], "transparent-rules-v2")
-        self.assertEqual(result["metadata"]["cost_mode"], "free")
-        self.assertEqual(result["jobs"][0]["discovered_at"], first_seen)
-        self.assertEqual(result["jobs"][0]["verified_at"], result["generated_at"])
+    def test_scan_publishes_us_role_with_one_exact_score(self):
+        with tempfile.TemporaryDirectory() as temp:
+            temp_path = Path(temp)
+            sources = temp_path / "sources.json"
+            sources.write_text(json.dumps({"sources": [{"company": "Example", "type": "fake", "slug": "fake"}]}), encoding="utf-8")
+            output = temp_path / "jobs.json"
+            status = temp_path / "status.json"
+            with patch("rochelle_agent.scan.build_source", return_value=FakeSource()):
+                payload = run_scan(ROOT / "config/profile.json", sources, output, status)
+            self.assertEqual(len(payload["jobs"]), 1)
+            published = payload["jobs"][0]
+            self.assertEqual(published["id"], "fake:us")
+            self.assertEqual(published["score"], max(0, min(100, sum(published["breakdown"].values()))))
+            self.assertEqual(payload["metadata"]["scoring_authority"], "src/rochelle_agent/scoring.py::score_job")
 
 
 if __name__ == "__main__":

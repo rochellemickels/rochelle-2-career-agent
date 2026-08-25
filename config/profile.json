@@ -1,603 +1,195 @@
 {
-  "profile_version": 2,
-  "name": "Rochelle Mickels",
-  "location": "Grapevine, Texas",
-  "minimum_viable_base_salary": 85000,
-  "preferred_base_salary_floor": 105000,
-  "ideal_base_salary_min": 115000,
-  "ideal_base_salary_max": 140000,
-  "work_preferences": [
-    "US remote",
-    "Dallas-Fort Worth hybrid"
-  ],
-  "weights": {
-    "role_fit": 25,
-    "compensation": 20,
-    "work_style": 15,
-    "values": 15,
-    "leadership": 10,
-    "ai_relevance": 10,
-    "quality": 5
+  "profile_version": 3,
+  "name": "Rochelle",
+  "positioning": "AI adoption and client solutions leader with 20+ years in partnerships, business development, account management, implementation, sales leadership, market expansion, and people-first change adoption.",
+  "salary": {
+    "viable_floor": 85000,
+    "ideal_min": 110000,
+    "ideal_max": 135000
   },
-  "target_titles": [
-    "strategic partnerships manager",
-    "business development manager",
-    "strategic relationship manager",
-    "partner relationship manager",
-    "partnerships manager",
-    "alliances manager",
-    "channel partnerships manager",
-    "ecosystem partnerships manager",
-    "partner success manager",
-    "partner enablement manager",
-    "business transformation manager",
-    "ai transformation manager",
-    "digital transformation manager",
-    "implementation manager",
-    "customer implementation manager",
-    "strategic programs manager",
-    "partner program manager",
-    "customer program manager",
-    "implementation program manager",
-    "transformation program manager",
-    "professional services program manager",
-    "program manager strategic partnerships",
-    "project manager ai",
-    "project manager transformation",
-    "change management manager",
-    "customer success manager",
-    "enterprise customer success manager",
-    "client solutions manager",
-    "customer solutions manager",
-    "go to market strategy manager",
-    "go-to-market strategy manager",
-    "growth strategy manager",
-    "strategy and operations manager",
-    "strategy & operations manager",
-    "ai advisor",
-    "ai consultant",
-    "ai strategy consultant",
-    "ai adoption consultant",
-    "ai business consultant",
-    "gtm ai advisor",
-    "customer ai advisor",
-    "digital advisory consultant",
-    "innovation consultant",
-    "technology advisory consultant",
-    "implementation consultant",
-    "business transformation advisor"
-  ],
-  "adjacent_titles": [
-    "senior manager strategic partnerships",
-    "senior manager business development",
-    "senior manager partnerships",
-    "strategic partnerships lead",
-    "business development lead",
-    "partnerships lead",
-    "strategic account manager",
-    "enterprise relationship manager",
-    "solutions consultant",
-    "business transformation consultant",
-    "customer adoption manager",
-    "customer experience manager",
-    "revenue enablement manager",
-    "sales enablement manager",
-    "market development manager",
-    "commercial strategy manager",
-    "business operations manager",
-    "management consultant",
-    "strategy consultant",
-    "client advisor",
-    "trusted advisor",
-    "process improvement consultant",
-    "change management consultant",
-    "organizational change consultant",
-    "customer transformation manager"
-  ],
-  "stretch_titles": [
-    "director strategic partnerships",
-    "director of strategic partnerships",
-    "director business development",
-    "director of business development",
-    "director partnerships",
-    "director of partnerships",
-    "director channel partnerships",
-    "director ecosystem partnerships",
-    "director business transformation",
-    "director ai transformation",
-    "director customer success",
-    "director client solutions",
-    "director strategic programs",
-    "director growth strategy",
-    "director go to market",
-    "director go-to-market",
-    "director revenue enablement"
-  ],
-  "executive_stretch_titles": [
-    "senior director",
-    "vice president",
-    "vp ",
-    "head of",
-    "chief"
-  ],
-  "exclude_title_keywords": [
-    "software engineer",
-    "data scientist",
-    "product designer",
-    "accountant",
-    "accounting",
-    "attorney",
-    "legal",
-    "counsel",
-    "machine learning",
-    "software",
-    "engineering",
-    "product manager",
-    "director of product",
-    "product director",
-    "product management",
-    "technical program manager",
-    "technical project manager",
-    "developer",
-    "procurement",
-    "supply chain",
-    "infrastructure",
-    "data science",
-    "enterprise sales",
-    "sales director",
-    "director sales",
-    "sales manager",
-    "analytics",
-    "architecture",
-    "disaster recovery",
-    "it operations",
-    "critical harm",
-    "competitive intelligence",
-    "policy",
-    "global affairs",
-    "account executive",
-    "sales development representative",
-    "business development representative",
-    "sales representative",
-    "security",
-    "intern",
-    "entry level",
-    "commission only",
-    "door to door",
-    "ai engineer",
-    "artificial intelligence engineer",
-    "prompt engineer",
-    "applied scientist",
-    "research scientist",
-    "quota carrying",
-    "outside sales",
-    "territory sales representative"
-  ],
-  "values_keywords": {
-    "mission_and_impact": [
-      "mission",
-      "impact",
-      "community",
-      "purpose",
-      "social good",
-      "public benefit"
-    ],
-    "inclusion": [
-      "inclusive",
-      "inclusion",
-      "belonging",
-      "diversity",
-      "underrepresented",
-      "equity"
-    ],
-    "people_and_customers": [
-      "customer success",
-      "customer outcomes",
-      "small business",
-      "women",
-      "veteran",
-      "healthcare",
-      "benefits"
-    ],
-    "ethics_and_trust": [
-      "ethical",
-      "responsible ai",
-      "trust",
-      "transparency",
-      "integrity"
-    ]
+  "default_view_min_score": 50,
+  "career_lanes": {
+    "Strategic Partnerships": {
+      "title_terms": ["partnerships", "partner manager", "alliances", "ecosystem", "channel manager", "strategic relationship"],
+      "description_terms": ["partner strategy", "strategic partners", "association partners", "relationship management", "partner enablement", "market expansion"]
+    },
+    "Business Development & Market Growth": {
+      "title_terms": ["business development manager", "market development", "growth manager", "commercial strategy", "go-to-market manager"],
+      "description_terms": ["market development", "new markets", "growth strategy", "go-to-market", "revenue growth", "business development"]
+    },
+    "Customer Success & Strategic Accounts": {
+      "title_terms": ["customer success manager", "client success", "strategic account manager", "relationship manager", "customer adoption", "client solutions"],
+      "description_terms": ["customer outcomes", "trusted advisor", "executive relationships", "retention", "adoption", "customer journey"]
+    },
+    "Implementation & Client Solutions": {
+      "title_terms": ["implementation manager", "implementation consultant", "solutions consultant", "professional services", "client solutions manager", "onboarding manager"],
+      "description_terms": ["implementation", "client onboarding", "solution discovery", "change adoption", "business requirements", "workflow"]
+    },
+    "Program & Project Management": {
+      "title_terms": ["program manager", "project manager", "strategic programs", "business program manager", "transformation manager", "change manager"],
+      "description_terms": ["program roadmap", "project plan", "cross-functional", "stakeholder alignment", "dependencies", "operating rhythm"]
+    },
+    "AI Adoption & Business Transformation": {
+      "title_terms": ["ai advisor", "ai consultant", "ai adoption", "business transformation", "digital transformation", "innovation consultant", "technology advisor"],
+      "description_terms": ["ai strategy", "generative ai adoption", "business transformation", "change management", "responsible ai", "customer education"]
+    },
+    "Enablement & Learning": {
+      "title_terms": ["enablement manager", "learning and development", "training manager", "readiness manager", "revenue enablement", "sales enablement"],
+      "description_terms": ["onboarding", "continuous learning", "facilitation", "workshops", "coaching", "job aids", "seller readiness"]
+    },
+    "Business Operations": {
+      "title_terms": ["business operations manager", "strategy and operations", "strategy & operations", "operational excellence", "business consultant"],
+      "description_terms": ["business operations", "process improvement", "operating model", "performance measurement", "workflow design", "cross-functional"]
+    }
   },
-  "leadership_keywords": [
-    "lead strategy",
-    "own strategy",
-    "executive stakeholders",
-    "cross-functional",
-    "build and lead",
-    "manage a team",
-    "people manager",
-    "board",
-    "c-suite",
-    "revenue ownership",
-    "market expansion",
-    "coach a team",
-    "team performance",
-    "stakeholder management",
-    "program leadership",
-    "change management"
+  "resume_evidence": [
+    {
+      "label": "program and implementation leadership",
+      "points": 5,
+      "resume_terms": ["90-day pilot", "nationwide implementation", "operating model", "implementation"],
+      "job_signals": ["program management", "program manager", "implementation", "rollout", "roadmap", "project plan", "change adoption"]
+    },
+    {
+      "label": "cross-functional leadership",
+      "points": 4,
+      "resume_terms": ["cross-functional", "sales and operations", "leadership", "internal partners"],
+      "job_signals": ["cross-functional", "stakeholder", "influence without authority", "executive partners", "collaborate"]
+    },
+    {
+      "label": "business operations",
+      "points": 4,
+      "resume_terms": ["operations", "process improvement", "workflow", "profitability", "performance management"],
+      "job_signals": ["business operations", "operational excellence", "process improvement", "operating rhythm", "workflow", "performance metrics"]
+    },
+    {
+      "label": "learning and development",
+      "points": 4,
+      "resume_terms": ["onboarding", "coaching", "master trainings", "train new hires", "weekly development"],
+      "job_signals": ["learning and development", "training", "onboarding", "coaching", "workshops", "enablement", "facilitation"]
+    },
+    {
+      "label": "strategic partnerships and market expansion",
+      "points": 4,
+      "resume_terms": ["strategic partnerships", "vfw", "amvets", "new customer vertical", "market expansion"],
+      "job_signals": ["strategic partnerships", "partner ecosystem", "market expansion", "new markets", "alliances", "channel"]
+    },
+    {
+      "label": "SMB and consultative client leadership",
+      "points": 3,
+      "resume_terms": ["1-99 employee businesses", "5,000+ accounts", "consultative", "enterprise relationships"],
+      "job_signals": ["small business", "smb", "consultative", "trusted advisor", "customer outcomes", "strategic accounts"]
+    }
   ],
-  "transferable_strength_keywords": [
-    "relationship management",
-    "strategic partnerships",
-    "executive stakeholders",
+  "people_leadership_signals": [
     "cross-functional",
-    "consultative",
-    "complex solutions",
-    "solution discovery",
-    "customer outcomes",
-    "implementation",
+    "influence without authority",
     "stakeholder alignment",
-    "partner enablement",
-    "program management",
-    "growth strategy",
-    "market expansion",
-    "revenue growth",
-    "build and lead",
-    "manage a team",
-    "trusted advisor",
-    "advisory"
+    "executive communication",
+    "relationship building",
+    "facilitation",
+    "coaching",
+    "change management",
+    "customer empathy",
+    "collaboration"
   ],
-  "ai_keywords": [
-    "artificial intelligence",
-    "generative ai",
-    "genai",
-    "machine learning",
-    "ai strategy",
-    "ai transformation",
-    "automation",
+  "business_context_signals": [
+    "small business",
+    "smb",
+    "customer adoption",
+    "customer outcomes",
+    "business transformation",
     "digital transformation",
-    "llm",
-    "ai advisory",
-    "ai consulting"
+    "strategic partnerships",
+    "market expansion",
+    "implementation",
+    "operational efficiency",
+    "artificial intelligence",
+    "generative ai"
   ],
-  "commission_risk_keywords": [
-    "commission only",
-    "100% commission",
-    "uncapped commission",
-    "draw against commission"
-  ],
-  "sales_dominance_risk_keywords": [
-    "cold calling",
-    "high volume outbound",
-    "individual quota",
-    "new logo quota",
-    "full sales cycle",
-    "close new business",
-    "hunter mentality",
-    "personal quota",
-    "quota ownership",
-    "own quota",
-    "quota-carrying",
-    "arr attach quota",
-    "attach quota",
-    "sales quota",
-    "revenue quota",
-    "on-target earnings",
-    "ote for full-time",
-    "sales incentive",
-    "spiff",
-    "spiffs",
-    "comp governance",
-    "compensation governance",
-    "incentive plan design",
-    "payout mechanics",
-    "crediting logic",
-    "sales compensation philosophy",
-    "sign-off matrix",
-    "policy backstop"
-  ],
-  "deep_technical_practitioner_keywords": [
-    "git",
-    "ci/cd",
-    "devsecops",
-    "branching strategies",
-    "software development lifecycle",
-    "codebase",
-    "coding proficiency",
-    "hands-on engineering",
-    "build ai agents",
-    "fine-tune",
-    "fine-tuning",
-    "train models",
-    "machine learning models",
-    "prompt engineering required",
-    "sql proficiency",
-    "api development",
-    "technical architecture",
-    "deploy models",
-    "model deployment",
-    "python programming",
-    "software architecture",
-    "kubernetes",
-    "backend systems",
-    "infrastructure as code",
-    "technical support",
-    "troubleshooting",
-    "support ops",
-    "help desk",
-    "case management",
-    "technical escalations",
-    "debugging",
-    "root cause analysis",
-    "log analysis"
-  ],
-  "bonus_keywords": [
-    "annual bonus",
-    "performance bonus",
-    "target bonus",
-    "bonus eligible",
-    "incentive compensation"
-  ],
-  "dfw_keywords": [
-    "dallas",
-    "fort worth",
-    "dfw",
-    "grapevine",
-    "plano",
-    "frisco",
-    "irving",
-    "las colinas",
-    "texas"
-  ],
-  "us_eligibility_keywords": [
-    "united states",
-    "u.s.",
-    "usa",
-    "us remote",
-    "remote - us",
-    "remote, us",
-    "north america",
-    "noram",
-    "texas",
-    "dallas",
-    "global",
-    "worldwide",
-    "anywhere"
-  ],
-  "non_us_only_keywords": [
-    "canada",
-    "united kingdom",
-    "remote - uk",
-    "emea",
-    "europe",
-    "dach",
-    "benelux",
-    "australia",
-    "new zealand",
-    "india",
-    "singapore",
-    "france",
-    "spain",
-    "netherlands",
-    "ireland",
-    "mexico",
-    "brazil",
-    "latam",
-    "central america",
-    "south america",
-    "colombia",
-    "austria",
-    "germany",
-    "belgium",
-    "thailand",
-    "toronto",
-    "vancouver",
-    "montreal",
-    "quebec",
-    "alberta",
-    "british columbia",
-    "calgary",
-    "ottawa"
-  ],
-  "role_signal_categories": [
-    [
-      "Strategic partnerships",
-      [
-        "strategic partnerships",
-        "partner strategy",
-        "partner ecosystem"
-      ]
+  "hard_penalties": {
+    "personal_quota_patterns": [
+      "\\bpersonal quota\\b",
+      "\\bindividual quota\\b",
+      "\\bquota[- ]carrying\\b",
+      "\\bown(?:s|ing)? (?:a |the )?quota\\b",
+      "\\bquota ownership\\b",
+      "\\bnew logo quota\\b",
+      "\\barr attach\\b",
+      "\\bfull sales cycle\\b",
+      "\\b(?:own|manage|drive)[a-z ,/-]{0,30}sales cycle\\b",
+      "\\bon-target earnings\\b",
+      "\\bote\\b",
+      "\\bcommission(?:ed|s)?\\b",
+      "\\bspiffs?\\b",
+      "\\bincentive compensation (?:governance|design|administration)\\b",
+      "\\bsales compensation (?:governance|design|philosophy)\\b"
     ],
-    [
-      "Program management",
-      [
-        "program management",
-        "program manager",
-        "program roadmap"
-      ]
+    "deep_technical_patterns": [
+      "\\bgit\\b",
+      "\\bci/cd\\b",
+      "\\bdevsecops\\b",
+      "\\bsql proficiency\\b",
+      "\\bcoding proficiency\\b",
+      "\\bpython programming\\b",
+      "\\bbuild (?:ai )?agents\\b",
+      "\\btrain (?:ai |machine learning )?models\\b",
+      "\\bmodel deployment\\b",
+      "\\bsoftware architecture\\b",
+      "\\bapi development\\b",
+      "\\bkubernetes\\b",
+      "\\binfrastructure as code\\b",
+      "\\btechnical support\\b",
+      "\\bsoftware troubleshooting\\b",
+      "\\blog analysis\\b"
     ],
-    [
-      "Project management",
-      [
-        "project management",
-        "project manager",
-        "project plans"
-      ]
-    ],
-    [
-      "Stakeholder management",
-      [
-        "stakeholder management",
-        "stakeholder alignment",
-        "stakeholder engagement"
-      ]
-    ],
-    [
-      "Executive communication",
-      [
-        "executive communication",
-        "executive stakeholders",
-        "senior leaders",
-        "c-suite"
-      ]
-    ],
-    [
-      "Cross-functional leadership",
-      [
-        "cross-functional",
-        "cross functional",
-        "influence without direct authority"
-      ]
-    ],
-    [
-      "Customer success",
-      [
-        "customer success",
-        "customer outcomes",
-        "customer satisfaction"
-      ]
-    ],
-    [
-      "Consultative solutions",
-      [
-        "consultative",
-        "trusted advisor",
-        "solution discovery",
-        "complex solutions"
-      ]
-    ],
-    [
-      "Implementation",
-      [
-        "implementation",
-        "onboarding",
-        "deployment"
-      ]
-    ],
-    [
-      "Adoption and enablement",
-      [
-        "adoption",
-        "enablement",
-        "training",
-        "facilitation"
-      ]
-    ],
-    [
-      "Change management",
-      [
-        "change management",
-        "organizational change"
-      ]
-    ],
-    [
-      "Go-to-market strategy",
-      [
-        "go-to-market",
-        "go to market",
-        "gtm"
-      ]
-    ],
-    [
-      "Business operations",
-      [
-        "business operations",
-        "operational excellence",
-        "operating rhythm"
-      ]
-    ],
-    [
-      "Revenue operations",
-      [
-        "revenue operations",
-        "sales operations",
-        "pipeline",
-        "forecasting"
-      ]
-    ],
-    [
-      "Growth strategy",
-      [
-        "growth strategy",
-        "market expansion",
-        "revenue growth"
-      ]
-    ],
-    [
-      "Process improvement",
-      [
-        "process improvement",
-        "continuous improvement",
-        "operational efficiency"
-      ]
-    ],
-    [
-      "Data-informed decisions",
-      [
-        "data-driven",
-        "data informed",
-        "metrics",
-        "analytics"
-      ]
-    ],
-    [
-      "AI fluency",
-      [
-        "artificial intelligence",
-        "generative ai",
-        "ai-enabled",
-        "automation",
-        "ai fluency"
-      ]
-    ],
-    [
-      "SaaS or cloud",
-      [
-        "saas",
-        "cloud",
-        "software platform"
-      ]
-    ],
-    [
-      "Commercial negotiations",
-      [
-        "commercial negotiations",
-        "negotiation",
-        "commercial strategy"
-      ]
-    ],
-    [
-      "Financial modeling",
-      [
-        "financial modeling",
-        "business case",
-        "roi"
-      ]
-    ],
-    [
-      "Learning and development",
-      [
-        "learning and development",
-        "instructional design",
-        "curriculum",
-        "workshops"
-      ]
-    ],
-    [
-      "Risk management",
-      [
-        "risk management",
-        "dependencies",
-        "blockers"
-      ]
-    ],
-    [
-      "Documentation and playbooks",
-      [
-        "documentation",
-        "playbooks",
-        "self-service resources"
-      ]
+    "excluded_title_terms": [
+      "software engineer",
+      "data engineer",
+      "machine learning engineer",
+      "ai engineer",
+      "data scientist",
+      "research scientist",
+      "developer",
+      "technical support",
+      "technical program manager",
+      "product manager",
+      "account executive",
+      "sales development representative",
+      "business development representative",
+      "sales representative",
+      "sales director",
+      "sales manager",
+      "attorney",
+      "counsel",
+      "accountant",
+      "intern"
     ]
-  ],
-  "master_resume_text": "ROCHELLE MAGPANTAY\nPARTNERSHIPS, GROWTH & IMPLEMENTATION LEADER\nChange Adoption | Cross-Functional Enablement | Practical AI Fluency\n\nEXECUTIVE PROFILE\nI am an experienced partnerships, growth, and implementation leader who understands how to earn trust, translate complexity, and help people adopt new ways of working. I am now adding practical AI fluency so I can help customers and organizations use emerging technology in ways that improve real business outcomes. Across 20+ years, I have pioneered and scaled a fully virtual operating model, launched a new customer vertical, led distributed training and coaching, and managed complex enterprise relationships across multiple markets.\n\nCORE STRENGTHS\nStrategic Partnerships, Growth & Market Development, Program & Implementation Leadership, Go-to-Market Strategy, Change Leadership & Adoption, Cross-Functional Alignment, Workflow Design & Documentation, Training, Workshops & Playbooks, Operating-Model Design, Adoption & Performance Measurement, Executive Communication, Practical AI Fluency, Process Improvement, Early Adoption Sales Process & Implementation\n\nPROFESSIONAL EXPERIENCE\nSelected to help create and implement a 100% virtual sales operating model, transforming a territory-based, in-home process into repeatable virtual practices for recruiting, onboarding, coaching, communication, and performance management. Helped define the steps, procedures, and controls required for nationwide implementation while maintaining compliance with state and federal insurance regulations. Validated the approach through a successful 90-day pilot, then helped translate the model into easily implementable steps for both new and veteran sales agents to adopt in the field, expanding nationwide remote sales and contributing to 375% company growth during COVID. Created the company's first Veterans Division, identified an underserved market opportunity, built VFW and AMVETS relationships, and proved the vertical over two years; its success helped influence a companywide market-specialization strategy. Recruited, coached, and enabled distributed sales agents; delivered recurring Master Trainings, shared best practices with leadership, and turned frontline feedback into clearer guidance and more consistent execution.\n\nManaged 5,000+ accounts across three states, coordinating negotiation, implementation, operations, collections, retention, and ongoing relationship management while opening new territories and supporting mergers. Used customer, market, and competitive insight to prioritize growth opportunities, adapt plans across diverse markets, and communicate clear recommendations to internal partners and client decision-makers. Exceeded new-sales quota four consecutive years while winning and retaining enterprise relationships including Nike, IKEA, Intel, Daimler, Topgolf, and Dave's Killer Bread.\n\nSelected by management to train new hires because of an ability to make customer discovery, objection handling, and the end-to-end sales process practical, understandable, and human. Delivered executive presentations and built a repeatable business-development model that supported consistent growth through partnerships, referrals, industry organizations, and trusted customer relationships. Led 25+ sales professionals and three operations team members, including hiring, weekly development sessions, coaching, customer experience, performance management, and store profitability. Consulted with executives and owners of 1-99 employee businesses, translating operational needs into practical technology solutions and coordinating implementation and post-sale support. Proposed a Simplifying the Business process improvement projected to save approximately $40,000 per month.\n\nEDUCATION & PROFESSIONAL DEVELOPMENT\nB.S., Multimedia & Web Design. AI Professional Development in progress: Google AI Professional Certificate; Anthropic coursework in AI Fluency: Framework & Foundations, Claude 101, Claude Platform 101, Claude Cowork, Agent Skills, Claude Code, API fundamentals, MCP concepts, and AI Fluency for Small Businesses. Actively applying this coursework using ChatGPT, Claude, and Gemini for business research, workflow design, and structured planning. Additional development: team leadership, project management, relationship building, consultative selling, advanced leadership and management, iPEC coaching training. Certified in Psychology of Selling."
+  },
+  "location_rules": {
+    "dfw_markers": ["dallas", "fort worth", "dfw", "grapevine", "plano", "frisco", "irving", "las colinas", "southlake", "texas"],
+    "us_markers": ["united states", "u.s.", "usa", "us remote", "remote - us", "remote, us", "north america", "dallas", "texas", "new york", "california", "chicago", "seattle", "boston", "atlanta", "denver", "austin"],
+    "non_us_patterns": [
+      "\\bcanada\\b",
+      "\\btoronto(?:,|\\s)",
+      "\\bvancouver(?:,|\\s)",
+      "\\bmontreal(?:,|\\s)",
+      "\\bcalgary(?:,|\\s)",
+      "\\bottawa(?:,|\\s)",
+      "\\bquebec\\b",
+      "\\bbritish columbia\\b",
+      "\\balberta\\b",
+      "\\bemea\\b",
+      "\\beurope\\b",
+      "\\bunited kingdom\\b",
+      "\\blondon, uk\\b",
+      "\\baustralia\\b",
+      "\\bnew zealand\\b",
+      "\\bindia\\b",
+      "\\bsingapore\\b",
+      "\\blatam\\b",
+      "\\bbrazil\\b",
+      "\\bmexico\\b"
+    ]
+  },
+  "master_resume_text": "20+ years in strategic partnerships, business development, consultative account management, market expansion, sales leadership, implementation, customer relationships, training, and business operations. At AO Globe Life, led an end-to-end 90-day pilot that converted territory-based in-home presentations into a virtual operating model using Zoom consultations, electronic signatures, remote client service, onboarding, coaching, communication, and performance practices. The validated model expanded into nationwide remote sales and service. Launched and developed the first Veterans Division over two years, built VFW and AMVETS relationships, created repeatable market-entry and relationship-selling practices, recruited and coached agents, delivered recurring Master Trainings, and influenced broader market specialization through field results and leadership communication. At SeQuential Environmental Services and Mahoney Environmental, managed 5,000+ accounts across Oregon, southwest Washington, and northern California while opening territories, supporting merger activity, and coordinating negotiation, implementation, operations, collections, retention, and ongoing relationships. Exceeded quota four consecutive years and managed relationships with Nike, IKEA, Intel, Daimler, Topgolf, Dave's Killer Bread, and other enterprise customers. At Verizon, led 12 sales professionals and three operations employees, overseeing hiring, onboarding, weekly development, coaching, scheduling, performance, customer experience, and profitability. Consulted with owners and executives of 1-99 employee businesses, translated business needs into practical technology solutions, coordinated implementation and post-sale resources, and proposed a process improvement projected to save approximately $40,000 per month. At CarMax, selected by management to train new hires in customer discovery, consultative sales, objection handling, and the end-to-end sales process. B.S. in Multimedia and Web Design. Practical AI fluency in progress through Google and Anthropic coursework; uses ChatGPT, Claude, and Gemini for business research, workflow design, content development, and structured planning. Not a software engineer, AI engineer, deep technical product manager, or hands-on AI/ML builder."
 }
