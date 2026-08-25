@@ -143,7 +143,19 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
     }[band]
 
     context_hits = _hits(text, profile["business_context_signals"])
-    context_points = min(10, len(set(context_hits)) * 2)
+    company_preferences = profile.get("company_preferences", {})
+    preferred_companies = {
+        company.casefold()
+        for company in company_preferences.get("preferred_established_companies", [])
+    }
+    priority_company = job.company.casefold() in preferred_companies
+    mission_hits = _hits(text, company_preferences.get("mission_alignment_signals", []))
+    # Business context remains one component of the one displayed score. Company
+    # preference and mission fit are deliberately small positives, never a second rank.
+    context_points = min(7, len(set(context_hits)) * 2)
+    context_points += 2 if priority_company else 0
+    context_points += 1 if mission_hits else 0
+    context_points = min(10, context_points)
 
     hard_flags: list[str] = []
     penalty = 0
@@ -171,6 +183,7 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         hard_penalty=penalty,
     )
     score = breakdown.total
+    director_stretch = bool(re.search(r"\b(?:director|head of)\b", title))
 
     strengths: list[str] = []
     if lane_hits:
@@ -182,6 +195,10 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         strengths.append("Published compensation overlaps the ideal base range")
     if people_points >= 8:
         strengths.append("Values cross-functional influence and people-first leadership")
+    if priority_company:
+        strengths.append("Company profile aligns with Rochelle's established-organization preference")
+    if mission_hits:
+        strengths.append("Mission language aligns with small-business, inclusion, or veteran priorities")
 
     gaps: list[str] = []
     if band == "Not listed":
@@ -190,6 +207,8 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         gaps.append("US eligibility needs verification")
     if not preferred_work_style and location != "Non-US only":
         gaps.append("Outside the remote-US or DFW-hybrid target")
+    if director_stretch:
+        gaps.append("Director-level stretch: validate scope against transferable leadership evidence")
     gaps.extend(hard_flags)
 
     default_visible = (
@@ -198,6 +217,8 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         and preferred_work_style
     )
     action = "Apply early" if score >= 82 else "Strong review" if score >= 70 else "Review carefully"
+    if director_stretch and score >= 70:
+        action = "Strong stretch review"
     if not default_visible:
         action = "Hidden from default view"
 
@@ -206,6 +227,8 @@ def score_job(job: Job, profile: dict[str, Any]) -> ScoredJob:
         summary_bits.append("Supported by " + ", ".join(evidence_matches[:3]).lower() + ".")
     if hard_flags:
         summary_bits.append("Hard penalty: " + "; ".join(hard_flags) + ".")
+    elif director_stretch:
+        summary_bits.append("Director-level stretch; assess scope using transferable leadership evidence.")
 
     return ScoredJob(
         **job.model_dump(),

@@ -1,10 +1,10 @@
 {
-  "profile_version": 3,
+  "profile_version": 4,
   "name": "Rochelle",
   "positioning": "AI adoption and client solutions leader with 20+ years in partnerships, business development, account management, implementation, sales leadership, market expansion, and people-first change adoption.",
   "salary": {
     "viable_floor": 85000,
-    "ideal_min": 110000,
+    "ideal_min": 115000,
     "ideal_max": 135000
   },
   "default_view_min_score": 50,
@@ -14,19 +14,19 @@
       "description_terms": ["partner strategy", "strategic partners", "association partners", "relationship management", "partner enablement", "market expansion"]
     },
     "Business Development & Market Growth": {
-      "title_terms": ["business development manager", "market development", "growth manager", "commercial strategy", "go-to-market manager"],
+      "title_terms": ["business development", "market development", "growth manager", "commercial strategy", "go-to-market manager"],
       "description_terms": ["market development", "new markets", "growth strategy", "go-to-market", "revenue growth", "business development"]
     },
     "Customer Success & Strategic Accounts": {
-      "title_terms": ["customer success manager", "client success", "strategic account manager", "relationship manager", "customer adoption", "client solutions"],
+      "title_terms": ["customer success", "client success", "strategic account manager", "relationship manager", "customer adoption", "client solutions"],
       "description_terms": ["customer outcomes", "trusted advisor", "executive relationships", "retention", "adoption", "customer journey"]
     },
     "Implementation & Client Solutions": {
-      "title_terms": ["implementation manager", "implementation consultant", "solutions consultant", "professional services", "client solutions manager", "onboarding manager"],
+      "title_terms": ["implementation", "solutions consultant", "professional services", "client solutions manager", "onboarding manager"],
       "description_terms": ["implementation", "client onboarding", "solution discovery", "change adoption", "business requirements", "workflow"]
     },
     "Program & Project Management": {
-      "title_terms": ["program manager", "project manager", "strategic programs", "business program manager", "transformation manager", "change manager"],
+      "title_terms": ["program manager", "program management", "project manager", "project management", "strategic programs", "business program manager", "transformation manager", "change manager"],
       "description_terms": ["program roadmap", "project plan", "cross-functional", "stakeholder alignment", "dependencies", "operating rhythm"]
     },
     "AI Adoption & Business Transformation": {
@@ -106,6 +106,42 @@
     "artificial intelligence",
     "generative ai"
   ],
+  "company_preferences": {
+    "preferred_established_companies": [
+      "Affirm",
+      "Asana",
+      "Block",
+      "Dialpad",
+      "DoorDash",
+      "Dropbox",
+      "Figma",
+      "GitLab",
+      "GoDaddy",
+      "Gusto",
+      "HubSpot",
+      "Intercom",
+      "NICE",
+      "OpenAI",
+      "Pinterest",
+      "Samsara",
+      "Stripe",
+      "Talkdesk",
+      "Toast",
+      "Twilio"
+    ],
+    "mission_alignment_signals": [
+      "small business",
+      "small businesses",
+      "women-owned",
+      "women entrepreneurs",
+      "minority-owned",
+      "underrepresented founders",
+      "underserved communities",
+      "financial inclusion",
+      "veterans",
+      "military community"
+    ]
+  },
   "hard_penalties": {
     "personal_quota_patterns": [
       "\\bpersonal quota\\b",
@@ -157,7 +193,6 @@
       "sales development representative",
       "business development representative",
       "sales representative",
-      "sales director",
       "sales manager",
       "attorney",
       "counsel",

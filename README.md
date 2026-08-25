@@ -15,7 +15,7 @@ The portal scans public Greenhouse, Lever, and Ashby job feeds, evaluates each r
 `config/profile.json` contains:
 
 - target career lanes;
-- salary target of $110K–$135K base and viable floor of $85K;
+- salary target of $115K–$135K base, excluding bonus, and viable floor of $85K;
 - verified résumé evidence for program leadership, cross-functional leadership, business operations, learning and development, partnerships, SMB consulting, and implementation;
 - hard penalties for personal-quota/incentive-compensation ownership and deep hands-on technical requirements;
 - explicit US/DFW eligibility rules, including a protected `Ontario, CA` case and Canadian-city exclusions.
@@ -24,6 +24,10 @@ The portal scans public Greenhouse, Lever, and Ashby job feeds, evaluates each r
 
 - Recommended roles are hidden when hard-penalty flags are present.
 - Default browsing shows no more than three roles from one company; choosing a company reveals its full scored list.
+
+## Two separate portals
+
+This repository is only the **Rochelle 2.0 AI Career Portal**. It owns job discovery, scoring, recommendations, applications, and status tracking. The separate **Level Up AI Skills** portal owns learning progress, proof labs, certificates, and Evidence Bank artifacts. They inform each other over time but are intentionally not merged.
 - All filter controls are evaluated by one exported `matchesFilters` predicate and tested in combination.
 - Skipped and Passed/Closed roles are hidden from active browsing by default but recoverable with the stage filter.
 - Positions Applied shows only roles with a recorded application date and an active application stage. Closed applications are optional; skipped roles never enter that tracker.

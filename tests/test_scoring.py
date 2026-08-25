@@ -29,6 +29,10 @@ def job(**overrides):
 
 
 class ScoringTests(unittest.TestCase):
+    def test_authoritative_compensation_target(self):
+        self.assertEqual(PROFILE["salary"]["ideal_min"], 115000)
+        self.assertEqual(PROFILE["salary"]["ideal_max"], 135000)
+
     def test_strong_business_role_scores_high(self):
         scored = score_job(job(), PROFILE)
         self.assertGreaterEqual(scored.score, 70)
@@ -73,6 +77,62 @@ class ScoringTests(unittest.TestCase):
             PROFILE,
         )
         self.assertTrue(scored.default_visible)
+
+    def test_director_role_is_a_visible_stretch_not_a_title_exclusion(self):
+        scored = score_job(
+            job(
+                company="HubSpot",
+                title="Director, Strategic Partnerships",
+                description="Lead strategic partnerships, cross-functional programs, customer adoption, executive relationships, and market expansion for small businesses.",
+            ),
+            PROFILE,
+        )
+        self.assertTrue(scored.default_visible)
+        self.assertFalse(scored.hard_flags)
+        self.assertIn(
+            "Director-level stretch: validate scope against transferable leadership evidence",
+            scored.gaps,
+        )
+        self.assertEqual(scored.recommended_action, "Strong stretch review")
+
+    def test_director_role_with_personal_quota_is_still_hard_penalized(self):
+        scored = score_job(
+            job(
+                title="Director, Business Development",
+                description="Own an individual quota, OTE, and the full sales cycle.",
+            ),
+            PROFILE,
+        )
+        self.assertFalse(scored.default_visible)
+        self.assertIn("Personal quota / incentive-compensation ownership", scored.hard_flags)
+
+    def test_priority_company_is_only_a_soft_positive_inside_the_same_score(self):
+        preferred = score_job(
+            job(company="HubSpot", description="Lead strategic partnerships and executive relationships."),
+            PROFILE,
+        )
+        other = score_job(
+            job(company="Example", description="Lead strategic partnerships and executive relationships."),
+            PROFILE,
+        )
+        self.assertEqual(
+            preferred.breakdown.business_context,
+            other.breakdown.business_context + 2,
+        )
+
+    def test_mission_alignment_is_a_soft_positive(self):
+        aligned = score_job(
+            job(description="Lead client relationships supporting veterans and the military community."),
+            PROFILE,
+        )
+        neutral = score_job(
+            job(description="Lead client relationships supporting regional organizations."),
+            PROFILE,
+        )
+        self.assertGreater(
+            aligned.breakdown.business_context,
+            neutral.breakdown.business_context,
+        )
 
     def test_score_equals_visible_breakdown_total(self):
         scored = score_job(job(), PROFILE)
