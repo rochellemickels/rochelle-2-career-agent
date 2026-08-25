@@ -1,4 +1,5 @@
 import ast
+import re
 import unittest
 from pathlib import Path
 
@@ -22,6 +23,13 @@ class ArchitectureTests(unittest.TestCase):
         app = (ROOT / "docs/assets/app.mjs").read_text(encoding="utf-8")
         self.assertNotIn("calculateScore", app)
         self.assertNotIn("rankScore", app)
+
+    def test_no_anthropic_secret_is_committed(self):
+        secret_pattern = re.compile(r"sk-ant-[A-Za-z0-9_-]{10,}")
+        checked_suffixes = {".py", ".mjs", ".js", ".html", ".json", ".yml", ".yaml", ".md"}
+        for path in ROOT.rglob("*"):
+            if path.is_file() and path.suffix in checked_suffixes and ".git" not in path.parts:
+                self.assertIsNone(secret_pattern.search(path.read_text(encoding="utf-8", errors="ignore")), path)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,10 @@ import {
   buildTailoringBrief,
   cleanJobDescription,
   createDocumentDefinition,
+  estimateAnthropicCost,
+  generateTailoredDocuments,
   resumeTextFromStoredValue,
+  unsupportedQuantifiedClaims,
   validateCoverLetterText,
   validateResumeText,
 } from "../docs/assets/studio.mjs";
@@ -140,4 +143,55 @@ test("Word definition uses the locked margins and header styling", () => {
   assert.deepEqual(doc.options.sections[0].properties.page.margin, { top: 835, bottom: 792, left: 979, right: 979 });
   assert.equal(doc.options.sections[0].children[0].options.children[0].options.color, "17365D");
   assert.equal(doc.options.sections[0].children[0].options.children[0].options.size, 44);
+});
+
+test("unsupported quantified claims are flagged against the master resume", () => {
+  assert.deepEqual(
+    unsupportedQuantifiedClaims("Managed 5,000+ accounts and improved adoption 17%.", "Managed 5,000+ accounts."),
+    ["17%"],
+  );
+});
+
+test("Claude cost estimate uses current Sonnet 5 token rates", () => {
+  assert.equal(estimateAnthropicCost({ input_tokens: 5000, output_tokens: 3000 }), 0.04);
+});
+
+test("customization makes exactly one structured Claude request", async () => {
+  let calls = 0;
+  let request;
+  const fakeFetch = async (url, options) => {
+    calls += 1;
+    request = { url, options, body: JSON.parse(options.body) };
+    return {
+      ok: true,
+      json: async () => ({
+        model: "claude-sonnet-5",
+        usage: { input_tokens: 2000, output_tokens: 2500 },
+        content: [{ type: "text", text: JSON.stringify({ resume: "EXECUTIVE PROFILE\nTruthful draft", cover_letter: "Dear Hiring Manager,\n\nI build durable programs." }) }],
+      }),
+    };
+  };
+  const result = await generateTailoredDocuments({
+    apiKey: "unit-test-key",
+    job: { ...base, id: "role-1", score: 90, strengths: [], gaps: [] },
+    masterResumeText: "Approved resume facts",
+    profile: { name: "Rochelle Magpantay", headline: "LEADER", tagline: "Adoption", contact: "Dallas" },
+  }, fakeFetch);
+  assert.equal(calls, 1);
+  assert.equal(request.url, "https://api.anthropic.com/v1/messages");
+  assert.equal(request.options.headers["anthropic-dangerous-direct-browser-access"], "true");
+  assert.equal(request.options.headers["x-api-key"], "unit-test-key");
+  assert.equal(request.body.model, "claude-sonnet-5");
+  assert.equal(request.body.max_tokens, 6500);
+  assert.equal(request.body.output_config.format.type, "json_schema");
+  assert.equal(result.coverLetter, "Dear Hiring Manager,\n\nI build durable programs.");
+});
+
+test("missing API key fails before any network request", async () => {
+  let calls = 0;
+  await assert.rejects(
+    generateTailoredDocuments({ apiKey: "", job: base, masterResumeText: "facts", profile: {} }, async () => { calls += 1; }),
+    /API key/,
+  );
+  assert.equal(calls, 0);
 });

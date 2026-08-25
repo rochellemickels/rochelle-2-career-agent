@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#4c2347">
     <meta name="description" content="Rochelle's focused AI career opportunity and application portal.">
     <title>Rochelle 2.0 AI Career Portal</title>
-    <link rel="stylesheet" href="assets/styles.css?v=20260825-application-studio">
+    <link rel="stylesheet" href="assets/styles.css?v=20260825-ai-customize">
   </head>
   <body>
     <header class="hero">
@@ -126,12 +126,21 @@
           <div>
             <p class="eyebrow teal">APPLICATION STUDIO</p>
             <h2>Tailor truthfully. Format beautifully.</h2>
-            <p>The portal prepares the evidence brief and finished documents. ChatGPT or Claude does the writing—without an API key in this public site.</p>
+            <p>Generate both truthful drafts in one Claude API call, review them, then download properly formatted Word documents.</p>
           </div>
         </div>
         <section class="studio-card studio-setup">
           <div class="studio-step"><span>1</span><div><strong>Choose any scanned position</strong><small>The authoritative backend score and full job details are used—never a second ranking formula.</small></div></div>
           <label>Position<select id="studioSelect"><option value="">Select a role…</option></select></label>
+          <details class="outside-job-panel">
+            <summary>Use a position that is not in the scanner</summary>
+            <div class="document-profile-grid">
+              <label>Company<input id="outsideCompany" placeholder="Company name"></label>
+              <label>Job title<input id="outsideTitle" placeholder="Position title"></label>
+              <label class="full-width-field">Full job description<textarea id="outsideDescription" class="studio-textarea outside-description" placeholder="Paste the complete posting here…"></textarea></label>
+            </div>
+            <button id="useOutsideJob" class="button button-soft">Use this outside position</button>
+          </details>
           <div id="studioJobSummary" class="studio-content empty-state">Choose a position to begin.</div>
         </section>
 
@@ -142,13 +151,36 @@
         </section>
 
         <section class="studio-card">
-          <div class="studio-step"><span>3</span><div><strong>Copy the tailoring brief</strong><small>Paste this into ChatGPT or Claude. It includes the selected job, your résumé evidence, and every locked voice rule.</small></div></div>
-          <textarea id="tailoringBrief" class="studio-textarea brief-output" readonly placeholder="Choose a position and confirm your master résumé to generate the brief."></textarea>
-          <div class="studio-actions"><button id="copyBrief" class="button button-coral" disabled>Copy complete tailoring brief</button></div>
+          <div class="studio-step"><span>3</span><div><strong>Private Claude API settings</strong><small>Your key is stored only in this browser. It is never committed to GitHub and never sent anywhere except Anthropic when you click Customize.</small></div></div>
+          <div class="security-warning">
+            <strong>Important security and billing notice</strong>
+            <p>Browser storage is convenient, not vault-level security. Anyone who can access this Chrome profile—and a malicious browser extension or script—could potentially read the key. GitHub Pages projects under the same rochellemickels.github.io origin may also share access to this storage. Use a dedicated API key, set a low spending limit in the Claude Console, and delete or rotate it if this device is lost or shared. Claude API charges are separate from Claude subscriptions.</p>
+          </div>
+          <label>Anthropic API key<input id="anthropicApiKey" type="password" autocomplete="off" placeholder="Paste your personal Claude API key"></label>
+          <div class="studio-actions">
+            <button id="saveApiKey" class="button button-teal">Save key in this browser</button>
+            <button id="removeApiKey" class="button button-skip">Remove saved key</button>
+            <span id="apiKeyStatus" class="local-status"></span>
+          </div>
+        </section>
+
+        <section class="studio-card customize-card">
+          <div class="studio-step"><span>4</span><div><strong>Customize résumé and cover letter</strong><small>One click sends the selected posting and master résumé directly to Anthropic. There are no automatic retries.</small></div></div>
+          <p class="cost-note">Model: Claude Sonnet 5 · one request for both documents · 6,500-token hard output cap · typical cost is expected to be a few cents, but actual cost depends on length.</p>
+          <div class="studio-actions">
+            <button id="customizeDocuments" class="button button-coral">Customize both documents</button>
+            <span id="customizeStatus" class="local-status" aria-live="polite"></span>
+          </div>
+          <details class="manual-fallback">
+            <summary>Prefer the no-API manual method?</summary>
+            <p>Copy this brief into ChatGPT or Claude yourself, then paste the finished documents below.</p>
+            <textarea id="tailoringBrief" class="studio-textarea brief-output" readonly placeholder="Choose a position and confirm your master résumé to generate the brief."></textarea>
+            <div class="studio-actions"><button id="copyBrief" class="button button-outline" disabled>Copy complete tailoring brief</button></div>
+          </details>
         </section>
 
         <section class="studio-card">
-          <div class="studio-step"><span>4</span><div><strong>Set the shared document header</strong><small>This exact centered header is applied to both Word documents and Google Docs copy.</small></div></div>
+          <div class="studio-step"><span>5</span><div><strong>Set the shared document header</strong><small>This exact centered header is applied to both Word documents and Google Docs copy.</small></div></div>
           <div class="document-profile-grid">
             <label>Name<input id="documentName" value="Rochelle Magpantay"></label>
             <label>Headline<input id="documentHeadline" value="PARTNERSHIPS, GROWTH &amp; IMPLEMENTATION LEADER"></label>
@@ -159,7 +191,7 @@
 
         <div class="studio-output-grid">
           <section class="studio-card">
-            <div class="studio-step"><span>5A</span><div><strong>Finished tailored résumé</strong><small>Paste the AI-written text beginning with EXECUTIVE PROFILE. The portal adds the header.</small></div></div>
+            <div class="studio-step"><span>6A</span><div><strong>Finished tailored résumé</strong><small>Generated text begins with EXECUTIVE PROFILE. Review and edit before downloading.</small></div></div>
             <textarea id="finishedResume" class="studio-textarea finished-output" placeholder="EXECUTIVE PROFILE&#10;…"></textarea>
             <div id="resumeValidation" class="validation-list" aria-live="polite"></div>
             <div class="studio-actions">
@@ -168,7 +200,7 @@
             </div>
           </section>
           <section class="studio-card">
-            <div class="studio-step"><span>5B</span><div><strong>Finished cover letter</strong><small>Paste the salutation and body. The locked “Best Regards” sign-off is applied automatically.</small></div></div>
+            <div class="studio-step"><span>6B</span><div><strong>Finished cover letter</strong><small>Review and edit the first-person draft. The locked “Best Regards” sign-off is applied automatically.</small></div></div>
             <textarea id="finishedCover" class="studio-textarea finished-output" placeholder="Dear Hiring Manager,&#10;&#10;I…"></textarea>
             <div id="coverValidation" class="validation-list" aria-live="polite"></div>
             <div class="studio-actions">
@@ -187,6 +219,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <noscript>This portal requires JavaScript to filter and track applications.</noscript>
-    <script type="module" src="assets/app.mjs?v=20260825-application-studio-2"></script>
+    <script type="module" src="assets/app.mjs?v=20260825-ai-customize"></script>
   </body>
 </html>

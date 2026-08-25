@@ -1,14 +1,20 @@
 import {
   buildTailoringBrief,
+  clearAnthropicApiKey,
   copyForGoogleDocs,
   downloadDocx,
+  estimateAnthropicCost,
+  generateTailoredDocuments,
+  loadAnthropicApiKey,
   loadMasterResumeText,
   loadStudioDrafts,
+  saveAnthropicApiKey,
   saveMasterResumeText,
   saveStudioDrafts,
+  unsupportedQuantifiedClaims,
   validateCoverLetterText,
   validateResumeText,
-} from "./studio.mjs?v=20260825-2";
+} from "./studio.mjs?v=20260825-ai-customize";
 
 const STORAGE_KEY = "rochelleCareerTrackingV3";
 const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
@@ -133,6 +139,8 @@ const portal = {
   currentStudioId: "",
   masterResumeText: loadMasterResumeText(),
   studioDrafts: loadStudioDrafts(),
+  anthropicApiKey: loadAnthropicApiKey(),
+  outsideStudioJob: null,
 };
 
 function loadTracking() {
@@ -338,6 +346,12 @@ function populateFilters() {
     option.textContent = `${job.score} — ${job.company} — ${job.title}`;
     studio.append(option);
   });
+  if (portal.outsideStudioJob) {
+    const option = document.createElement("option");
+    option.value = portal.outsideStudioJob.id;
+    option.textContent = `Outside — ${portal.outsideStudioJob.company} — ${portal.outsideStudioJob.title}`;
+    studio.append(option);
+  }
 }
 
 function renderMetrics() {
@@ -456,7 +470,7 @@ function renderApplied() {
 
 function renderStudio(id = document.querySelector("#studioSelect").value) {
   const target = document.querySelector("#studioJobSummary");
-  const job = portal.jobs.find((item) => item.id === id);
+  const job = studioJobById(id);
   if (!job) {
     portal.currentStudioId = "";
     target.className = "studio-content empty-state";
@@ -475,7 +489,7 @@ function renderStudio(id = document.querySelector("#studioSelect").value) {
         <h2>${e(job.title)}</h2>
         <p class="job-company">${e(job.company)}</p>
         <p>${e(job.summary)}</p>
-        <a class="button button-soft" href="${e(job.apply_url)}" target="_blank" rel="noopener">View company posting ↗</a>
+        ${job.apply_url ? `<a class="button button-soft" href="${e(job.apply_url)}" target="_blank" rel="noopener">View company posting ↗</a>` : '<span class="pill">Outside posting</span>'}
       </div>
     </div>
     <div class="evidence-columns">
@@ -502,7 +516,49 @@ function studioProfileFromFields() {
 
 function currentStudioJob() {
   const id = document.querySelector("#studioSelect").value;
+  return studioJobById(id);
+}
+
+function studioJobById(id) {
+  if (id === portal.outsideStudioJob?.id) return portal.outsideStudioJob;
   return portal.jobs.find((job) => job.id === id) || null;
+}
+
+function useOutsideStudioJob() {
+  const company = document.querySelector("#outsideCompany").value.trim();
+  const title = document.querySelector("#outsideTitle").value.trim();
+  const description = document.querySelector("#outsideDescription").value.trim();
+  if (!company || !title || !description) {
+    showToast("Add the company, title, and full job description.");
+    return;
+  }
+  persistStudioDraft();
+  portal.outsideStudioJob = {
+    id: "outside-job",
+    company,
+    title,
+    description,
+    career_lane: "Outside job posting",
+    location: "Not listed",
+    workplace_type: "Not listed",
+    score: "—",
+    summary: "Manually added for Application Studio customization.",
+    strengths: [],
+    gaps: ["Outside posting — verify every requirement and claim manually."],
+  };
+  portal.studioDrafts.outsideJob = portal.outsideStudioJob;
+  const select = document.querySelector("#studioSelect");
+  let option = [...select.options].find((item) => item.value === "outside-job");
+  if (!option) {
+    option = document.createElement("option");
+    option.value = "outside-job";
+    select.append(option);
+  }
+  option.textContent = `Outside — ${company} — ${title}`;
+  select.value = "outside-job";
+  renderStudio("outside-job");
+  persistStudioDraft();
+  showToast("Outside position is ready to customize.");
 }
 
 function refreshTailoringBrief() {
@@ -522,6 +578,7 @@ function persistStudioDraft() {
       updatedAt: new Date().toISOString(),
     };
   }
+  if (portal.outsideStudioJob) portal.studioDrafts.outsideJob = portal.outsideStudioJob;
   saveStudioDrafts(portal.studioDrafts);
 }
 
@@ -554,6 +611,8 @@ async function runStudioOutput(type, action) {
     ...documentProfileErrors(profile),
     ...(type === "resume" ? validateResumeText(text, job) : validateCoverLetterText(text)),
   ];
+  const unsupported = unsupportedQuantifiedClaims(text, portal.masterResumeText);
+  if (unsupported.length) errors.push(`Verify or remove quantified claims not found in the master résumé: ${unsupported.join(", ")}.`);
   showValidation(type === "resume" ? "#resumeValidation" : "#coverValidation", errors);
   if (errors.length) return;
   persistStudioDraft();
@@ -688,6 +747,75 @@ function bindEvents() {
     refreshTailoringBrief();
     showToast("Master résumé saved locally.");
   });
+  document.querySelector("#useOutsideJob").addEventListener("click", useOutsideStudioJob);
+  document.querySelector("#saveApiKey").addEventListener("click", () => {
+    const key = document.querySelector("#anthropicApiKey").value.trim();
+    if (!key) {
+      document.querySelector("#apiKeyStatus").textContent = "Paste a key before saving.";
+      return;
+    }
+    saveAnthropicApiKey(key);
+    portal.anthropicApiKey = key;
+    document.querySelector("#anthropicApiKey").value = "";
+    document.querySelector("#apiKeyStatus").textContent = "Personal key saved in this browser.";
+    showToast("Claude API key saved only in this browser.");
+  });
+  document.querySelector("#removeApiKey").addEventListener("click", () => {
+    if (!portal.anthropicApiKey) return;
+    if (!window.confirm("Remove the saved Claude API key from this browser?")) return;
+    clearAnthropicApiKey();
+    portal.anthropicApiKey = "";
+    document.querySelector("#anthropicApiKey").value = "";
+    document.querySelector("#apiKeyStatus").textContent = "No key saved.";
+    showToast("Saved API key removed.");
+  });
+  document.querySelector("#customizeDocuments").addEventListener("click", async () => {
+    const button = document.querySelector("#customizeDocuments");
+    const status = document.querySelector("#customizeStatus");
+    const job = currentStudioJob();
+    const profile = studioProfileFromFields();
+    if (!portal.anthropicApiKey) {
+      status.textContent = "Add and save your personal Claude API key first.";
+      document.querySelector("#anthropicApiKey").focus();
+      showToast("Add your personal Claude API key first.");
+      return;
+    }
+    if (!job) { showToast("Choose a position first."); return; }
+    if (!portal.masterResumeText.trim()) { showToast("Save your master résumé first."); return; }
+    const profileErrors = documentProfileErrors(profile);
+    if (profileErrors.length) { status.textContent = profileErrors[0]; return; }
+    if (!window.confirm("This will send your master résumé and selected job description directly to Anthropic and may spend your Claude API credits. Continue?")) return;
+    button.disabled = true;
+    status.textContent = "Generating both documents in one API request…";
+    try {
+      const result = await generateTailoredDocuments({
+        apiKey: portal.anthropicApiKey,
+        job,
+        masterResumeText: portal.masterResumeText,
+        profile,
+      });
+      document.querySelector("#finishedResume").value = result.resume;
+      document.querySelector("#finishedCover").value = result.coverLetter;
+      persistStudioDraft();
+      const resumeErrors = [...validateResumeText(result.resume, job)];
+      const coverErrors = [...validateCoverLetterText(result.coverLetter)];
+      const resumeClaims = unsupportedQuantifiedClaims(result.resume, portal.masterResumeText);
+      const coverClaims = unsupportedQuantifiedClaims(result.coverLetter, portal.masterResumeText);
+      if (resumeClaims.length) resumeErrors.push(`Verify quantified claims: ${resumeClaims.join(", ")}.`);
+      if (coverClaims.length) coverErrors.push(`Verify quantified claims: ${coverClaims.join(", ")}.`);
+      showValidation("#resumeValidation", resumeErrors);
+      showValidation("#coverValidation", coverErrors);
+      const usage = result.usage || {};
+      const cost = estimateAnthropicCost(usage);
+      status.textContent = `Complete · ${Number(usage.input_tokens || 0).toLocaleString()} input + ${Number(usage.output_tokens || 0).toLocaleString()} output tokens · estimated $${cost.toFixed(4)} API cost.`;
+      showToast("Both truthful drafts are ready for review.");
+    } catch (error) {
+      status.textContent = `Not generated: ${error.message}`;
+      showToast("Customization failed. No automatic retry was made.");
+    } finally {
+      button.disabled = false;
+    }
+  });
   document.querySelector("#copyBrief").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(document.querySelector("#tailoringBrief").value);
@@ -738,6 +866,13 @@ async function bootstrap() {
   bindEvents();
   document.querySelector("#masterResumeText").value = portal.masterResumeText;
   document.querySelector("#masterResumeStatus").textContent = portal.masterResumeText ? "Master résumé found in this browser." : "Paste your master résumé once, then save it locally.";
+  document.querySelector("#apiKeyStatus").textContent = portal.anthropicApiKey ? "Personal key found in this browser." : "No key saved.";
+  if (portal.studioDrafts.outsideJob) {
+    portal.outsideStudioJob = portal.studioDrafts.outsideJob;
+    document.querySelector("#outsideCompany").value = portal.outsideStudioJob.company || "";
+    document.querySelector("#outsideTitle").value = portal.outsideStudioJob.title || "";
+    document.querySelector("#outsideDescription").value = portal.outsideStudioJob.description || "";
+  }
   Object.entries(portal.studioDrafts.profile || {}).forEach(([key, value]) => {
     const ids = { name: "#documentName", headline: "#documentHeadline", tagline: "#documentTagline", contact: "#documentContact" };
     if (ids[key] && value) document.querySelector(ids[key]).value = value;
