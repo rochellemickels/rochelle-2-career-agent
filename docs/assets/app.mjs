@@ -155,9 +155,13 @@ function e(value) {
     .replaceAll("'", "&#039;");
 }
 
-function formatDate(value, includeTime = false) {
+export function formatDate(value, includeTime = false) {
   if (!value) return "Date not listed";
-  const date = new Date(value);
+  // Date-only application records represent the user's local calendar date,
+  // not midnight UTC (which would display one day early in US time zones).
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? new Date(`${value}T12:00:00`)
+    : new Date(value);
   if (Number.isNaN(date.getTime())) return "Date not listed";
   return new Intl.DateTimeFormat("en-US", {
     month: "long",

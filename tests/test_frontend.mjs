@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { applicationIdentity, applyCompanyCap, matchesFilters } from "../docs/assets/app.mjs";
+import { applicationIdentity, applyCompanyCap, formatDate, matchesFilters } from "../docs/assets/app.mjs";
 
 const base = {
   title: "Implementation Program Manager",
@@ -47,4 +47,8 @@ test("application identity matches the same role despite case and spacing", () =
     applicationIdentity({ company: " Pinterest ", title: "Lead  Program Manager" }),
     applicationIdentity({ company: "pinterest", title: "lead program manager" }),
   );
+});
+
+test("date-only application records preserve the stated calendar date", () => {
+  assert.equal(formatDate("2026-08-21"), "August 21, 2026");
 });
