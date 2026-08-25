@@ -8,7 +8,7 @@ import {
   saveStudioDrafts,
   validateCoverLetterText,
   validateResumeText,
-} from "./studio.mjs";
+} from "./studio.mjs?v=20260825-2";
 
 const STORAGE_KEY = "rochelleCareerTrackingV3";
 const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
