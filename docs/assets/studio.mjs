@@ -66,6 +66,23 @@ function list(values) {
   return (values || []).length ? values.map((item) => `- ${item}`).join("\n") : "- None identified by the portal.";
 }
 
+export function cleanJobDescription(value) {
+  return String(value || "")
+    .replace(/<\s*br\s*\/?\s*>/gi, "\n")
+    .replace(/<\s*\/p\s*>/gi, "\n\n")
+    .replace(/<\s*li(?:\s[^>]*)?>/gi, "\n- ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export function isAiFocusedJob(job) {
   return /\b(?:ai|artificial intelligence|generative ai)\b/i.test(`${job?.title || ""} ${job?.career_lane || ""}`);
 }
@@ -94,7 +111,7 @@ HONEST GAPS OR QUESTIONS
 ${list(job.gaps)}
 
 FULL JOB DESCRIPTION
-${job.description || "The full description was unavailable. Do not infer missing requirements."}
+${cleanJobDescription(job.description) || "The full description was unavailable. Do not infer missing requirements."}
 
 MASTER RÉSUMÉ — ONLY APPROVED FACT SOURCE
 ${String(masterResumeText || "").trim() || "[MISSING — stop and ask Rochelle to provide the master résumé before writing.]"}

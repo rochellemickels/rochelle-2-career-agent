@@ -11,6 +11,7 @@ import {
 } from "../docs/assets/app.mjs";
 import {
   buildTailoringBrief,
+  cleanJobDescription,
   createDocumentDefinition,
   resumeTextFromStoredValue,
   validateCoverLetterText,
@@ -105,6 +106,10 @@ test("tailoring brief includes full job evidence, resume, and locked voice rules
   assert.match(brief, /AO Globe Life approved evidence/);
   assert.match(brief, /Never use she, her, or hers/);
   assert.match(brief, /EARLIER LEADERSHIP & BUSINESS DEVELOPMENT EXPERIENCE/);
+});
+
+test("job descriptions are clean text in the copyable brief", () => {
+  assert.equal(cleanJobDescription('<div><p>Lead &amp; coach.</p><ul><li>Build programs</li></ul></div>'), "Lead & coach.\n\n- Build programs");
 });
 
 test("resume and cover letter validation enforce the locked voice", () => {
