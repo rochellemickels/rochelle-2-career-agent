@@ -53,6 +53,27 @@ class ScoringTests(unittest.TestCase):
     def test_canadian_city_is_non_us(self):
         self.assertEqual(determine_location(job(location="Toronto, Ontario, Canada"), PROFILE), "Non-US only")
 
+    def test_onsite_role_outside_dfw_is_hidden_from_default(self):
+        scored = score_job(
+            job(
+                location="Salt Lake City, Utah, United States",
+                workplace_type="Onsite",
+            ),
+            PROFILE,
+        )
+        self.assertFalse(scored.default_visible)
+        self.assertIn("Outside the remote-US or DFW-hybrid target", scored.gaps)
+
+    def test_dfw_hybrid_role_is_eligible_for_default(self):
+        scored = score_job(
+            job(
+                location="Dallas, Texas, United States",
+                workplace_type="Hybrid",
+            ),
+            PROFILE,
+        )
+        self.assertTrue(scored.default_visible)
+
     def test_score_equals_visible_breakdown_total(self):
         scored = score_job(job(), PROFILE)
         self.assertEqual(scored.score, scored.breakdown.total)
