@@ -47,8 +47,14 @@ export function applyCompanyCap(jobs, selectedCompany = "", cap = 3) {
   });
 }
 
+export function applicationIdentity(item) {
+  const normalize = (value) => String(value || "").trim().toLocaleLowerCase().replace(/\s+/g, " ");
+  return `${normalize(item.company)}|${normalize(item.title)}`;
+}
+
 const portal = {
   jobs: [],
+  seedApplications: [],
   payload: null,
   tracking: loadTracking(),
   visibleCount: PAGE_SIZE,
@@ -69,24 +75,75 @@ function saveTracking() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(portal.tracking));
 }
 
+function seedApplicationFor(id) {
+  const exact = portal.seedApplications.find((application) => application.id === id);
+  if (exact) return exact;
+  const job = portal.jobs.find((item) => item.id === id);
+  if (!job) return null;
+  const identity = applicationIdentity(job);
+  return portal.seedApplications.find((application) => applicationIdentity(application) === identity) || null;
+}
+
+function canonicalTrackingId(id) {
+  return seedApplicationFor(id)?.id || id;
+}
+
 function trackingFor(id) {
-  return portal.tracking[id] || { stage: "", updatedAt: null, appliedAt: null };
+  const key = canonicalTrackingId(id);
+  if (portal.tracking[key]) return portal.tracking[key];
+  if (key !== id && portal.tracking[id]) return portal.tracking[id];
+  const seed = seedApplicationFor(id);
+  if (seed) {
+    return {
+      stage: seed.stage,
+      updatedAt: seed.updated_at,
+      appliedAt: seed.applied_at,
+      confirmedApplied: true,
+    };
+  }
+  return { stage: "", updatedAt: null, appliedAt: null, confirmedApplied: false };
 }
 
 function setStage(id, stage) {
+  const trackingId = canonicalTrackingId(id);
   const existing = trackingFor(id);
   const now = new Date().toISOString();
   const applicationStage = ACTIVE_APPLICATION_STAGES.has(stage);
-  portal.tracking[id] = {
+  portal.tracking[trackingId] = {
     ...existing,
     stage,
     updatedAt: now,
-    appliedAt: applicationStage ? (existing.appliedAt || now) : existing.appliedAt,
+    appliedAt: applicationStage
+      ? (existing.appliedAt || (existing.confirmedApplied ? null : now))
+      : existing.appliedAt,
+    confirmedApplied: existing.confirmedApplied || applicationStage,
   };
   saveTracking();
   renderAll();
   if (portal.currentDialogId === id) renderDialog(id);
   showToast(stage === "skipped" ? "Skipped and removed from the active list." : `Stage updated to ${STAGE_LABELS[stage]}.`);
+}
+
+function applicationJobs() {
+  const seeded = portal.seedApplications.map((application) => {
+    const liveJob = portal.jobs.find((job) => applicationIdentity(job) === applicationIdentity(application));
+    return {
+      ...(liveJob || {}),
+      id: application.id,
+      detailsId: liveJob?.id || null,
+      company: application.company,
+      title: application.title,
+      apply_url: liveJob?.apply_url || application.apply_url,
+      applicationNote: application.note,
+      seededApplication: true,
+    };
+  });
+  const seededKeys = new Set(seeded.map(applicationIdentity));
+  const locallyTracked = portal.jobs.filter((job) => {
+    const tracking = trackingFor(job.id);
+    return (tracking.appliedAt || tracking.confirmedApplied) && !seededKeys.has(applicationIdentity(job));
+  });
+  return [...seeded, ...locallyTracked];
 }
 
 function e(value) {
@@ -138,7 +195,10 @@ function filteredJobs() {
 }
 
 function topFiveJobs() {
-  const recommended = portal.jobs.filter((job) => job.default_visible && !CLOSED_STAGES.has(trackingFor(job.id).stage));
+  const recommended = portal.jobs.filter((job) => {
+    const stage = trackingFor(job.id).stage;
+    return job.default_visible && !CLOSED_STAGES.has(stage) && !ACTIVE_APPLICATION_STAGES.has(stage);
+  });
   return applyCompanyCap(recommended, "", 3).slice(0, 5);
 }
 
@@ -173,7 +233,7 @@ function populateFilters() {
 }
 
 function renderMetrics() {
-  const activeApplied = portal.jobs.filter((job) => ACTIVE_APPLICATION_STAGES.has(trackingFor(job.id).stage));
+  const activeApplied = applicationJobs().filter((job) => ACTIVE_APPLICATION_STAGES.has(trackingFor(job.id).stage));
   document.querySelector("#recommendedCount").textContent = portal.jobs.filter((job) => job.default_visible).length;
   document.querySelector("#idealCount").textContent = portal.jobs.filter((job) => job.salary_band === "Ideal overlap" && job.default_visible).length;
   document.querySelector("#workStyleCount").textContent = portal.jobs.filter((job) => job.default_visible && (job.workplace_type === "Remote" || job.location_eligibility === "Eligible — DFW")).length;
@@ -244,9 +304,9 @@ function renderJobs(reset = false) {
 
 function renderApplied() {
   const showClosed = document.querySelector("#showClosedApplied").checked;
-  const jobs = portal.jobs.filter((job) => {
+  const jobs = applicationJobs().filter((job) => {
     const tracking = trackingFor(job.id);
-    if (!tracking.appliedAt) return false;
+    if (!tracking.appliedAt && !tracking.confirmedApplied) return false;
     if (ACTIVE_APPLICATION_STAGES.has(tracking.stage)) return true;
     return showClosed && tracking.stage === "passed";
   });
@@ -257,20 +317,23 @@ function renderApplied() {
   }
   target.innerHTML = jobs.map((job) => {
     const tracking = trackingFor(job.id);
+    const appliedDate = tracking.appliedAt ? formatDate(tracking.appliedAt) : "date not recorded";
+    const updatedText = tracking.updatedAt ? ` · Updated ${e(formatDate(tracking.updatedAt))}` : "";
     return `
       <article class="pipeline-card">
         <div>
           <span class="pipeline-stage">${e(STAGE_LABELS[tracking.stage])}</span>
           <h3>${e(job.title)}</h3>
           <p class="job-company">${e(job.company)}</p>
-          <p class="job-meta">Applied ${e(formatDate(tracking.appliedAt))} · Updated ${e(formatDate(tracking.updatedAt))}</p>
+          <p class="job-meta">Applied ${e(appliedDate)}${updatedText}</p>
+          ${job.applicationNote ? `<p class="job-summary">${e(job.applicationNote)}</p>` : ""}
         </div>
         <div class="job-actions">
           <select aria-label="Update application stage" data-stage-id="${e(job.id)}">
             ${["applied", "interview", "offer", "passed"].map((stage) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(STAGE_LABELS[stage])}</option>`).join("")}
           </select>
-          <button class="button button-small button-soft" data-action="details" data-id="${e(job.id)}">View details</button>
-          <a class="button button-small button-outline" href="${e(job.apply_url)}" target="_blank" rel="noopener">Company page ↗</a>
+          ${job.detailsId ? `<button class="button button-small button-soft" data-action="details" data-id="${e(job.detailsId)}">View details</button>` : ""}
+          ${job.apply_url ? `<a class="button button-small button-outline" href="${e(job.apply_url)}" target="_blank" rel="noopener">Company page ↗</a>` : ""}
         </div>
       </article>
     `;
@@ -373,13 +436,15 @@ async function loadWorkflowState() {
 
 async function loadPortal() {
   const cacheBust = Date.now();
-  const [jobsResponse, statusResponse] = await Promise.all([
+  const [jobsResponse, statusResponse, appliedResponse] = await Promise.all([
     fetch(`data/jobs.json?v=${cacheBust}`, { cache: "no-store" }),
     fetch(`data/status.json?v=${cacheBust}`, { cache: "no-store" }),
+    fetch(`data/applied.json?v=${cacheBust}`, { cache: "no-store" }),
   ]);
   if (!jobsResponse.ok) throw new Error("The jobs database could not be loaded.");
   portal.payload = await jobsResponse.json();
   portal.jobs = portal.payload.jobs || [];
+  portal.seedApplications = appliedResponse.ok ? (await appliedResponse.json()).applications || [] : [];
   const status = statusResponse.ok ? await statusResponse.json() : null;
   document.querySelector("#lastUpdated").textContent = `Published ${formatDate(status?.generated_at || portal.payload.generated_at, true)}`;
   populateFilters();

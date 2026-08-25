@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { applyCompanyCap, matchesFilters } from "../docs/assets/app.mjs";
+import { applicationIdentity, applyCompanyCap, matchesFilters } from "../docs/assets/app.mjs";
 
 const base = {
   title: "Implementation Program Manager",
@@ -40,4 +40,11 @@ test("default list caps each company at three", () => {
   const jobs = Array.from({ length: 6 }, (_, index) => ({ ...base, id: index, company: index < 5 ? "A" : "B" }));
   assert.equal(applyCompanyCap(jobs, "", 3).filter((job) => job.company === "A").length, 3);
   assert.equal(applyCompanyCap(jobs.filter((job) => job.company === "A"), "A", 3).length, 5);
+});
+
+test("application identity matches the same role despite case and spacing", () => {
+  assert.equal(
+    applicationIdentity({ company: " Pinterest ", title: "Lead  Program Manager" }),
+    applicationIdentity({ company: "pinterest", title: "lead program manager" }),
+  );
 });

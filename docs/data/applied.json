@@ -1,0 +1,94 @@
+{
+  "applications": [
+    {
+      "id": "applied:samsara:customer-success-manager-v",
+      "company": "Samsara",
+      "title": "Customer Success Manager V",
+      "stage": "applied",
+      "applied_at": "2026-08-21",
+      "updated_at": "2026-08-21",
+      "note": "Confirmed submitted in an earlier session.",
+      "apply_url": "https://www.samsara.com/company/careers"
+    },
+    {
+      "id": "applied:pinterest:lead-program-manager-global-smb-sales-enablement",
+      "company": "Pinterest",
+      "title": "Lead Program Manager, Global SMB Sales Enablement",
+      "stage": "applied",
+      "applied_at": "2026-08-20",
+      "updated_at": "2026-08-20",
+      "note": "Confirmed submitted in an earlier session.",
+      "apply_url": "https://www.pinterestcareers.com/jobs/8109351/lead-program-manager-global-smb-sales-enablement/"
+    },
+    {
+      "id": "applied:gitlab:customer-success-manager-public-sector",
+      "company": "GitLab",
+      "title": "Customer Success Manager, Public Sector",
+      "stage": "applied",
+      "applied_at": "2026-08-23",
+      "updated_at": "2026-08-23",
+      "note": "Confirmed submitted in the application tracker.",
+      "apply_url": "https://about.gitlab.com/jobs/"
+    },
+    {
+      "id": "applied:samsara:senior-strategic-implementation-consultant",
+      "company": "Samsara",
+      "title": "Senior Strategic Implementation Consultant",
+      "stage": "applied",
+      "applied_at": "2026-08-22",
+      "updated_at": "2026-08-22",
+      "note": "Confirmed submitted in an earlier session.",
+      "apply_url": "https://www.samsara.com/company/careers"
+    },
+    {
+      "id": "applied:gainsight:principal-customer-success-manager",
+      "company": "Gainsight",
+      "title": "Principal Customer Success Manager",
+      "stage": "applied",
+      "applied_at": "2026-08-22",
+      "updated_at": "2026-08-22",
+      "note": "Confirmed submitted in the application tracker.",
+      "apply_url": "https://www.gainsight.com/company/careers/"
+    },
+    {
+      "id": "applied:doordash:manager-ecosystem-partnerships-business-development",
+      "company": "DoorDash",
+      "title": "Manager, Ecosystem Partnerships & Business Development",
+      "stage": "applied",
+      "applied_at": null,
+      "updated_at": null,
+      "note": "Confirmed submitted; exact application date was not recorded.",
+      "apply_url": "https://careers.doordash.com/"
+    },
+    {
+      "id": "applied:dropbox:business-development-manager-strategic-partnerships",
+      "company": "Dropbox",
+      "title": "Business Development Manager, Strategic Partnerships",
+      "stage": "applied",
+      "applied_at": null,
+      "updated_at": null,
+      "note": "Confirmed submitted; exact application date was not recorded.",
+      "apply_url": "https://jobs.dropbox.com/"
+    },
+    {
+      "id": "applied:outreach:senior-gtm-ai-advisor",
+      "company": "Outreach",
+      "title": "Senior GTM AI Advisor",
+      "stage": "applied",
+      "applied_at": null,
+      "updated_at": null,
+      "note": "Confirmed submitted in an earlier session; exact date was not recorded.",
+      "apply_url": "https://www.outreach.io/company/careers"
+    },
+    {
+      "id": "applied:welbehealth:ai-adoption-enablement-lead",
+      "company": "WelbeHealth",
+      "title": "AI Adoption & Enablement Lead",
+      "stage": "passed",
+      "applied_at": null,
+      "updated_at": null,
+      "note": "Application was submitted; the posting later showed as filled.",
+      "apply_url": "https://welbehealth.com/careers/"
+    }
+  ]
+}
