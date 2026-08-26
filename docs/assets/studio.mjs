@@ -151,7 +151,7 @@ function moneyValue(raw) {
 }
 
 function salaryFromPosting(lines) {
-  const amount = "(\\d{2,3}(?:,\\d{3})|\\d{2,3}(?:\\.\\d+)?\\s*k)";
+  const amount = "(\\d{2,3}(?:,\\d{3})+(?:\\.\\d{2})?|\\d{5,6}(?:\\.\\d{2})?|\\d{2,3}(?:\\.\\d+)?\\s*k)";
   const dollarRange = new RegExp(`\\$\\s*${amount}\\s*(?:-|–|—|to)\\s*\\$?\\s*${amount}`, "i");
   const qualifiedRange = new RegExp(`${amount}\\s*(?:-|–|—|to)\\s*${amount}(?=\\s*(?:USD|base|annually|annual|per\\s+year|a\\s+year|/\\s*year))`, "i");
   for (const line of lines) {
@@ -324,9 +324,11 @@ export function extractPostingFields(postingText, supplied = {}) {
   } else {
     const labeled = lines.find((line) => /^(?:job\s+)?location\s*[:\-–—]\s*\S+/i.test(line));
     const titleBadge = lines.slice(0, 20).find((line) => /^(?:remote|hybrid|on-?site)(?:\s*[-—|,]\s*.+)?$/i.test(line));
-    const sourceLine = labeled || titleBadge;
+    const teamLocation = lines.find((line) => /\bjoin\s+our\s+team\s+in\s+.+(?:United States|\(US\))/i.test(line));
+    const sourceLine = labeled || titleBadge || teamLocation;
+    const inferredLocation = teamLocation?.match(/\bjoin\s+our\s+team\s+in\s+(.+?)(?:\.|$)/i)?.[1];
     location = sourceLine
-      ? { value: sourceLine.replace(/^(?:job\s+)?location\s*[:\-–—]\s*/i, ""), confidence: "High confidence", evidence: `Exact location line: ${quoted(sourceLine)}.` }
+      ? { value: inferredLocation || sourceLine.replace(/^(?:job\s+)?location\s*[:\-–—]\s*/i, ""), confidence: "High confidence", evidence: `Exact location line: ${quoted(sourceLine)}.` }
       : absentResult("Location", lines, [/\blocation\b/i, /\bremote|hybrid|on-?site\b/i], "the opening/title-adjacent lines and every location or workplace reference");
   }
 
@@ -339,7 +341,8 @@ export function extractPostingFields(postingText, supplied = {}) {
   } else {
     const sourceLine = lines.find((line) => /^(?:work\s*(?:style|location)|location)\s*[:\-–—].*\b(?:remote|hybrid|on-?site)\b/i.test(line))
       || lines.slice(0, 25).find((line) => /^(?:remote|hybrid|on-?site)(?:\s*[-—|,].*)?$/i.test(line))
-      || lines.find((line) => /\b(?:this\s+(?:role|position)|the\s+(?:role|position))\s+is\s+(?:fully\s+)?(?:remote|hybrid|on-?site)\b/i.test(line));
+      || lines.find((line) => /\b(?:this\s+(?:role|position)|the\s+(?:role|position))\s+is\s+(?:fully\s+)?(?:remote|hybrid|on-?site)\b/i.test(line))
+      || lines.find((line) => /\b(?:remote|hybrid|on-?site)\s+(?:role|position)\b/i.test(line));
     const match = sourceLine?.match(/\b(remote|hybrid|on-?site)\b/i);
     workStyle = match
       ? { value: match[1].toLowerCase().startsWith("on") ? "Onsite" : `${match[1][0].toUpperCase()}${match[1].slice(1).toLowerCase()}`, confidence: "High confidence", evidence: `Exact work-style line: ${quoted(sourceLine)}.` }
@@ -349,14 +352,14 @@ export function extractPostingFields(postingText, supplied = {}) {
   const suppliedLow = Number(supplied.salary_min) || null;
   const suppliedHigh = Number(supplied.salary_max) || null;
   let salary;
-  if (suppliedLow || suppliedHigh) {
+  const found = salaryFromPosting(lines);
+  if (found) {
+    salary = { value: formatSalary(found.low, found.high), low: found.low, high: found.high, confidence: "High confidence", evidence: `Exact compensation line: ${quoted(found.line)}.` };
+  } else if (suppliedLow || suppliedHigh) {
     const value = formatSalary(suppliedLow, suppliedHigh, supplied.salary_currency || "USD");
     salary = { ...suppliedResult(value, "Published salary"), low: suppliedLow, high: suppliedHigh };
   } else {
-    const found = salaryFromPosting(lines);
-    salary = found
-      ? { value: formatSalary(found.low, found.high), low: found.low, high: found.high, confidence: "High confidence", evidence: `Exact compensation line: ${quoted(found.line)}.` }
-      : { ...absentResult("Published salary", lines, [/estimated\s+pay\s+range|salary\s+range|compensation|pay\s+range/i, /benefits|perks/i], "all compensation headings and the area above Benefits or Perks"), low: null, high: null };
+    salary = { ...absentResult("Published salary", lines, [/estimated\s+pay\s+range|salary\s+range|compensation|pay\s+range/i, /benefits|perks/i], "all compensation headings and the area above Benefits or Perks"), low: null, high: null };
   }
 
   const suppliedUrl = usableField(supplied.apply_url);

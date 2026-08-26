@@ -202,6 +202,34 @@ test("blocked URL import asks only for the full description", async () => {
   );
 });
 
+test("NTT posting uses the stated pay range instead of requisition 381437 and detects remote", () => {
+  const posting = `AI Consultant - Products
+Req ID: 381437
+We are currently seeking a AI Consultant - Products to join our team in Plano, Texas (US-TX), United States (US).
+The starting pay range for this remote role is $111,172.00-$257,344.00. This range reflects the minimum and maximum target compensation for the position across all US locations.
+This position may also be eligible for incentive compensation based on individual and/or company performance.`;
+  const fields = extractPostingFields(posting, { salary_max: 381437 });
+  assert.equal(fields.location.value, "Plano, Texas (US-TX), United States (US)");
+  assert.equal(fields.workStyle.value, "Remote");
+  assert.equal(fields.salary.low, 111172);
+  assert.equal(fields.salary.high, 257344);
+  assert.equal(fields.salary.value, "111,172–257,344 USD");
+  assert.match(fields.salary.evidence, /\$111,172\.00-\$257,344\.00/);
+  assert.doesNotMatch(fields.salary.value, /381,437/);
+  const brief = buildTailoringBrief({
+    company: "NTT DATA",
+    title: "AI Consultant - Products",
+    description: posting,
+    salary_max: 381437,
+    apply_url: "https://careers.services.global.ntt/global/en/job/NTT1GLOBAL381437EXTERNALENGLOBAL/AI-Consultant-Products",
+    career_lane: "Outside job posting",
+    score: "—",
+  }, "Approved résumé facts");
+  assert.match(brief, /Work style: Remote/);
+  assert.match(brief, /Published salary: 111,172–257,344 USD/);
+  assert.doesNotMatch(brief, /Published salary: Up to 381,437/);
+});
+
 test("Not listed fields include an explicit quoted absence check", () => {
   const fields = extractPostingFields("Role overview\nLead cross-functional initiatives.\nBenefits\nMedical coverage.");
   assert.equal(fields.location.value, "Not listed");
