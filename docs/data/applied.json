@@ -1,6 +1,17 @@
 {
   "applications": [
     {
+      "id": "applied:decagon:agent-strategy-manager",
+      "company": "Decagon",
+      "title": "Agent Strategy Manager",
+      "stage": "applied",
+      "applied_at": "2026-08-25",
+      "updated_at": "2026-08-25",
+      "rating": 4,
+      "note": "Applied through LinkedIn.",
+      "apply_url": "https://jobs.ashbyhq.com/decagon/cfb9edd8-8d40-40e5-bf27-368825c3c415?src=LinkedIn"
+    },
+    {
       "id": "applied:samsara:customer-success-manager-v",
       "company": "Samsara",
       "title": "Customer Success Manager V",

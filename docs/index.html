@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#4c2347">
     <meta name="description" content="Rochelle's focused AI career opportunity and application portal.">
     <title>Rochelle 2.0 AI Career Portal</title>
-    <link rel="stylesheet" href="assets/styles.css?v=20260825-ai-customize">
+    <link rel="stylesheet" href="assets/styles.css?v=20260825-manual-applications">
   </head>
   <body>
     <header class="hero">
@@ -118,6 +118,43 @@
           </div>
           <label class="toggle"><input id="showClosedApplied" type="checkbox"><span>Show closed applications</span></label>
         </div>
+        <details id="manualApplicationEditor" class="manual-application-editor">
+          <summary><span id="manualApplicationSummary">Add an outside application</span></summary>
+          <form id="manualApplicationForm">
+            <input id="manualApplicationId" type="hidden">
+            <div class="manual-application-grid">
+              <label>Company name<input id="manualCompany" required placeholder="Company name"></label>
+              <label>Job title<input id="manualTitle" required placeholder="Position title"></label>
+              <label>Date applied<input id="manualAppliedAt" type="date" required></label>
+              <label>How much I want this role
+                <select id="manualRating" required>
+                  <option value="1">1 — Mild interest</option>
+                  <option value="2">2 — Some interest</option>
+                  <option value="3">3 — Interested</option>
+                  <option value="4" selected>4 — Strong interest</option>
+                  <option value="5">5 — Dream position</option>
+                </select>
+              </label>
+              <label>Application stage
+                <select id="manualStage">
+                  <option value="applied">Applied</option>
+                  <option value="viewed">Application viewed</option>
+                  <option value="responded">Employer responded</option>
+                  <option value="interview">Interview</option>
+                  <option value="offer">Offer</option>
+                  <option value="passed">Passed / Closed</option>
+                </select>
+              </label>
+              <label class="full-width-field">Company or job-posting link<input id="manualApplyUrl" type="url" placeholder="https://company.com/jobs/role"></label>
+              <label class="full-width-field">Comments or remarks<textarea id="manualNote" placeholder="Recruiter, referral, deadline, follow-up notes, or why this role matters…"></textarea></label>
+            </div>
+            <div class="studio-actions">
+              <button id="saveManualApplication" class="button button-teal" type="submit">Save application</button>
+              <button id="cancelManualApplication" class="button button-outline" type="button">Cancel editing</button>
+              <span id="manualApplicationStatus" class="local-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </details>
         <div id="appliedList" class="pipeline-grid"></div>
       </section>
 
@@ -219,6 +256,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <noscript>This portal requires JavaScript to filter and track applications.</noscript>
-    <script type="module" src="assets/app.mjs?v=20260825-ai-customize"></script>
+    <script type="module" src="assets/app.mjs?v=20260825-manual-applications"></script>
   </body>
 </html>

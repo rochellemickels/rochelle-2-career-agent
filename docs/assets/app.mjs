@@ -74,6 +74,21 @@ export function applicationIdentity(item) {
   return `${normalize(item.company)}|${normalize(item.title)}`;
 }
 
+export function mergeApplicationDetails(base = {}, tracking = {}) {
+  const details = tracking.applicationDetails && typeof tracking.applicationDetails === "object"
+    ? tracking.applicationDetails
+    : {};
+  const numericRating = Number(details.rating ?? base.rating ?? 0);
+  return {
+    ...base,
+    company: String(details.company ?? base.company ?? "").trim(),
+    title: String(details.title ?? base.title ?? "").trim(),
+    apply_url: String(details.applyUrl ?? base.apply_url ?? "").trim(),
+    applicationNote: String(details.note ?? base.applicationNote ?? base.note ?? "").trim(),
+    rating: numericRating >= 1 && numericRating <= 5 ? numericRating : 0,
+  };
+}
+
 export function normalizeLegacyStage(value) {
   const stage = String(value || "").trim().toLocaleLowerCase();
   const mapping = {
@@ -224,7 +239,7 @@ function setStage(id, stage) {
 function applicationJobs() {
   const seeded = portal.seedApplications.map((application) => {
     const liveJob = portal.jobs.find((job) => applicationIdentity(job) === applicationIdentity(application));
-    return {
+    const combined = {
       ...(liveJob || {}),
       id: application.id,
       detailsId: liveJob?.id || null,
@@ -234,6 +249,7 @@ function applicationJobs() {
       applicationNote: application.note,
       seededApplication: true,
     };
+    return mergeApplicationDetails(combined, trackingFor(application.id));
   });
   const seededKeys = new Set(seeded.map(applicationIdentity));
   const liveIds = new Set(portal.jobs.map((job) => job.id));
@@ -249,13 +265,92 @@ function applicationJobs() {
   const locallyTracked = [...catalog.values()].filter((job) => {
     const tracking = trackingFor(job.id);
     return (tracking.appliedAt || tracking.confirmedApplied) && !seededKeys.has(applicationIdentity(job));
-  }).map((job) => ({
-    ...job,
-    applicationNote: job.applicationNote || trackingFor(job.id).notes || (trackingFor(job.id).migratedFromLegacy
-      ? "Migrated from the original career portal in this browser."
-      : ""),
-  }));
+  }).map((job) => {
+    const tracking = trackingFor(job.id);
+    return mergeApplicationDetails({
+      ...job,
+      applicationNote: job.applicationNote || tracking.notes || (tracking.migratedFromLegacy
+        ? "Migrated from the original career portal in this browser."
+        : ""),
+    }, tracking);
+  });
   return [...seeded, ...locallyTracked];
+}
+
+function ratingText(value) {
+  const rating = Number(value || 0);
+  return rating ? `${"★".repeat(rating)}${"☆".repeat(5 - rating)} ${rating}/5` : "☆☆☆☆☆ Not rated";
+}
+
+function todayDateValue() {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
+function resetManualApplicationForm() {
+  document.querySelector("#manualApplicationForm").reset();
+  document.querySelector("#manualApplicationId").value = "";
+  document.querySelector("#manualAppliedAt").value = todayDateValue();
+  document.querySelector("#manualRating").value = "4";
+  document.querySelector("#manualStage").value = "applied";
+  document.querySelector("#manualApplicationSummary").textContent = "Add an outside application";
+  document.querySelector("#saveManualApplication").textContent = "Save application";
+  document.querySelector("#manualApplicationStatus").textContent = "";
+}
+
+function editApplication(id) {
+  const job = applicationJobs().find((item) => item.id === id);
+  if (!job) return;
+  const tracking = trackingFor(id);
+  document.querySelector("#manualApplicationId").value = id;
+  document.querySelector("#manualCompany").value = job.company || "";
+  document.querySelector("#manualTitle").value = job.title || "";
+  document.querySelector("#manualAppliedAt").value = tracking.appliedAt || todayDateValue();
+  document.querySelector("#manualRating").value = String(job.rating || 3);
+  document.querySelector("#manualStage").value = ACTIVE_APPLICATION_STAGES.has(tracking.stage) || tracking.stage === "passed" ? tracking.stage : "applied";
+  document.querySelector("#manualApplyUrl").value = job.apply_url || "";
+  document.querySelector("#manualNote").value = job.applicationNote || "";
+  document.querySelector("#manualApplicationSummary").textContent = `Edit ${job.company} — ${job.title}`;
+  document.querySelector("#saveManualApplication").textContent = "Save changes";
+  const editor = document.querySelector("#manualApplicationEditor");
+  editor.open = true;
+  editor.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function saveManualApplicationFromForm() {
+  const existingId = document.querySelector("#manualApplicationId").value;
+  const id = existingId || `manual-applied:${Date.now()}`;
+  const company = document.querySelector("#manualCompany").value.trim();
+  const title = document.querySelector("#manualTitle").value.trim();
+  const appliedAt = document.querySelector("#manualAppliedAt").value;
+  const stage = document.querySelector("#manualStage").value;
+  const applyUrl = document.querySelector("#manualApplyUrl").value.trim();
+  const note = document.querySelector("#manualNote").value.trim();
+  const rating = Number(document.querySelector("#manualRating").value);
+  if (!company || !title || !appliedAt) return;
+  const existing = trackingFor(id);
+  const now = new Date().toISOString();
+  portal.tracking[id] = {
+    ...existing,
+    stage,
+    appliedAt,
+    confirmedApplied: true,
+    updatedAt: now,
+    applicationDetails: { company, title, appliedAt, note, applyUrl, rating },
+    jobSnapshot: {
+      ...(existing.jobSnapshot || {}),
+      id,
+      company,
+      title,
+      apply_url: applyUrl,
+      description: existing.jobSnapshot?.description || "Manually added application.",
+    },
+  };
+  saveTracking();
+  renderAll();
+  resetManualApplicationForm();
+  document.querySelector("#manualApplicationEditor").open = false;
+  showToast(existingId ? "Application details updated." : "Outside application added.");
 }
 
 function e(value) {
@@ -453,6 +548,7 @@ function renderApplied() {
           <span class="pipeline-stage">${e(STAGE_LABELS[tracking.stage])}</span>
           <h3>${e(job.title)}</h3>
           <p class="job-company">${e(job.company)}</p>
+          <p class="application-rating" aria-label="Interest rating ${job.rating || 0} out of 5">${e(ratingText(job.rating))}</p>
           <p class="job-meta">Applied ${e(appliedDate)}${updatedText}</p>
           ${job.applicationNote ? `<p class="job-summary">${e(job.applicationNote)}</p>` : ""}
         </div>
@@ -461,6 +557,7 @@ function renderApplied() {
             ${["applied", "viewed", "responded", "interview", "offer", "passed"].map((stage) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(STAGE_LABELS[stage])}</option>`).join("")}
           </select>
           ${job.detailsId ? `<button class="button button-small button-soft" data-action="details" data-id="${e(job.detailsId)}">View details</button>` : ""}
+          <button class="button button-small button-soft" data-action="edit-application" data-id="${e(job.id)}">Edit details</button>
           ${job.apply_url ? `<a class="button button-small button-outline" href="${e(job.apply_url)}" target="_blank" rel="noopener">Company page ↗</a>` : ""}
         </div>
       </article>
@@ -736,6 +833,14 @@ function bindEvents() {
     renderJobs(false);
   });
   document.querySelector("#showClosedApplied").addEventListener("change", renderApplied);
+  document.querySelector("#manualApplicationForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveManualApplicationFromForm();
+  });
+  document.querySelector("#cancelManualApplication").addEventListener("click", () => {
+    resetManualApplicationForm();
+    document.querySelector("#manualApplicationEditor").open = false;
+  });
   document.querySelector("#studioSelect").addEventListener("change", (event) => {
     persistStudioDraft();
     renderStudio(event.target.value);
@@ -854,6 +959,7 @@ function bindEvents() {
     if (action.dataset.action === "details") renderDialog(id);
     if (action.dataset.action === "applied") setStage(id, "applied");
     if (action.dataset.action === "skip") setStage(id, "skipped");
+    if (action.dataset.action === "edit-application") editApplication(id);
   });
   document.addEventListener("change", (event) => {
     if (event.target.matches("[data-stage-id]")) setStage(event.target.dataset.stageId, event.target.value);
@@ -864,6 +970,7 @@ function bindEvents() {
 
 async function bootstrap() {
   bindEvents();
+  resetManualApplicationForm();
   document.querySelector("#masterResumeText").value = portal.masterResumeText;
   document.querySelector("#masterResumeStatus").textContent = portal.masterResumeText ? "Master résumé found in this browser." : "Paste your master résumé once, then save it locally.";
   document.querySelector("#apiKeyStatus").textContent = portal.anthropicApiKey ? "Personal key found in this browser." : "No key saved.";

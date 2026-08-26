@@ -129,6 +129,12 @@ input:focus, select:focus { outline: 3px solid rgba(24,126,121,.18); border-colo
 .pipeline-grid { display: grid; gap: 16px; }
 .pipeline-card { display: grid; grid-template-columns: 1fr auto; gap: 20px; padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: white; box-shadow: var(--shadow); }
 .pipeline-stage { color: var(--teal); font-size: 1rem; font-weight: 900; text-transform: uppercase; }
+.application-rating { margin: 6px 0; color: #a86800; font-size: 1.02rem; font-weight: 900; letter-spacing: .05em; }
+.manual-application-editor { margin: 4px 0 20px; padding: 18px; border: 1px solid #cfbdc8; border-radius: 16px; background: linear-gradient(135deg, #fff, #f8f0f4); box-shadow: var(--shadow); }
+.manual-application-editor summary { color: var(--aubergine); font-size: 1.08rem; font-weight: 900; cursor: pointer; }
+.manual-application-editor form { margin-top: 18px; }
+.manual-application-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.manual-application-grid textarea { min-height: 105px; padding: 12px; border: 1px solid #cfc2c9; border-radius: 9px; font: inherit; resize: vertical; }
 .empty-state { padding: 32px; border: 2px dashed #d5c8ce; border-radius: 14px; color: var(--muted); text-align: center; }
 .studio-card > label { max-width: 700px; }
 .studio-content { margin-top: 22px; }
@@ -200,7 +206,7 @@ input:focus, select:focus { outline: 3px solid rgba(24,126,121,.18); border-colo
   .score-badge { width: 60px; height: 60px; font-size: 1.35rem; }
   .score-badge small { display: none; }
   .job-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3,1fr); }
-  .pipeline-card, .studio-grid, .studio-output-grid, .document-profile-grid { grid-template-columns: 1fr; }
+  .pipeline-card, .studio-grid, .studio-output-grid, .document-profile-grid, .manual-application-grid { grid-template-columns: 1fr; }
   .document-profile-grid label:nth-child(2), .document-profile-grid label:nth-child(3), .document-profile-grid label:last-child { grid-column: auto; }
   .breakdown-grid { grid-template-columns: repeat(2, 1fr); }
   #dialogContent { padding: 24px; }

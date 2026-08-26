@@ -1,4 +1,5 @@
 import ast
+import json
 import re
 import unittest
 from pathlib import Path
@@ -30,6 +31,16 @@ class ArchitectureTests(unittest.TestCase):
         for path in ROOT.rglob("*"):
             if path.is_file() and path.suffix in checked_suffixes and ".git" not in path.parts:
                 self.assertIsNone(secret_pattern.search(path.read_text(encoding="utf-8", errors="ignore")), path)
+
+    def test_manual_application_editor_and_decagon_seed_exist(self):
+        html = (ROOT / "docs/index.html").read_text(encoding="utf-8")
+        for field_id in ("manualCompany", "manualTitle", "manualAppliedAt", "manualNote", "manualApplyUrl", "manualRating", "manualStage"):
+            self.assertIn(f'id="{field_id}"', html)
+        applied = json.loads((ROOT / "docs/data/applied.json").read_text(encoding="utf-8"))["applications"]
+        decagon = next(item for item in applied if item["id"] == "applied:decagon:agent-strategy-manager")
+        self.assertEqual(decagon["applied_at"], "2026-08-25")
+        self.assertEqual(decagon["rating"], 4)
+        self.assertIn("jobs.ashbyhq.com/decagon/", decagon["apply_url"])
 
 
 if __name__ == "__main__":

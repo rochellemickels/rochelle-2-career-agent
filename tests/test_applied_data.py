@@ -12,14 +12,15 @@ class AppliedDataTests(unittest.TestCase):
             (ROOT / "docs/data/applied.json").read_text(encoding="utf-8")
         )["applications"]
 
-    def test_contains_nine_confirmed_submissions(self):
-        self.assertEqual(len(self.applications), 9)
+    def test_contains_ten_confirmed_submissions(self):
+        self.assertEqual(len(self.applications), 10)
         identities = {(item["company"], item["title"]) for item in self.applications}
         self.assertIn(
             ("Pinterest", "Lead Program Manager, Global SMB Sales Enablement"),
             identities,
         )
         self.assertIn(("DoorDash", "Manager, Ecosystem Partnerships & Business Development"), identities)
+        self.assertIn(("Decagon", "Agent Strategy Manager"), identities)
 
     def test_unknown_dates_are_not_invented(self):
         unknown = [item for item in self.applications if item["applied_at"] is None]

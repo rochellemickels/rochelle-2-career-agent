@@ -6,6 +6,7 @@ import {
   applyCompanyCap,
   formatDate,
   matchesFilters,
+  mergeApplicationDetails,
   migrateLegacyTracking,
   normalizeLegacyStage,
 } from "../docs/assets/app.mjs";
@@ -65,6 +66,18 @@ test("application identity matches the same role despite case and spacing", () =
     applicationIdentity({ company: " Pinterest ", title: "Lead  Program Manager" }),
     applicationIdentity({ company: "pinterest", title: "lead program manager" }),
   );
+});
+
+test("editable application details override seeded or scanned fields", () => {
+  const result = mergeApplicationDetails(
+    { company: "Original", title: "Original Role", apply_url: "https://old.example", note: "Old note", rating: 2 },
+    { applicationDetails: { company: "Updated", title: "New Direction", applyUrl: "https://new.example", note: "Follow up Friday", rating: 5 } },
+  );
+  assert.equal(result.company, "Updated");
+  assert.equal(result.title, "New Direction");
+  assert.equal(result.apply_url, "https://new.example");
+  assert.equal(result.applicationNote, "Follow up Friday");
+  assert.equal(result.rating, 5);
 });
 
 test("date-only application records preserve the stated calendar date", () => {
