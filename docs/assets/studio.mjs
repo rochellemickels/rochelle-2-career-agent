@@ -103,12 +103,148 @@ export function cleanJobDescription(value) {
     .trim();
 }
 
+const ABSENT_FIELD = /^(?:not listed|location not listed|onsite\s*\/\s*not specified)$/i;
+
+function usableField(value) {
+  const text = String(value ?? "").trim();
+  return text && !ABSENT_FIELD.test(text) ? text : "";
+}
+
+function postingLines(value) {
+  return cleanJobDescription(value).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+}
+
+function quoted(line) {
+  const clean = String(line || "").replace(/\s+/g, " ").trim();
+  return `“${clean.length > 240 ? `${clean.slice(0, 237)}…` : clean}”`;
+}
+
+function checkedLine(lines, patterns) {
+  for (const pattern of patterns) {
+    const index = lines.findIndex((line) => pattern.test(line));
+    if (index >= 0) return lines[Math.min(index + (lines[index + 1] ? 1 : 0), lines.length - 1)];
+  }
+  return lines[0] || "No posting text was supplied.";
+}
+
+function absentResult(field, lines, patterns, area) {
+  const context = checkedLine(lines, patterns);
+  return {
+    value: "Not listed",
+    confidence: "High confidence",
+    evidence: `Checked the entire supplied posting, including ${area}; nearest exact line checked: ${quoted(context)}. No ${field.toLowerCase()} was stated.`,
+  };
+}
+
+function suppliedResult(value, label) {
+  return {
+    value,
+    confidence: "High confidence",
+    evidence: `Structured ${label.toLowerCase()} field supplied by the career source or Rochelle: ${quoted(value)}.`,
+  };
+}
+
+function moneyValue(raw) {
+  const value = String(raw).toLowerCase().replace(/[$,\s]/g, "");
+  const multiplier = value.endsWith("k") ? 1000 : 1;
+  return Math.round(Number.parseFloat(value.replace(/k$/, "")) * multiplier);
+}
+
+function salaryFromPosting(lines) {
+  const amount = "(\\d{2,3}(?:,\\d{3})|\\d{2,3}(?:\\.\\d+)?\\s*k)";
+  const dollarRange = new RegExp(`\\$\\s*${amount}\\s*(?:-|–|—|to)\\s*\\$?\\s*${amount}`, "i");
+  const qualifiedRange = new RegExp(`${amount}\\s*(?:-|–|—|to)\\s*${amount}(?=\\s*(?:USD|base|annually|annual|per\\s+year|a\\s+year|/\\s*year))`, "i");
+  for (const line of lines) {
+    for (const pattern of [dollarRange, qualifiedRange]) {
+      const match = line.match(pattern);
+      if (!match) continue;
+      const low = moneyValue(match[1]);
+      const high = moneyValue(match[2]);
+      if (low >= 40_000 && high >= low && high <= 1_000_000) {
+        return { low, high, line };
+      }
+    }
+  }
+  return null;
+}
+
+function formatSalary(low, high, currency = "USD") {
+  if (low && high) return `${Number(low).toLocaleString("en-US")}–${Number(high).toLocaleString("en-US")} ${currency}`;
+  if (low) return `From ${Number(low).toLocaleString("en-US")} ${currency}`;
+  if (high) return `Up to ${Number(high).toLocaleString("en-US")} ${currency}`;
+  return "Not listed";
+}
+
+export function extractPostingFields(postingText, supplied = {}) {
+  const lines = postingLines(postingText);
+  const locationSupplied = usableField(supplied.location);
+  let location;
+  if (locationSupplied) {
+    location = suppliedResult(locationSupplied, "Location");
+  } else {
+    const labeled = lines.find((line) => /^(?:job\s+)?location\s*[:\-–—]\s*\S+/i.test(line));
+    const titleBadge = lines.slice(0, 20).find((line) => /^(?:remote|hybrid|on-?site)(?:\s*[-—|,]\s*.+)?$/i.test(line));
+    const sourceLine = labeled || titleBadge;
+    location = sourceLine
+      ? { value: sourceLine.replace(/^(?:job\s+)?location\s*[:\-–—]\s*/i, ""), confidence: "High confidence", evidence: `Exact location line: ${quoted(sourceLine)}.` }
+      : absentResult("Location", lines, [/\blocation\b/i, /\bremote|hybrid|on-?site\b/i], "the opening/title-adjacent lines and every location or workplace reference");
+  }
+
+  const suppliedWorkStyle = usableField(supplied.workplace_type);
+  const recognizedWorkStyle = suppliedWorkStyle.match(/\b(remote|hybrid|on-?site)\b/i);
+  let workStyle;
+  if (recognizedWorkStyle) {
+    const normalized = recognizedWorkStyle[1].toLowerCase().startsWith("on") ? "Onsite" : `${recognizedWorkStyle[1][0].toUpperCase()}${recognizedWorkStyle[1].slice(1).toLowerCase()}`;
+    workStyle = suppliedResult(normalized, "Work style");
+  } else {
+    const sourceLine = lines.find((line) => /^(?:work\s*(?:style|location)|location)\s*[:\-–—].*\b(?:remote|hybrid|on-?site)\b/i.test(line))
+      || lines.slice(0, 25).find((line) => /^(?:remote|hybrid|on-?site)(?:\s*[-—|,].*)?$/i.test(line))
+      || lines.find((line) => /\b(?:this\s+(?:role|position)|the\s+(?:role|position))\s+is\s+(?:fully\s+)?(?:remote|hybrid|on-?site)\b/i.test(line));
+    const match = sourceLine?.match(/\b(remote|hybrid|on-?site)\b/i);
+    workStyle = match
+      ? { value: match[1].toLowerCase().startsWith("on") ? "Onsite" : `${match[1][0].toUpperCase()}${match[1].slice(1).toLowerCase()}`, confidence: "High confidence", evidence: `Exact work-style line: ${quoted(sourceLine)}.` }
+      : absentResult("Work style", lines, [/\bwork\s*(?:style|location)\b/i, /\bremote|hybrid|on-?site\b/i], "the opening badge area and every work-style reference");
+  }
+
+  const suppliedLow = Number(supplied.salary_min) || null;
+  const suppliedHigh = Number(supplied.salary_max) || null;
+  let salary;
+  if (suppliedLow || suppliedHigh) {
+    const value = formatSalary(suppliedLow, suppliedHigh, supplied.salary_currency || "USD");
+    salary = { ...suppliedResult(value, "Published salary"), low: suppliedLow, high: suppliedHigh };
+  } else {
+    const found = salaryFromPosting(lines);
+    salary = found
+      ? { value: formatSalary(found.low, found.high), low: found.low, high: found.high, confidence: "High confidence", evidence: `Exact compensation line: ${quoted(found.line)}.` }
+      : { ...absentResult("Published salary", lines, [/estimated\s+pay\s+range|salary\s+range|compensation|pay\s+range/i, /benefits|perks/i], "all compensation headings and the area above Benefits or Perks"), low: null, high: null };
+  }
+
+  const suppliedUrl = usableField(supplied.apply_url);
+  let applicationUrl;
+  if (suppliedUrl) {
+    applicationUrl = suppliedResult(suppliedUrl, "Application URL");
+  } else {
+    const sourceLine = lines.find((line) => /https?:\/\/\S+/i.test(line));
+    const match = sourceLine?.match(/https?:\/\/[^\s<>()]+/i);
+    applicationUrl = match
+      ? { value: match[0].replace(/[.,;]+$/, ""), confidence: "High confidence", evidence: `Exact URL line: ${quoted(sourceLine)}.` }
+      : absentResult("Application URL", lines, [/apply\s+(?:for\s+)?(?:this\s+)?job|application/i], "the Apply or application section and every URL in the posting");
+  }
+
+  return { location, workStyle, salary, applicationUrl };
+}
+
+function extractionEvidenceLine(label, result) {
+  return `- ${label}: ${result.confidence} — ${result.evidence}`;
+}
+
 export function isAiFocusedJob(job) {
   return /\b(?:ai|artificial intelligence|generative ai)\b/i.test(`${job?.title || ""} ${job?.career_lane || ""}`);
 }
 
 export function buildTailoringBrief(job, masterResumeText, profile = DEFAULT_DOCUMENT_PROFILE) {
   if (!job) return "";
+  const fields = extractPostingFields(job.description, job);
   const aiException = isAiFocusedJob(job)
     ? "This role is explicitly AI-focused, so a brief standalone practical-AI section is permitted only if it strengthens the application and uses facts from the master résumé."
     : "Do not create a standalone AI, Practical AI Use, or Continuing Education section. Fold AI coursework and practical use into one paragraph inside EDUCATION & PROFESSIONAL DEVELOPMENT, immediately after the degree line.";
@@ -117,12 +253,18 @@ export function buildTailoringBrief(job, masterResumeText, profile = DEFAULT_DOC
 ROLE
 Company: ${job.company || "Not listed"}
 Title: ${job.title || "Not listed"}
-Location: ${job.location || "Not listed"}
-Work style: ${job.workplace_type || "Not listed"}
+Location: ${fields.location.value}
+Work style: ${fields.workStyle.value}
 Career lane: ${job.career_lane || "Not listed"}
-Published salary: ${job.salary_min || job.salary_max ? `${job.salary_min || "?"}–${job.salary_max || "?"} ${job.salary_currency || "USD"}` : "Not listed"}
-Application URL: ${job.apply_url || "Not listed"}
+Published salary: ${fields.salary.value}
+Application URL: ${fields.applicationUrl.value}
 Portal score: ${job.score ?? "Not listed"} — use this displayed backend score only; do not recalculate fit.
+
+FIELD EXTRACTION VERIFICATION
+${extractionEvidenceLine("Location", fields.location)}
+${extractionEvidenceLine("Work style", fields.workStyle)}
+${extractionEvidenceLine("Published salary", fields.salary)}
+${extractionEvidenceLine("Application URL", fields.applicationUrl)}
 
 PORTAL EVIDENCE TO EMPHASIZE
 ${list(job.strengths)}

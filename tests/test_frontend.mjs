@@ -15,6 +15,7 @@ import {
   cleanJobDescription,
   createDocumentDefinition,
   estimateAnthropicCost,
+  extractPostingFields,
   generateTailoredDocuments,
   resumeTextFromStoredValue,
   unsupportedQuantifiedClaims,
@@ -126,6 +127,52 @@ test("tailoring brief includes full job evidence, resume, and locked voice rules
 
 test("job descriptions are clean text in the copyable brief", () => {
   assert.equal(cleanJobDescription('<div><p>Lead &amp; coach.</p><ul><li>Build programs</li></ul></div>'), "Lead & coach.\n\n- Build programs");
+});
+
+test("outside posting extraction reads title metadata, end-of-post salary, and application URL", () => {
+  const posting = `Manager, Strategic Initiatives
+Remote — US
+Full-Time
+
+Lead executive-sponsored strategic initiatives.
+
+The Perks
+Medical, dental, and vision coverage.
+
+Estimated Pay Range
+$150,000 - $160,000 USD
+
+Apply for this job: https://company.example/jobs/8105790`;
+  const fields = extractPostingFields(posting);
+  assert.equal(fields.location.value, "Remote — US");
+  assert.equal(fields.workStyle.value, "Remote");
+  assert.equal(fields.salary.low, 150000);
+  assert.equal(fields.salary.high, 160000);
+  assert.equal(fields.applicationUrl.value, "https://company.example/jobs/8105790");
+  assert.match(fields.salary.evidence, /\$150,000 - \$160,000 USD/);
+  assert.equal(fields.salary.confidence, "High confidence");
+});
+
+test("Not listed fields include an explicit quoted absence check", () => {
+  const fields = extractPostingFields("Role overview\nLead cross-functional initiatives.\nBenefits\nMedical coverage.");
+  assert.equal(fields.location.value, "Not listed");
+  assert.match(fields.location.evidence, /Checked the entire supplied posting/);
+  assert.match(fields.location.evidence, /“[^”]+”/);
+  assert.equal(fields.applicationUrl.value, "Not listed");
+  assert.match(fields.applicationUrl.evidence, /Apply or application section/);
+});
+
+test("tailoring brief reports extraction confidence and exact evidence", () => {
+  const brief = buildTailoringBrief({
+    company: "Trace3",
+    title: "Manager, Strategic Initiatives",
+    description: "Remote — US\nEstimated Pay Range\n$150,000 - $160,000 USD",
+    apply_url: "https://company.example/job",
+    score: "—",
+  }, "Approved résumé facts");
+  assert.match(brief, /FIELD EXTRACTION VERIFICATION/);
+  assert.match(brief, /Published salary: High confidence/);
+  assert.match(brief, /Exact compensation line/);
 });
 
 test("resume and cover letter validation enforce the locked voice", () => {

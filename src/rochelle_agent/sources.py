@@ -28,18 +28,23 @@ def _money_value(raw: str) -> int:
 
 
 def extract_salary(text: str) -> tuple[int | None, int | None]:
-    if re.search(r"\$\s*\d+(?:\.\d+)?\s*(?:/|per\s+)\s*(?:hour|hr)", text, re.I):
-        return None, None
-    pattern = re.compile(
-        r"\$\s*(\d{2,3}(?:,\d{3})|\d{2,3}(?:\.\d+)?\s*k)\s*(?:-|–|—|to)\s*"
-        r"\$?\s*(\d{2,3}(?:,\d{3})|\d{2,3}(?:\.\d+)?\s*k)",
-        re.I,
+    # Search the complete posting for an annual range before considering hourly
+    # compensation. Some postings contain both an annual base range and an
+    # unrelated hourly example; the old early return discarded the valid range.
+    amount = r"(\d{2,3}(?:,\d{3})|\d{2,3}(?:\.\d+)?\s*k)"
+    patterns = (
+        re.compile(rf"\$\s*{amount}\s*(?:-|–|—|to)\s*\$?\s*{amount}", re.I),
+        re.compile(
+            rf"{amount}\s*(?:-|–|—|to)\s*{amount}"
+            r"(?=\s*(?:USD|base|annually|annual|per\s+year|a\s+year|/\s*year))",
+            re.I,
+        ),
     )
-    match = pattern.search(text)
-    if match:
-        low, high = _money_value(match.group(1)), _money_value(match.group(2))
-        if 40_000 <= low <= high <= 1_000_000:
-            return low, high
+    for pattern in patterns:
+        for match in pattern.finditer(text):
+            low, high = _money_value(match.group(1)), _money_value(match.group(2))
+            if 40_000 <= low <= high <= 1_000_000:
+                return low, high
     return None, None
 
 

@@ -174,9 +174,22 @@
             <div class="document-profile-grid">
               <label>Company<input id="outsideCompany" placeholder="Company name"></label>
               <label>Job title<input id="outsideTitle" placeholder="Position title"></label>
+              <label>Location <small>(auto-detected, editable)</small><input id="outsideLocation" placeholder="Remote — US or Dallas, TX"></label>
+              <label>Work style <small>(auto-detected, editable)</small>
+                <select id="outsideWorkStyle">
+                  <option value="">Detect from full posting</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Onsite">Onsite</option>
+                </select>
+              </label>
+              <label>Published salary minimum <small>(optional)</small><input id="outsideSalaryMin" type="number" min="0" step="1000" placeholder="115000"></label>
+              <label>Published salary maximum <small>(optional)</small><input id="outsideSalaryMax" type="number" min="0" step="1000" placeholder="135000"></label>
+              <label class="full-width-field">Application URL <small>(optional if included in pasted text)</small><input id="outsideApplyUrl" type="url" placeholder="https://company.com/jobs/role"></label>
               <label class="full-width-field">Full job description<textarea id="outsideDescription" class="studio-textarea outside-description" placeholder="Paste the complete posting here…"></textarea></label>
             </div>
-            <button id="useOutsideJob" class="button button-soft">Use this outside position</button>
+            <p class="filter-note">The portal reads the entire pasted posting—including title-adjacent metadata, compensation near Benefits or Perks, and Apply sections—before marking a field “Not listed.” Review and edit any detected value before customizing.</p>
+            <button id="useOutsideJob" class="button button-soft">Extract fields and use this position</button>
           </details>
           <div id="studioJobSummary" class="studio-content empty-state">Choose a position to begin.</div>
         </section>
@@ -256,6 +269,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <noscript>This portal requires JavaScript to filter and track applications.</noscript>
-    <script type="module" src="assets/app.mjs?v=20260825-manual-applications-2"></script>
+    <script type="module" src="assets/app.mjs?v=20260826-field-extraction-fix"></script>
   </body>
 </html>

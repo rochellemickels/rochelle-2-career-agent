@@ -4,6 +4,7 @@ import {
   copyForGoogleDocs,
   downloadDocx,
   estimateAnthropicCost,
+  extractPostingFields,
   generateTailoredDocuments,
   loadAnthropicApiKey,
   loadMasterResumeText,
@@ -14,12 +15,13 @@ import {
   unsupportedQuantifiedClaims,
   validateCoverLetterText,
   validateResumeText,
-} from "./studio.mjs?v=20260825-ai-customize";
+} from "./studio.mjs?v=20260826-field-extraction-fix";
 
 const STORAGE_KEY = "rochelleCareerTrackingV3";
 const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
 const LEGACY_MANUAL_JOBS_KEY = "rochelle-manual-jobs-v1";
 const PAGE_SIZE = 60;
+const ABSENT_DISPLAY_VALUES = new Set(["Not listed", "Location not listed", "Onsite / not specified"]);
 const ACTIVE_APPLICATION_STAGES = new Set(["applied", "viewed", "responded", "interview", "offer"]);
 const CLOSED_STAGES = new Set(["skipped", "passed"]);
 const STAGE_LABELS = {
@@ -630,6 +632,15 @@ function useOutsideStudioJob() {
     showToast("Add the company, title, and full job description.");
     return;
   }
+  const supplied = {
+    location: document.querySelector("#outsideLocation").value.trim(),
+    workplace_type: document.querySelector("#outsideWorkStyle").value.trim(),
+    salary_min: document.querySelector("#outsideSalaryMin").value,
+    salary_max: document.querySelector("#outsideSalaryMax").value,
+    apply_url: document.querySelector("#outsideApplyUrl").value.trim(),
+    salary_currency: "USD",
+  };
+  const fields = extractPostingFields(description, supplied);
   persistStudioDraft();
   portal.outsideStudioJob = {
     id: "outside-job",
@@ -637,14 +648,24 @@ function useOutsideStudioJob() {
     title,
     description,
     career_lane: "Outside job posting",
-    location: "Not listed",
-    workplace_type: "Not listed",
+    location: fields.location.value,
+    workplace_type: fields.workStyle.value,
+    salary_min: fields.salary.low,
+    salary_max: fields.salary.high,
+    salary_currency: "USD",
+    apply_url: fields.applicationUrl.value === "Not listed" ? "" : fields.applicationUrl.value,
+    field_extraction: fields,
     score: "—",
     summary: "Manually added for Application Studio customization.",
     strengths: [],
     gaps: ["Outside posting — verify every requirement and claim manually."],
   };
   portal.studioDrafts.outsideJob = portal.outsideStudioJob;
+  if (!supplied.location && fields.location.value !== "Not listed") document.querySelector("#outsideLocation").value = fields.location.value;
+  if (!supplied.workplace_type && fields.workStyle.value !== "Not listed") document.querySelector("#outsideWorkStyle").value = fields.workStyle.value;
+  if (!supplied.salary_min && fields.salary.low) document.querySelector("#outsideSalaryMin").value = fields.salary.low;
+  if (!supplied.salary_max && fields.salary.high) document.querySelector("#outsideSalaryMax").value = fields.salary.high;
+  if (!supplied.apply_url && fields.applicationUrl.value !== "Not listed") document.querySelector("#outsideApplyUrl").value = fields.applicationUrl.value;
   const select = document.querySelector("#studioSelect");
   let option = [...select.options].find((item) => item.value === "outside-job");
   if (!option) {
@@ -742,6 +763,18 @@ function renderDialog(id) {
       <section class="evidence-box"><h3>Strengths</h3><ul>${(job.strengths || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No evidence tags available.</li>"}</ul></section>
       <section class="evidence-box gaps"><h3>Gaps / cautions</h3><ul>${(job.gaps || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No major rule-based caution.</li>"}</ul></section>
     </div>
+    ${job.field_extraction ? `
+      <section class="evidence-box extraction-verification">
+        <h3>Posting fields verified from the complete text</h3>
+        <ul>
+          ${[
+            ["Location", job.field_extraction.location],
+            ["Work style", job.field_extraction.workStyle],
+            ["Published salary", job.field_extraction.salary],
+            ["Application URL", job.field_extraction.applicationUrl],
+          ].map(([label, field]) => `<li><strong>${e(label)}:</strong> ${e(field.value)} · ${e(field.confidence)}<br><small>${e(field.evidence)}</small></li>`).join("")}
+        </ul>
+      </section>` : ""}
     <label class="dialog-stage">Application stage
       <select data-stage-id="${e(job.id)}">
         ${Object.entries(STAGE_LABELS).map(([stage, label]) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(label)}</option>`).join("")}
@@ -980,6 +1013,11 @@ async function bootstrap() {
     document.querySelector("#outsideCompany").value = portal.outsideStudioJob.company || "";
     document.querySelector("#outsideTitle").value = portal.outsideStudioJob.title || "";
     document.querySelector("#outsideDescription").value = portal.outsideStudioJob.description || "";
+    document.querySelector("#outsideLocation").value = ABSENT_DISPLAY_VALUES.has(portal.outsideStudioJob.location) ? "" : (portal.outsideStudioJob.location || "");
+    document.querySelector("#outsideWorkStyle").value = ABSENT_DISPLAY_VALUES.has(portal.outsideStudioJob.workplace_type) ? "" : (portal.outsideStudioJob.workplace_type || "");
+    document.querySelector("#outsideSalaryMin").value = portal.outsideStudioJob.salary_min || "";
+    document.querySelector("#outsideSalaryMax").value = portal.outsideStudioJob.salary_max || "";
+    document.querySelector("#outsideApplyUrl").value = portal.outsideStudioJob.apply_url || "";
   }
   Object.entries(portal.studioDrafts.profile || {}).forEach(([key, value]) => {
     const ids = { name: "#documentName", headline: "#documentHeadline", tagline: "#documentTagline", contact: "#documentContact" };

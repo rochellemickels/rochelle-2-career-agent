@@ -15,6 +15,13 @@ class SourceTests(unittest.TestCase):
     def test_does_not_convert_hourly_rate(self):
         self.assertEqual(extract_salary("Pay is $55 per hour"), (None, None))
 
+    def test_finds_annual_range_even_when_posting_also_mentions_hourly_pay(self):
+        posting = "Training examples use $55 per hour. Estimated Pay Range $150,000 - $160,000 USD"
+        self.assertEqual(extract_salary(posting), (150000, 160000))
+
+    def test_extracts_range_without_dollar_sign_when_usd_is_explicit(self):
+        self.assertEqual(extract_salary("Compensation: 115,000–135,000 USD"), (115000, 135000))
+
     def test_priority_company_sources_are_watched(self):
         sources = json.loads((ROOT / "config/sources.json").read_text(encoding="utf-8"))["sources"]
         by_company = {source["company"]: source for source in sources}
