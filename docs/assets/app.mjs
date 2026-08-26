@@ -247,6 +247,7 @@ function applicationJobs() {
       title: application.title,
       apply_url: liveJob?.apply_url || application.apply_url,
       applicationNote: application.note,
+      rating: application.rating,
       seededApplication: true,
     };
     return mergeApplicationDetails(combined, trackingFor(application.id));
