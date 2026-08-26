@@ -172,24 +172,34 @@
           <details class="outside-job-panel">
             <summary>Use a position that is not in the scanner</summary>
             <div class="document-profile-grid">
-              <label>Company<input id="outsideCompany" placeholder="Company name"></label>
-              <label>Job title<input id="outsideTitle" placeholder="Position title"></label>
-              <label>Location <small>(auto-detected, editable)</small><input id="outsideLocation" placeholder="Remote — US or Dallas, TX"></label>
-              <label>Work style <small>(auto-detected, editable)</small>
-                <select id="outsideWorkStyle">
-                  <option value="">Detect from full posting</option>
-                  <option value="Remote">Remote</option>
-                  <option value="Hybrid">Hybrid</option>
-                  <option value="Onsite">Onsite</option>
-                </select>
-              </label>
-              <label>Published salary minimum <small>(optional)</small><input id="outsideSalaryMin" type="number" min="0" step="1000" placeholder="115000"></label>
-              <label>Published salary maximum <small>(optional)</small><input id="outsideSalaryMax" type="number" min="0" step="1000" placeholder="135000"></label>
-              <label class="full-width-field">Application URL <small>(optional if included in pasted text)</small><input id="outsideApplyUrl" type="url" placeholder="https://company.com/jobs/role"></label>
-              <label class="full-width-field">Full job description<textarea id="outsideDescription" class="studio-textarea outside-description" placeholder="Paste the complete posting here…"></textarea></label>
+              <label class="full-width-field">Job-posting URL<input id="outsideApplyUrl" type="url" placeholder="https://company.com/jobs/role"></label>
+              <div class="studio-actions full-width-field">
+                <button id="loadOutsideUrl" class="button button-soft" type="button">Load job from URL</button>
+                <span id="outsideUrlStatus" class="local-status" aria-live="polite">Known Greenhouse, Lever, and Ashby links load automatically. Other career sites may require the description.</span>
+              </div>
+              <label class="full-width-field">Full job posting <small>(paste this only if the URL cannot load)</small><textarea id="outsideDescription" class="studio-textarea outside-description" placeholder="Paste the complete posting here—the portal extracts the company, title, location, work style, salary, and application link."></textarea></label>
             </div>
-            <p class="filter-note">The portal reads the entire pasted posting—including title-adjacent metadata, compensation near Benefits or Perks, and Apply sections—before marking a field “Not listed.” Review and edit any detected value before customizing.</p>
-            <button id="useOutsideJob" class="button button-soft">Extract fields and use this position</button>
+            <details class="manual-fallback detected-field-review">
+              <summary>Review or correct detected details only if needed</summary>
+              <p class="filter-note">Leave these blank for automatic detection. Only enter a correction if the detected result is missing or wrong.</p>
+              <div class="document-profile-grid">
+                <label>Company correction<input id="outsideCompany" placeholder="Leave blank to detect"></label>
+                <label>Job-title correction<input id="outsideTitle" placeholder="Leave blank to detect"></label>
+                <label>Location correction<input id="outsideLocation" placeholder="Leave blank to detect"></label>
+                <label>Work-style correction
+                  <select id="outsideWorkStyle">
+                    <option value="">Detect automatically</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Onsite">Onsite</option>
+                  </select>
+                </label>
+                <label>Salary-minimum correction<input id="outsideSalaryMin" type="number" min="0" step="1000" placeholder="Leave blank to detect"></label>
+                <label>Salary-maximum correction<input id="outsideSalaryMax" type="number" min="0" step="1000" placeholder="Leave blank to detect"></label>
+              </div>
+            </details>
+            <p class="filter-note">You do not need to complete the correction fields. The portal reads the entire posting—including title metadata, compensation near Benefits or Perks, and Apply sections—before reporting a missing field.</p>
+            <button id="useOutsideJob" class="button button-coral" type="button">Use this position</button>
           </details>
           <div id="studioJobSummary" class="studio-content empty-state">Choose a position to begin.</div>
         </section>
@@ -269,6 +279,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <noscript>This portal requires JavaScript to filter and track applications.</noscript>
-    <script type="module" src="assets/app.mjs?v=20260826-field-extraction-fix-2"></script>
+    <script type="module" src="assets/app.mjs?v=20260826-auto-import-fix"></script>
   </body>
 </html>

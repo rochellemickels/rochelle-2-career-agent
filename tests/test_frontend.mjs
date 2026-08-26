@@ -17,6 +17,7 @@ import {
   estimateAnthropicCost,
   extractPostingFields,
   generateTailoredDocuments,
+  loadJobPostingFromUrl,
   resumeTextFromStoredValue,
   unsupportedQuantifiedClaims,
   validateCoverLetterText,
@@ -151,6 +152,54 @@ Apply for this job: https://company.example/jobs/8105790`;
   assert.equal(fields.applicationUrl.value, "https://company.example/jobs/8105790");
   assert.match(fields.salary.evidence, /\$150,000 - \$160,000 USD/);
   assert.equal(fields.salary.confidence, "High confidence");
+});
+
+test("pasted posting auto-detects opening company and title without correction fields", () => {
+  const fields = extractPostingFields(`NTT DATA
+AI Consultant - Products
+Remote — US or Dallas, TX
+
+Lead client adoption programs.
+
+Salary Range
+$115,000 - $135,000 USD`);
+  assert.equal(fields.company.value, "NTT DATA");
+  assert.equal(fields.title.value, "AI Consultant - Products");
+  assert.equal(fields.location.value, "Remote — US or Dallas, TX");
+  assert.equal(fields.workStyle.value, "Remote");
+  assert.equal(fields.salary.low, 115000);
+  assert.equal(fields.salary.high, 135000);
+});
+
+test("Greenhouse URL import loads structured job details in one request", async () => {
+  let requestedUrl = "";
+  const fakeFetch = async (url) => {
+    requestedUrl = url;
+    return {
+      ok: true,
+      status: 200,
+      headers: { get: () => "application/json" },
+      text: async () => JSON.stringify({
+        title: "Manager, Strategic Initiatives",
+        content: "<p>Lead executive programs.</p><p>Estimated Pay Range</p><p>$150,000 - $160,000 USD</p>",
+        location: { name: "Remote — US" },
+        absolute_url: "https://job-boards.greenhouse.io/trace3/jobs/8105790",
+      }),
+    };
+  };
+  const job = await loadJobPostingFromUrl("https://job-boards.greenhouse.io/trace3/jobs/8105790", fakeFetch);
+  assert.equal(requestedUrl, "https://boards-api.greenhouse.io/v1/boards/trace3/jobs/8105790");
+  assert.equal(job.company, "Trace3");
+  assert.equal(job.title, "Manager, Strategic Initiatives");
+  assert.equal(job.location, "Remote — US");
+  assert.match(job.description, /Lead executive programs/);
+});
+
+test("blocked URL import asks only for the full description", async () => {
+  await assert.rejects(
+    loadJobPostingFromUrl("https://careers.example.com/jobs/role", async () => { throw new Error("CORS"); }),
+    /Paste the full job description instead/,
+  );
 });
 
 test("Not listed fields include an explicit quoted absence check", () => {

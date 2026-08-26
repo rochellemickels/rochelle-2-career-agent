@@ -6,6 +6,7 @@ import {
   estimateAnthropicCost,
   extractPostingFields,
   generateTailoredDocuments,
+  loadJobPostingFromUrl,
   loadAnthropicApiKey,
   loadMasterResumeText,
   loadStudioDrafts,
@@ -15,7 +16,7 @@ import {
   unsupportedQuantifiedClaims,
   validateCoverLetterText,
   validateResumeText,
-} from "./studio.mjs?v=20260826-field-extraction-fix";
+} from "./studio.mjs?v=20260826-auto-import-fix";
 
 const STORAGE_KEY = "rochelleCareerTrackingV3";
 const LEGACY_STORAGE_KEY = "rochelle-career-tracking-v1";
@@ -158,6 +159,7 @@ const portal = {
   studioDrafts: loadStudioDrafts(),
   anthropicApiKey: loadAnthropicApiKey(),
   outsideStudioJob: null,
+  outsideImportedJob: null,
 };
 
 function loadTracking() {
@@ -601,6 +603,8 @@ function renderStudio(id = document.querySelector("#studioSelect").value) {
         <h3>Posting fields verified from the complete text</h3>
         <ul>
           ${[
+            ["Company", job.field_extraction.company],
+            ["Job title", job.field_extraction.title],
             ["Location", job.field_extraction.location],
             ["Work style", job.field_extraction.workStyle],
             ["Published salary", job.field_extraction.salary],
@@ -636,23 +640,63 @@ function studioJobById(id) {
   return portal.jobs.find((job) => job.id === id) || null;
 }
 
-function useOutsideStudioJob() {
-  const company = document.querySelector("#outsideCompany").value.trim();
-  const title = document.querySelector("#outsideTitle").value.trim();
-  const description = document.querySelector("#outsideDescription").value.trim();
-  if (!company || !title || !description) {
-    showToast("Add the company, title, and full job description.");
+async function loadOutsideJobFromUrl() {
+  const url = document.querySelector("#outsideApplyUrl").value.trim();
+  const button = document.querySelector("#loadOutsideUrl");
+  const status = document.querySelector("#outsideUrlStatus");
+  if (!url) {
+    status.textContent = "Paste the job-posting URL first.";
+    return null;
+  }
+  button.disabled = true;
+  status.textContent = "Loading the complete posting…";
+  try {
+    const imported = await loadJobPostingFromUrl(url);
+    portal.outsideImportedJob = { ...imported, apply_url: imported.apply_url || url, source_url: url };
+    document.querySelector("#outsideDescription").value = imported.description || "";
+    status.textContent = `Loaded ${imported.company || "company"} — ${imported.title || "position"}. Details will be detected automatically.`;
+    return portal.outsideImportedJob;
+  } catch (error) {
+    portal.outsideImportedJob = null;
+    status.textContent = error.message;
+    document.querySelector("#outsideDescription").focus();
+    return null;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function useOutsideStudioJob() {
+  let description = document.querySelector("#outsideDescription").value.trim();
+  const enteredUrl = document.querySelector("#outsideApplyUrl").value.trim();
+  if (!description && enteredUrl) {
+    const imported = await loadOutsideJobFromUrl();
+    if (!imported) return;
+    description = imported.description || "";
+  }
+  if (!description) {
+    showToast("Paste a job URL or the full job posting.");
     return;
   }
+  const imported = portal.outsideImportedJob?.source_url === enteredUrl ? portal.outsideImportedJob : {};
   const supplied = {
-    location: document.querySelector("#outsideLocation").value.trim(),
-    workplace_type: document.querySelector("#outsideWorkStyle").value.trim(),
-    salary_min: document.querySelector("#outsideSalaryMin").value,
-    salary_max: document.querySelector("#outsideSalaryMax").value,
-    apply_url: document.querySelector("#outsideApplyUrl").value.trim(),
+    company: document.querySelector("#outsideCompany").value.trim() || imported.company,
+    title: document.querySelector("#outsideTitle").value.trim() || imported.title,
+    location: document.querySelector("#outsideLocation").value.trim() || imported.location,
+    workplace_type: document.querySelector("#outsideWorkStyle").value.trim() || imported.workplace_type,
+    salary_min: document.querySelector("#outsideSalaryMin").value || imported.salary_min,
+    salary_max: document.querySelector("#outsideSalaryMax").value || imported.salary_max,
+    apply_url: enteredUrl || imported.apply_url,
     salary_currency: "USD",
   };
   const fields = extractPostingFields(description, supplied);
+  const company = fields.company.value;
+  const title = fields.title.value;
+  if (company === "Not listed" || title === "Not listed") {
+    document.querySelector(".detected-field-review").open = true;
+    showToast(`The portal could not identify the ${company === "Not listed" ? "company" : "job title"}. Add only that correction, then try again.`);
+    return;
+  }
   persistStudioDraft();
   portal.outsideStudioJob = {
     id: "outside-job",
@@ -668,15 +712,11 @@ function useOutsideStudioJob() {
     apply_url: fields.applicationUrl.value === "Not listed" ? "" : fields.applicationUrl.value,
     field_extraction: fields,
     score: "—",
-    summary: "Manually added for Application Studio customization.",
+    summary: "Imported or pasted into Application Studio and extracted automatically.",
     strengths: [],
     gaps: ["Outside posting — verify every requirement and claim manually."],
   };
   portal.studioDrafts.outsideJob = portal.outsideStudioJob;
-  if (!supplied.location && fields.location.value !== "Not listed") document.querySelector("#outsideLocation").value = fields.location.value;
-  if (!supplied.workplace_type && fields.workStyle.value !== "Not listed") document.querySelector("#outsideWorkStyle").value = fields.workStyle.value;
-  if (!supplied.salary_min && fields.salary.low) document.querySelector("#outsideSalaryMin").value = fields.salary.low;
-  if (!supplied.salary_max && fields.salary.high) document.querySelector("#outsideSalaryMax").value = fields.salary.high;
   if (!supplied.apply_url && fields.applicationUrl.value !== "Not listed") document.querySelector("#outsideApplyUrl").value = fields.applicationUrl.value;
   const select = document.querySelector("#studioSelect");
   let option = [...select.options].find((item) => item.value === "outside-job");
@@ -887,6 +927,13 @@ function bindEvents() {
     showToast("Master résumé saved locally.");
   });
   document.querySelector("#useOutsideJob").addEventListener("click", useOutsideStudioJob);
+  document.querySelector("#loadOutsideUrl").addEventListener("click", loadOutsideJobFromUrl);
+  document.querySelector("#outsideApplyUrl").addEventListener("input", () => {
+    if (portal.outsideImportedJob?.source_url !== document.querySelector("#outsideApplyUrl").value.trim()) {
+      portal.outsideImportedJob = null;
+      document.querySelector("#outsideUrlStatus").textContent = "Click Load job from URL, or paste the full posting below.";
+    }
+  });
   document.querySelector("#saveApiKey").addEventListener("click", () => {
     const key = document.querySelector("#anthropicApiKey").value.trim();
     if (!key) {
@@ -1010,13 +1057,7 @@ async function bootstrap() {
   document.querySelector("#apiKeyStatus").textContent = portal.anthropicApiKey ? "Personal key found in this browser." : "No key saved.";
   if (portal.studioDrafts.outsideJob) {
     portal.outsideStudioJob = portal.studioDrafts.outsideJob;
-    document.querySelector("#outsideCompany").value = portal.outsideStudioJob.company || "";
-    document.querySelector("#outsideTitle").value = portal.outsideStudioJob.title || "";
     document.querySelector("#outsideDescription").value = portal.outsideStudioJob.description || "";
-    document.querySelector("#outsideLocation").value = ABSENT_DISPLAY_VALUES.has(portal.outsideStudioJob.location) ? "" : (portal.outsideStudioJob.location || "");
-    document.querySelector("#outsideWorkStyle").value = ABSENT_DISPLAY_VALUES.has(portal.outsideStudioJob.workplace_type) ? "" : (portal.outsideStudioJob.workplace_type || "");
-    document.querySelector("#outsideSalaryMin").value = portal.outsideStudioJob.salary_min || "";
-    document.querySelector("#outsideSalaryMax").value = portal.outsideStudioJob.salary_max || "";
     document.querySelector("#outsideApplyUrl").value = portal.outsideStudioJob.apply_url || "";
   }
   Object.entries(portal.studioDrafts.profile || {}).forEach(([key, value]) => {

@@ -175,8 +175,148 @@ function formatSalary(low, high, currency = "USD") {
   return "Not listed";
 }
 
+function titleCaseSlug(value) {
+  return String(value || "").split(/[-_]/).filter(Boolean).map((part) => `${part[0].toUpperCase()}${part.slice(1)}`).join(" ");
+}
+
+function plainPostingHtml(value) {
+  return cleanJobDescription(String(value || "")
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " "));
+}
+
+function workplaceFromValue(value) {
+  const match = String(value || "").match(/\b(remote|hybrid|on-?site)\b/i);
+  if (!match) return "";
+  return match[1].toLowerCase().startsWith("on") ? "Onsite" : `${match[1][0].toUpperCase()}${match[1].slice(1).toLowerCase()}`;
+}
+
+export async function loadJobPostingFromUrl(value, fetchImpl = fetch) {
+  let url;
+  try { url = new URL(String(value || "").trim()); } catch { throw new Error("Enter a complete job-posting URL beginning with https://"); }
+  if (url.protocol !== "https:") throw new Error("Use the secure https:// job-posting URL.");
+  const path = url.pathname.split("/").filter(Boolean);
+  let requestUrl = url.href;
+  let provider = "career page";
+  let company = "";
+
+  if (/^(?:job-boards|boards)\.greenhouse\.io$/i.test(url.hostname) && path.length >= 3 && path[path.length - 2] === "jobs") {
+    const board = path[0];
+    const id = path[path.length - 1];
+    requestUrl = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(board)}/jobs/${encodeURIComponent(id)}`;
+    provider = "Greenhouse";
+    company = titleCaseSlug(board);
+  } else if (/^jobs\.lever\.co$/i.test(url.hostname) && path.length >= 2) {
+    requestUrl = `https://api.lever.co/v0/postings/${encodeURIComponent(path[0])}/${encodeURIComponent(path[1])}`;
+    provider = "Lever";
+    company = titleCaseSlug(path[0]);
+  } else if (/^jobs\.ashbyhq\.com$/i.test(url.hostname) && path.length >= 2) {
+    requestUrl = `https://api.ashbyhq.com/posting-api/job-board/${encodeURIComponent(path[0])}?includeCompensation=true`;
+    provider = "Ashby";
+    company = titleCaseSlug(path[0]);
+  }
+
+  let response;
+  try {
+    response = await fetchImpl(requestUrl, { headers: { Accept: "application/json, text/html;q=0.9" } });
+  } catch {
+    throw new Error("This company blocks direct browser imports. Paste the full job description instead; the portal will extract the fields automatically.");
+  }
+  if (!response.ok) throw new Error(`The ${provider} posting could not be loaded (${response.status}). Paste the full description instead.`);
+  const contentType = response.headers?.get?.("content-type") || "";
+  const rawText = await response.text();
+
+  if (provider === "Greenhouse") {
+    const raw = JSON.parse(rawText);
+    return {
+      company,
+      title: raw.title || "",
+      description: cleanJobDescription(raw.content),
+      location: raw.location?.name || "",
+      workplace_type: workplaceFromValue(`${raw.location?.name || ""} ${raw.content || ""}`),
+      apply_url: raw.absolute_url || url.href,
+    };
+  }
+  if (provider === "Lever") {
+    const raw = JSON.parse(rawText);
+    const categories = raw.categories || {};
+    return {
+      company,
+      title: raw.text || "",
+      description: cleanJobDescription([raw.descriptionPlain, raw.additionalPlain, raw.description].filter(Boolean).join("\n")),
+      location: categories.location || (categories.allLocations || []).join(", "),
+      workplace_type: workplaceFromValue(`${raw.workplaceType || ""} ${categories.location || ""}`),
+      salary_min: raw.salaryRange?.min || null,
+      salary_max: raw.salaryRange?.max || null,
+      apply_url: raw.hostedUrl || raw.applyUrl || url.href,
+    };
+  }
+  if (provider === "Ashby") {
+    const board = JSON.parse(rawText);
+    const id = path[1];
+    const raw = (board.jobs || []).find((job) => String(job.id || "") === id || String(job.jobUrl || "").includes(id) || String(job.applyUrl || "").includes(id));
+    if (!raw) throw new Error("That Ashby posting was not found or may have closed. Paste the saved description if you still want to tailor for it.");
+    return {
+      company,
+      title: raw.title || "",
+      description: cleanJobDescription(raw.descriptionPlain || raw.descriptionHtml),
+      location: raw.location || "",
+      workplace_type: workplaceFromValue(`${raw.workplaceType || ""} ${raw.location || ""}`),
+      apply_url: raw.applyUrl || raw.jobUrl || url.href,
+    };
+  }
+
+  if (/json/i.test(contentType)) {
+    const raw = JSON.parse(rawText);
+    return {
+      company: raw.hiringOrganization?.name || raw.company || "",
+      title: raw.title || raw.jobTitle || "",
+      description: cleanJobDescription(raw.description || raw.content || rawText),
+      location: raw.jobLocation?.address?.addressLocality || raw.location || "",
+      workplace_type: workplaceFromValue(`${raw.jobLocationType || ""} ${raw.location || ""}`),
+      apply_url: url.href,
+    };
+  }
+  const jsonLd = [...rawText.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((match) => { try { return JSON.parse(match[1]); } catch { return null; } })
+    .flatMap((item) => item?.["@graph"] || [item])
+    .find((item) => item?.["@type"] === "JobPosting");
+  return {
+    company: jsonLd?.hiringOrganization?.name || "",
+    title: jsonLd?.title || "",
+    description: cleanJobDescription(jsonLd?.description) || plainPostingHtml(rawText),
+    location: jsonLd?.jobLocation?.address?.addressLocality || "",
+    workplace_type: workplaceFromValue(jsonLd?.jobLocationType),
+    salary_min: jsonLd?.baseSalary?.value?.minValue || null,
+    salary_max: jsonLd?.baseSalary?.value?.maxValue || null,
+    apply_url: url.href,
+  };
+}
+
 export function extractPostingFields(postingText, supplied = {}) {
   const lines = postingLines(postingText);
+  const suppliedCompany = usableField(supplied.company);
+  const companyLine = lines.find((line) => /^company\s*[:\-–—]\s*\S+/i.test(line));
+  const whoIsLine = lines.find((line) => /^who\s+is\s+.{2,80}\??$/i.test(line));
+  const openingCompany = lines.length > 1 && lines[0].length <= 80 && /^[A-Z0-9& .'-]+$/.test(lines[0])
+    ? lines[0]
+    : "";
+  const companyValue = suppliedCompany
+    || companyLine?.replace(/^company\s*[:\-–—]\s*/i, "")
+    || whoIsLine?.replace(/^who\s+is\s+/i, "").replace(/\?$/, "")
+    || openingCompany
+    || "Not listed";
+  const company = companyValue !== "Not listed"
+    ? (suppliedCompany ? suppliedResult(companyValue, "Company") : { value: companyValue, confidence: "Medium confidence — review", evidence: `Company inferred from exact line: ${quoted(companyLine || whoIsLine || openingCompany)}.` })
+    : absentResult("Company", lines, [/^company\b/i, /^who\s+is\b/i], "the title-adjacent and company-introduction lines");
+
+  const suppliedTitle = usableField(supplied.title);
+  const labeledTitle = lines.find((line) => /^(?:job\s+)?title\s*[:\-–—]\s*\S+/i.test(line));
+  const firstLine = lines.find((line, index) => index !== (openingCompany ? 0 : -1) && line.length <= 140 && !/^(?:about|who\s+is|job\s+summary|overview|description)\b/i.test(line));
+  const titleValue = suppliedTitle || labeledTitle?.replace(/^(?:job\s+)?title\s*[:\-–—]\s*/i, "") || firstLine || "Not listed";
+  const title = titleValue !== "Not listed"
+    ? (suppliedTitle ? suppliedResult(titleValue, "Job title") : { value: titleValue, confidence: labeledTitle ? "High confidence" : "Medium confidence — review", evidence: `${labeledTitle ? "Exact title field" : "Opening/title-adjacent line"}: ${quoted(labeledTitle || firstLine)}.` })
+    : absentResult("Job title", lines, [/^(?:job\s+)?title\b/i], "the opening/title-adjacent lines");
   const locationSupplied = usableField(supplied.location);
   let location;
   if (locationSupplied) {
@@ -231,7 +371,7 @@ export function extractPostingFields(postingText, supplied = {}) {
       : absentResult("Application URL", lines, [/apply\s+(?:for\s+)?(?:this\s+)?job|application/i], "the Apply or application section and every URL in the posting");
   }
 
-  return { location, workStyle, salary, applicationUrl };
+  return { company, title, location, workStyle, salary, applicationUrl };
 }
 
 function extractionEvidenceLine(label, result) {
@@ -251,8 +391,8 @@ export function buildTailoringBrief(job, masterResumeText, profile = DEFAULT_DOC
   return `APPLICATION TAILORING BRIEF — ROCHELLE MAGPANTAY
 
 ROLE
-Company: ${job.company || "Not listed"}
-Title: ${job.title || "Not listed"}
+Company: ${fields.company.value}
+Title: ${fields.title.value}
 Location: ${fields.location.value}
 Work style: ${fields.workStyle.value}
 Career lane: ${job.career_lane || "Not listed"}
@@ -261,6 +401,8 @@ Application URL: ${fields.applicationUrl.value}
 Portal score: ${job.score ?? "Not listed"} — use this displayed backend score only; do not recalculate fit.
 
 FIELD EXTRACTION VERIFICATION
+${extractionEvidenceLine("Company", fields.company)}
+${extractionEvidenceLine("Job title", fields.title)}
 ${extractionEvidenceLine("Location", fields.location)}
 ${extractionEvidenceLine("Work style", fields.workStyle)}
 ${extractionEvidenceLine("Published salary", fields.salary)}
