@@ -596,6 +596,18 @@ function renderStudio(id = document.querySelector("#studioSelect").value) {
       <section class="evidence-box"><h3>Evidence to emphasize</h3><ul>${(job.strengths || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>Review the description for transferable evidence.</li>"}</ul></section>
       <section class="evidence-box gaps"><h3>Questions or gaps to verify</h3><ul>${(job.gaps || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No major rule-based gap detected.</li>"}</ul></section>
     </div>
+    ${job.field_extraction ? `
+      <section class="evidence-box extraction-verification">
+        <h3>Posting fields verified from the complete text</h3>
+        <ul>
+          ${[
+            ["Location", job.field_extraction.location],
+            ["Work style", job.field_extraction.workStyle],
+            ["Published salary", job.field_extraction.salary],
+            ["Application URL", job.field_extraction.applicationUrl],
+          ].map(([label, field]) => `<li><strong>${e(label)}:</strong> ${e(field.value)} · ${e(field.confidence)}<br><small>${e(field.evidence)}</small></li>`).join("")}
+        </ul>
+      </section>` : ""}
   `;
   const draft = portal.studioDrafts.jobs[id] || {};
   document.querySelector("#finishedResume").value = draft.resume || "";
@@ -763,18 +775,6 @@ function renderDialog(id) {
       <section class="evidence-box"><h3>Strengths</h3><ul>${(job.strengths || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No evidence tags available.</li>"}</ul></section>
       <section class="evidence-box gaps"><h3>Gaps / cautions</h3><ul>${(job.gaps || []).map((item) => `<li>${e(item)}</li>`).join("") || "<li>No major rule-based caution.</li>"}</ul></section>
     </div>
-    ${job.field_extraction ? `
-      <section class="evidence-box extraction-verification">
-        <h3>Posting fields verified from the complete text</h3>
-        <ul>
-          ${[
-            ["Location", job.field_extraction.location],
-            ["Work style", job.field_extraction.workStyle],
-            ["Published salary", job.field_extraction.salary],
-            ["Application URL", job.field_extraction.applicationUrl],
-          ].map(([label, field]) => `<li><strong>${e(label)}:</strong> ${e(field.value)} · ${e(field.confidence)}<br><small>${e(field.evidence)}</small></li>`).join("")}
-        </ul>
-      </section>` : ""}
     <label class="dialog-stage">Application stage
       <select data-stage-id="${e(job.id)}">
         ${Object.entries(STAGE_LABELS).map(([stage, label]) => `<option value="${stage}" ${tracking.stage === stage ? "selected" : ""}>${e(label)}</option>`).join("")}
