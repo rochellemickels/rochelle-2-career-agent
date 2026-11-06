@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T19:55:08.621718+00:00",
+  "generated_at": "2026-11-06T19:34:49.858534+00:00",
   "state": "complete",
   "message": "Scan, score, commit, and publish workflow completed.",
   "sources": [
@@ -8,18 +8,18 @@
       "source_type": "ashby",
       "slug": "openai",
       "status": "ok",
-      "jobs_found": 814,
+      "jobs_found": 821,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:09.119834+00:00"
+      "checked_at": "2026-11-06T19:34:50.262575+00:00"
     },
     {
       "company": "Anthropic",
       "source_type": "greenhouse",
       "slug": "anthropic",
       "status": "ok",
-      "jobs_found": 680,
+      "jobs_found": 671,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:10.032844+00:00"
+      "checked_at": "2026-11-06T19:34:51.173029+00:00"
     },
     {
       "company": "GitLab",
@@ -28,61 +28,61 @@
       "status": "ok",
       "jobs_found": 245,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:10.437898+00:00"
+      "checked_at": "2026-11-06T19:34:51.533009+00:00"
     },
     {
       "company": "HubSpot",
       "source_type": "greenhouse",
       "slug": "hubspotjobs",
       "status": "ok",
-      "jobs_found": 103,
+      "jobs_found": 121,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:10.693760+00:00"
+      "checked_at": "2026-11-06T19:34:51.758349+00:00"
     },
     {
       "company": "Gusto",
       "source_type": "greenhouse",
       "slug": "gusto",
       "status": "ok",
-      "jobs_found": 81,
+      "jobs_found": 83,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:10.889517+00:00"
+      "checked_at": "2026-11-06T19:34:51.894296+00:00"
     },
     {
       "company": "Toast",
       "source_type": "greenhouse",
       "slug": "toast",
       "status": "ok",
-      "jobs_found": 344,
+      "jobs_found": 329,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:11.308328+00:00"
+      "checked_at": "2026-11-06T19:34:52.279556+00:00"
     },
     {
       "company": "Dialpad",
       "source_type": "greenhouse",
       "slug": "dialpad",
       "status": "ok",
-      "jobs_found": 11,
+      "jobs_found": 14,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:11.480810+00:00"
+      "checked_at": "2026-11-06T19:34:52.340897+00:00"
     },
     {
       "company": "GoDaddy",
       "source_type": "greenhouse",
       "slug": "godaddy",
       "status": "ok",
-      "jobs_found": 27,
+      "jobs_found": 30,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:11.654438+00:00"
+      "checked_at": "2026-11-06T19:34:52.442833+00:00"
     },
     {
       "company": "Block",
       "source_type": "greenhouse",
       "slug": "block",
       "status": "ok",
-      "jobs_found": 200,
+      "jobs_found": 197,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:11.963648+00:00"
+      "checked_at": "2026-11-06T19:34:52.706069+00:00"
     },
     {
       "company": "Webflow",
@@ -91,7 +91,7 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:12.038476+00:00"
+      "checked_at": "2026-11-06T19:34:52.750231+00:00"
     },
     {
       "company": "Figma",
@@ -100,43 +100,43 @@
       "status": "ok",
       "jobs_found": 145,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:12.298274+00:00"
+      "checked_at": "2026-11-06T19:34:52.933982+00:00"
     },
     {
       "company": "Dropbox",
       "source_type": "greenhouse",
       "slug": "dropbox",
       "status": "ok",
-      "jobs_found": 31,
+      "jobs_found": 34,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:12.544237+00:00"
+      "checked_at": "2026-11-06T19:34:53.055727+00:00"
     },
     {
       "company": "Affirm",
       "source_type": "greenhouse",
       "slug": "affirm",
       "status": "ok",
-      "jobs_found": 231,
+      "jobs_found": 228,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:12.805800+00:00"
+      "checked_at": "2026-11-06T19:34:53.265856+00:00"
     },
     {
       "company": "Stripe",
       "source_type": "greenhouse",
       "slug": "stripe",
       "status": "ok",
-      "jobs_found": 757,
+      "jobs_found": 765,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:13.298171+00:00"
+      "checked_at": "2026-11-06T19:34:53.791565+00:00"
     },
     {
       "company": "Zapier",
       "source_type": "ashby",
       "slug": "zapier",
       "status": "ok",
-      "jobs_found": 11,
+      "jobs_found": 10,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:13.445653+00:00"
+      "checked_at": "2026-11-06T19:34:53.818616+00:00"
     },
     {
       "company": "Vercel",
@@ -145,7 +145,7 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:13.527628+00:00"
+      "checked_at": "2026-11-06T19:34:53.861669+00:00"
     },
     {
       "company": "Remote",
@@ -154,25 +154,25 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:13.628895+00:00"
+      "checked_at": "2026-11-06T19:34:53.908713+00:00"
     },
     {
       "company": "Notion",
       "source_type": "ashby",
       "slug": "notion",
       "status": "ok",
-      "jobs_found": 146,
+      "jobs_found": 154,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:13.816733+00:00"
+      "checked_at": "2026-11-06T19:34:54.029512+00:00"
     },
     {
       "company": "DoorDash",
       "source_type": "greenhouse",
       "slug": "doordashusa",
       "status": "ok",
-      "jobs_found": 440,
+      "jobs_found": 439,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:14.502874+00:00"
+      "checked_at": "2026-11-06T19:34:54.660572+00:00"
     },
     {
       "company": "AnswerRocket",
@@ -181,61 +181,61 @@
       "status": "ok",
       "jobs_found": 1,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:14.596249+00:00"
+      "checked_at": "2026-11-06T19:34:54.715590+00:00"
     },
     {
       "company": "Braze",
       "source_type": "greenhouse",
       "slug": "braze",
       "status": "ok",
-      "jobs_found": 363,
+      "jobs_found": 359,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:15.304445+00:00"
+      "checked_at": "2026-11-06T19:34:55.269151+00:00"
     },
     {
       "company": "Datadog",
       "source_type": "greenhouse",
       "slug": "datadog",
       "status": "ok",
-      "jobs_found": 396,
+      "jobs_found": 399,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:15.731860+00:00"
+      "checked_at": "2026-11-06T19:34:55.668127+00:00"
     },
     {
       "company": "Twilio",
       "source_type": "greenhouse",
       "slug": "twilio",
       "status": "ok",
-      "jobs_found": 128,
+      "jobs_found": 127,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:15.992058+00:00"
+      "checked_at": "2026-11-06T19:34:55.844698+00:00"
     },
     {
       "company": "Pinterest",
       "source_type": "greenhouse",
       "slug": "pinterest",
       "status": "ok",
-      "jobs_found": 170,
+      "jobs_found": 166,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:16.250144+00:00"
+      "checked_at": "2026-11-06T19:34:56.047945+00:00"
     },
     {
       "company": "Reddit",
       "source_type": "greenhouse",
       "slug": "reddit",
       "status": "ok",
-      "jobs_found": 162,
+      "jobs_found": 161,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:16.565498+00:00"
+      "checked_at": "2026-11-06T19:34:56.252590+00:00"
     },
     {
       "company": "Airbnb",
       "source_type": "greenhouse",
       "slug": "airbnb",
       "status": "ok",
-      "jobs_found": 210,
+      "jobs_found": 203,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:16.892276+00:00"
+      "checked_at": "2026-11-06T19:34:56.543095+00:00"
     },
     {
       "company": "Deel",
@@ -244,43 +244,43 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:16.964852+00:00"
+      "checked_at": "2026-11-06T19:34:56.590393+00:00"
     },
     {
       "company": "Asana",
       "source_type": "greenhouse",
       "slug": "asana",
       "status": "ok",
-      "jobs_found": 110,
+      "jobs_found": 108,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:17.191800+00:00"
+      "checked_at": "2026-11-06T19:34:56.739339+00:00"
     },
     {
       "company": "Intercom",
       "source_type": "greenhouse",
       "slug": "intercom",
       "status": "ok",
-      "jobs_found": 110,
+      "jobs_found": 109,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:17.412609+00:00"
+      "checked_at": "2026-11-06T19:34:56.886821+00:00"
     },
     {
       "company": "Samsara",
       "source_type": "greenhouse",
       "slug": "samsara",
       "status": "ok",
-      "jobs_found": 322,
+      "jobs_found": 310,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:17.827705+00:00"
+      "checked_at": "2026-11-06T19:34:57.337119+00:00"
     },
     {
       "company": "Klaviyo",
       "source_type": "greenhouse",
       "slug": "klaviyo",
       "status": "ok",
-      "jobs_found": 154,
+      "jobs_found": 152,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:18.123917+00:00"
+      "checked_at": "2026-11-06T19:34:57.614491+00:00"
     },
     {
       "company": "Amplitude",
@@ -289,7 +289,7 @@
       "status": "error",
       "jobs_found": 0,
       "message": "HTTPError: HTTP Error 404: Not Found",
-      "checked_at": "2026-11-04T19:55:18.212955+00:00"
+      "checked_at": "2026-11-06T19:34:57.665650+00:00"
     },
     {
       "company": "Confluent",
@@ -298,97 +298,97 @@
       "status": "ok",
       "jobs_found": 0,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:18.301031+00:00"
+      "checked_at": "2026-11-06T19:34:57.699976+00:00"
     },
     {
       "company": "Plaid",
       "source_type": "ashby",
       "slug": "plaid",
       "status": "ok",
-      "jobs_found": 141,
+      "jobs_found": 143,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:18.524110+00:00"
+      "checked_at": "2026-11-06T19:34:57.772785+00:00"
     },
     {
       "company": "Instacart",
       "source_type": "greenhouse",
       "slug": "instacart",
       "status": "ok",
-      "jobs_found": 87,
+      "jobs_found": 91,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:18.727264+00:00"
+      "checked_at": "2026-11-06T19:34:57.916846+00:00"
     },
     {
       "company": "Coinbase",
       "source_type": "greenhouse",
       "slug": "coinbase",
       "status": "ok",
-      "jobs_found": 278,
+      "jobs_found": 281,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:19.004211+00:00"
+      "checked_at": "2026-11-06T19:34:58.519619+00:00"
     },
     {
       "company": "Squarespace",
       "source_type": "greenhouse",
       "slug": "squarespace",
       "status": "ok",
-      "jobs_found": 23,
+      "jobs_found": 21,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:19.148320+00:00"
+      "checked_at": "2026-11-06T19:34:58.622563+00:00"
     },
     {
       "company": "Elastic",
       "source_type": "greenhouse",
       "slug": "elastic",
       "status": "ok",
-      "jobs_found": 424,
+      "jobs_found": 422,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:19.716551+00:00"
+      "checked_at": "2026-11-06T19:34:59.345840+00:00"
     },
     {
       "company": "Gainsight",
       "source_type": "ashby",
       "slug": "gainsight",
       "status": "ok",
-      "jobs_found": 19,
+      "jobs_found": 20,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:19.866188+00:00"
+      "checked_at": "2026-11-06T19:34:59.408016+00:00"
     },
     {
       "company": "Scale AI",
       "source_type": "greenhouse",
       "slug": "scaleai",
       "status": "ok",
-      "jobs_found": 166,
+      "jobs_found": 170,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:20.103903+00:00"
+      "checked_at": "2026-11-06T19:34:59.662136+00:00"
     },
     {
       "company": "Brex",
       "source_type": "greenhouse",
       "slug": "brex",
       "status": "ok",
-      "jobs_found": 270,
+      "jobs_found": 267,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:20.403701+00:00"
+      "checked_at": "2026-11-06T19:34:59.858352+00:00"
     },
     {
       "company": "Ramp",
       "source_type": "ashby",
       "slug": "ramp",
       "status": "ok",
-      "jobs_found": 167,
+      "jobs_found": 170,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:20.567067+00:00"
+      "checked_at": "2026-11-06T19:34:59.958036+00:00"
     },
     {
       "company": "NICE",
       "source_type": "greenhouse",
       "slug": "nice",
       "status": "ok",
-      "jobs_found": 132,
+      "jobs_found": 114,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:20.844893+00:00"
+      "checked_at": "2026-11-06T19:35:00.151743+00:00"
     },
     {
       "company": "Zafin",
@@ -397,25 +397,25 @@
       "status": "ok",
       "jobs_found": 33,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:21.008907+00:00"
+      "checked_at": "2026-11-06T19:35:00.243646+00:00"
     },
     {
       "company": "Nimble Gravity",
       "source_type": "greenhouse",
       "slug": "nimblegravity",
       "status": "ok",
-      "jobs_found": 12,
+      "jobs_found": 13,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:21.151692+00:00"
+      "checked_at": "2026-11-06T19:35:00.332632+00:00"
     },
     {
       "company": "Talkdesk",
       "source_type": "greenhouse",
       "slug": "talkdesk2",
       "status": "ok",
-      "jobs_found": 38,
+      "jobs_found": 39,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:21.288079+00:00"
+      "checked_at": "2026-11-06T19:35:00.420486+00:00"
     },
     {
       "company": "Sitetracker",
@@ -424,16 +424,16 @@
       "status": "ok",
       "jobs_found": 8,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:26.988951+00:00"
+      "checked_at": "2026-11-06T19:35:01.155709+00:00"
     },
     {
       "company": "Atmosera",
       "source_type": "lever",
       "slug": "atmosera",
       "status": "ok",
-      "jobs_found": 14,
+      "jobs_found": 13,
       "message": "Public career feed refreshed.",
-      "checked_at": "2026-11-04T19:55:27.583520+00:00"
+      "checked_at": "2026-11-06T19:35:02.735663+00:00"
     },
     {
       "company": "Buyers Edge Platform",
@@ -442,7 +442,7 @@
       "status": "error",
       "jobs_found": 0,
       "message": "HTTPError: HTTP Error 404: Not Found",
-      "checked_at": "2026-11-04T19:55:27.667773+00:00"
+      "checked_at": "2026-11-06T19:35:02.783040+00:00"
     }
   ]
 }
